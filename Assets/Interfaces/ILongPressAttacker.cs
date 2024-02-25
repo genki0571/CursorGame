@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IDamagable 
+public interface ILongPressAttacker
 {
-    void AddDamage(float damage) { }
+    void Attack(IDamagable selectEnemy) { }
 }

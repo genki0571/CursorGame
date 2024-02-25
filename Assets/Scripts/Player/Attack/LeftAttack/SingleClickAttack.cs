@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ClickAttack : MonoBehaviour,ILeftAttacker
+public class SingleClickAttack : MonoBehaviour,ILeftAttacker
 {
     // Start is called before the first frame update
     void Start()

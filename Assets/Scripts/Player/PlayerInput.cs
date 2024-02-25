@@ -10,9 +10,10 @@ public class PlayerInput : MonoBehaviour
     const int LONGPRESS_INTERVAL_FRAME = 40;
     int longPressCnt;
 
-    [SerializeField]bool isLeftClick;
-    [SerializeField]bool isRightClick;
-    [SerializeField]bool isLongPress;
+    [SerializeField] bool isLeftClick;
+    [SerializeField] bool isRightClick;
+    [SerializeField] bool isLongPressDown;
+    [SerializeField] bool isLongPress;
 
     private void Start()
     {
@@ -38,12 +39,14 @@ public class PlayerInput : MonoBehaviour
             longPressCnt = 0;
             isLeftClick = false;
             isLongPress = false;
+            isLongPressDown = true;
         }
         else if (Input.GetMouseButton(0))
         {
             longPressCnt += 1;
             isLeftClick = false;
             isLongPress = false;
+            isLongPressDown = false;
 
             //長押ししているなら
             if (longPressCnt >= LONGPRESS_INTERVAL_FRAME) 
@@ -60,16 +63,19 @@ public class PlayerInput : MonoBehaviour
                 //Debug.Log("LeftClick");
             }
             isLongPress = false;
+            isLongPressDown = false;
         }
         else 
         {
             isLeftClick = false;
             isLongPress = false;
+            isLongPressDown = false;
         }
 
         //Playerに代入
         player.isLeftClick = isLeftClick;
         player.isRightClick = isRightClick;
+        player.isLongPressDown = isLongPressDown;
         player.isLongPress = isLongPress;
 
     }

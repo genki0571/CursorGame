@@ -2,7 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-interface IButton
+public interface IButton
 {
-    void Pushed() { }
+    public Command Pushed()
+    {
+        Command command = Command.Empty;
+        return command;
+    }
 }
