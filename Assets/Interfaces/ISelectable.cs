@@ -4,5 +4,9 @@ using UnityEngine;
 
 public interface ISelectable 
 {
-    void Selected() { }
+    public void Selected() { }
+
+    public void Open() { }
+
+    public void Delete() { }
 }

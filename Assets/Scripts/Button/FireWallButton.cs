@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InstallTxtButton : MonoBehaviour,IButton
+public class FireWallButton : MonoBehaviour,IButton
 {
-    Command command = Command.InstallTxt;
+    Command command = Command.FireWall;
 
     // Start is called before the first frame update
     void Start()
@@ -17,7 +17,6 @@ public class InstallTxtButton : MonoBehaviour,IButton
     {
         
     }
-
     public Command Pushed()
     {
         return command;

@@ -36,26 +36,41 @@ public class DoubleClickAttack : MonoBehaviour,ILeftAttacker
         }
     }
 
-    public void Attack(Transform hitEnemy)
+    public void Attack(Transform cursorTrans,Transform hitEnemy)
     {
         if (hitEnemy)
         {
-            IDamagable damageTarget = hitEnemy.GetComponent<IDamagable>();
-            if (damageTarget != null)
+            float damage = 0;
+            if (clickCnt == 0)
             {
-                float damage = 0;
-                if (clickCnt == 0)
-                {
-                    damage = CLICK_DAMAGE_SINGLE;
-                    clickCnt = 1;
-                }
-                else if (clickCnt == 1) 
-                {
-                    damage = CLICK_DAMAGE_DOUBLE;
-                    clickCnt = 0;
-                }
+                damage = CLICK_DAMAGE_SINGLE;
+                clickCnt = 1;
+            }
+            else if (clickCnt == 1)
+            {
+                damage = CLICK_DAMAGE_DOUBLE;
+                clickCnt = 0;
+            }
 
-                damageTarget.AddDamage(damage);
+            bool damaged = false;
+
+            IHaveWeakPoint haveWeakPoint = hitEnemy.GetComponent<IHaveWeakPoint>();
+            if (haveWeakPoint != null)
+            {
+                if (haveWeakPoint.IsAttackWeekPoint(this.transform.position))
+                {
+                    haveWeakPoint.AddWeakDamage(damage);
+                    damaged = true;
+                }
+            }
+
+            if (!damaged)
+            {
+                IDamagable damageTarget = hitEnemy.GetComponent<IDamagable>();
+                if (damageTarget != null)
+                {
+                    damageTarget.AddDamage(damage);
+                }
             }
         }
     }

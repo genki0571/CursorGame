@@ -8,16 +8,19 @@ public class TxtTallet : MonoBehaviour ,IGrabbable
     Transform talletTrans;
     SpriteRenderer renderer;
     bool isGrabed;
-    bool isSleep;
+    public bool isSleep;
 
     Vector3 diffPlayerVec = Vector2.zero;
-    public PCFieldController pcFieldController;
+    PCFieldController pcFieldController => PCFieldController.instance;
 
-    const float TALLET_INTERVAL = 3f;
+    const float TALLET_ATTACK_INTERVAL = 3f;
+    [SerializeField]float attackTimer = 0;
 
-    [SerializeField]float talletTimer = 0;
+    const float TALLET_MAX_LIFE = 30;
+    const float TALLET_LIFE_COST_PER_S = 1;
+    [SerializeField] float talletLife = 0;
 
-    [SerializeField] TxtBullet[] txtBullets;
+    TxtBullet[] txtBullets;
 
     RangeCheck rangeCheck;
 
@@ -27,6 +30,7 @@ public class TxtTallet : MonoBehaviour ,IGrabbable
         rangeCheck = GetComponentInChildren<RangeCheck>();
         talletTrans = GetComponent<Transform>();
         renderer = GetComponent<SpriteRenderer>();
+        txtBullets = GetComponentsInChildren<TxtBullet>();
         Putting();
         Reset();
     }
@@ -36,25 +40,31 @@ public class TxtTallet : MonoBehaviour ,IGrabbable
     {
         if (!isSleep) 
         {
-            //すでにインターバルを超えていたら時間は追加しない
-            if (talletTimer < TALLET_INTERVAL)
+            talletLife -= TALLET_LIFE_COST_PER_S * Time.deltaTime;
+            if (talletLife <= 0) 
             {
-                talletTimer += Time.deltaTime;
+                Reset();
+            }
+
+            //すでにインターバルを超えていたら時間は追加しない
+            if (attackTimer < TALLET_ATTACK_INTERVAL)
+            {
+                attackTimer += Time.deltaTime;
             }
 
             if (rangeCheck.nearEnemy != null && !isGrabed)
             {
-                if (talletTimer >= TALLET_INTERVAL)
+                if (attackTimer >= TALLET_ATTACK_INTERVAL)
                 {
                     Shot();
-                    talletTimer = 0;
+                    attackTimer = 0;
                 }
             }
         }
         
     }
 
-    void Shot() 
+    private void Shot() 
     {
         Debug.Log("SHOT");
 
@@ -95,11 +105,15 @@ public class TxtTallet : MonoBehaviour ,IGrabbable
     {
         isSleep = true;
         renderer.enabled = false;
+        talletLife = TALLET_MAX_LIFE;
+        pcFieldController.MovePos(this.gameObject);
     }
 
-    public void Initialize()
+    public void Initialize(Vector3 pos)
     {
+        talletTrans.position = pos;
         isSleep = false;
         renderer.enabled = true;
+        Putting();
     }
 }

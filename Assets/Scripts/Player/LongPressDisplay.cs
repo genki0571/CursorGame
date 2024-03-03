@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class LongPressDisplay : MonoBehaviour
 {
-    public List<IDamagable> withinRangeEnemies = new List<IDamagable>();
+    public List<IDamagable> withinRangeDamagable = new List<IDamagable>();
+    public List<GameObject> withinRangeEnemies = new List<GameObject>();
     [SerializeField] Player player;
 
     // Start is called before the first frame update
@@ -25,9 +26,9 @@ public class LongPressDisplay : MonoBehaviour
         if (damagable != null) 
         {
             bool already = false;
-            for (int i = 0; i < withinRangeEnemies.Count; i++)
+            for (int i = 0; i < withinRangeDamagable.Count; i++)
             {
-                if (damagable == withinRangeEnemies[i]) 
+                if (damagable == withinRangeDamagable[i]) 
                 {
                     already = true;
                 }
@@ -35,7 +36,8 @@ public class LongPressDisplay : MonoBehaviour
 
             if (!already)
             {
-                withinRangeEnemies.Add(damagable);
+                withinRangeDamagable.Add(damagable);
+                withinRangeEnemies.Add(other.transform.gameObject);
             }
         }
     }
@@ -45,10 +47,11 @@ public class LongPressDisplay : MonoBehaviour
         IDamagable damagable = other.transform.GetComponent<IDamagable>();
         if (damagable != null)
         {
-            for (int i = 0; i < withinRangeEnemies.Count; i++)
+            for (int i = 0; i < withinRangeDamagable.Count; i++)
             {
-                if (damagable == withinRangeEnemies[i]) 
+                if (damagable == withinRangeDamagable[i]) 
                 {
+                    withinRangeDamagable.RemoveAt(i);
                     withinRangeEnemies.RemoveAt(i);
                 }
             }

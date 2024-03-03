@@ -4,5 +4,5 @@ using UnityEngine;
 
 interface ILeftAttacker
 {
-    void Attack(Transform hitEnemy) { }
+    public void Attack(Transform cursorTrans,Transform hitEnemyTrans) { }
 }

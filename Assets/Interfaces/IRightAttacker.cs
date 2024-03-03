@@ -4,7 +4,7 @@ using UnityEngine;
 
 public interface IRightAttacker 
 {
-    public void Command(Transform cursorTrans) { }
+    public void Command(Vector3 pos,List<ISelectable> selectables) { }
 
     public Command GetCommandKind() 
     {

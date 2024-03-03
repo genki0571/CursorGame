@@ -32,10 +32,10 @@ public class FallTextAttack : MonoBehaviour,IRightAttacker
         }
     }
 
-    public void Command(Transform cursorTrans) 
+    public void Command(Vector3 pos, List<ISelectable> selectDamagables) 
     {
         Debug.Log("FallText");
-        FallPos = cursorTrans.position;
+        FallPos = pos;
         isFall = true;
     }
 

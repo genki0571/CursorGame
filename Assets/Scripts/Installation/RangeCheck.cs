@@ -7,7 +7,7 @@ public class RangeCheck : MonoBehaviour
     Transform trans;
 
     List<IDamagable> withinDamegables = new List<IDamagable>();
-    List<GameObject> withinDamegableObjects = new List<GameObject>();
+    public List<GameObject> withinDamegableObjects = new List<GameObject>();
     public GameObject nearEnemy;
 
     // Start is called before the first frame update

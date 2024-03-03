@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InstallTxtButton : MonoBehaviour,IButton
+public class ScanButton : MonoBehaviour,IButton
 {
-    Command command = Command.InstallTxt;
+    Command command = Command.Scan;
 
     // Start is called before the first frame update
     void Start()

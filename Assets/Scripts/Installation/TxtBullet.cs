@@ -13,16 +13,21 @@ public class TxtBullet : MonoBehaviour
     public bool isSleep;
     Transform trans;
     Rigidbody2D rb;
-    SpriteRenderer renderer;
+    [SerializeField]SpriteRenderer renderer;
 
     GameObject aimEnemy;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
         trans = GetComponent<Transform>();
         rb = GetComponent<Rigidbody2D>();
         renderer = GetComponent<SpriteRenderer>();
+        isSleep = true;
+    }
+
+    // Start is called before the first frame update
+    void Start()
+    {
         Reset();
     }
 

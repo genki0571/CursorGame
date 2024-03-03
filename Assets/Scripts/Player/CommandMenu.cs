@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class CommandMenu : MonoBehaviour
 {
-    [SerializeField] PCFieldController pcFieldController;
     [SerializeField] Player player;
     List<Command> commands = new List<Command>();
 
@@ -36,14 +35,14 @@ public class CommandMenu : MonoBehaviour
         openCommandBlock.SetActive(false);
         fallTextCommandBlock.SetActive(false);
         fireWallCommandBlock.SetActive(false);
-        /*
         scanCommandBlock.SetActive(false);
         deleteCommandBlock.SetActive(false);
+        /*
         enemyPasteCommandBlock.SetActive(false);
         */
         installTxtCommandBlock.SetActive(false);
-        /*
         installPngCommandBlock.SetActive(false);
+        /*
         installZipCommandBlock.SetActive(false);
         */
 
@@ -51,10 +50,10 @@ public class CommandMenu : MonoBehaviour
         for (int i = 0; i < commands.Count; i++)
         {
             GameObject commandBlock = null;
-            if (commands[i] == Command.EnemyPaste || commands[i] == Command.Delete || commands[i] == Command.Opem) 
+            if (commands[i] == Command.EnemyPaste || commands[i] == Command.Delete || commands[i] == Command.Open) 
             {
                 //敵を選択しているとき
-                if (true)
+                if (player.isSelectEnemy)
                 {
                     commandBlock = GetCommandBlock(commands[i]);
                 }
@@ -67,6 +66,7 @@ public class CommandMenu : MonoBehaviour
             if (commandBlock != null) 
             {
                 commandBlock.transform.localPosition = new Vector3((-COMMAND_BLOCK_LOCAL_WIDTH / 2), (-COMMNAD_BLOCK_LOCAL_HEIGHT/2) + (commandCnt * -COMMNAD_BLOCK_LOCAL_HEIGHT),0);
+                commandCnt += 1;
                 commandBlock.SetActive(true);
             }
         }
@@ -80,7 +80,7 @@ public class CommandMenu : MonoBehaviour
         {
             case Command.Empty:
                 break;
-            case Command.Opem:
+            case Command.Open:
                 commandBlock = openCommandBlock;
                 break;
             case Command.FallText:

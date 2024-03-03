@@ -4,5 +4,11 @@ using UnityEngine;
 
 public interface ILongPressAttacker
 {
-    void Attack(IDamagable selectEnemy) { }
+    void Attack(GameObject selectEnemy,Range range) { }
+
+    Element GetElementKind(Range range) 
+    {
+        Element element = Element.Normal;
+        return element;
+    }
 }

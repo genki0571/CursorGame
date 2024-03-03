@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NormalRangeAttack : MonoBehaviour,ILongPressAttacker
+public class FireRangeAttack : MonoBehaviour,ILongPressAttacker
 {
-    Element element = Element.Normal;
-    const float DAMAGE = 5;
+    Element element = Element.Fire;
+    const float FIRE_DAMAGE = 10; 
 
     // Start is called before the first frame update
     void Start()
@@ -19,22 +19,23 @@ public class NormalRangeAttack : MonoBehaviour,ILongPressAttacker
         
     }
 
-    public void Attack(GameObject selectEnemy,Range range) 
+    public void Attack(GameObject selectEnemy,Range range)
     {
         IDamagable damagable = selectEnemy.GetComponent<IDamagable>();
         if (damagable != null)
         {
-            damagable.AddDamage(DAMAGE);
+            damagable.AddDamage(FIRE_DAMAGE);
+            damagable.AddElement(GetElementKind(range));
         }
     }
 
-    public Element GetElementKind(Range range) 
+    public Element GetElementKind(Range range)
     {
         if (range == Range.Mix)
         {
             return Element.Empty;
         }
-        else 
+        else
         {
             return element;
         }
