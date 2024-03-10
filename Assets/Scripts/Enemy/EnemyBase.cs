@@ -15,7 +15,8 @@ public class EnemyBase : MonoBehaviour
         Grabed,
         GoServer,
         Attack,
-        Stop
+        Stop,
+        Death
     }
     public State state;
 
