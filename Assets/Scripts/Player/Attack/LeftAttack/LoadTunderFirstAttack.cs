@@ -6,7 +6,7 @@ public class LoadTunderFirstAttack : MonoBehaviour,ILeftAttacker
 {
     const float ATTACK_DAMAGE = 30;
 
-    const float ATTACK_INTERVAL = 0.3f;
+    const float ATTACK_INTERVAL = 0.1f;
     float attackTimer = 0;
 
     bool isReady;

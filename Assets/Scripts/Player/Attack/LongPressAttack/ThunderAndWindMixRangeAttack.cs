@@ -27,7 +27,7 @@ public class ThunderAndWindMixRangeAttack : MonoBehaviour,ILongPressAttacker
         stormObj = pcFieldController.storm;
         GameObject windAreaPool = new GameObject("WindAreaPool");
         GameObject stormPool = new GameObject("StormPool");
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 1; i++)
         {
             GameObject area = Instantiate(windAreaObj, new Vector3(0, 95, 0), Quaternion.identity);
             WindArea windArea = area.GetComponent<WindArea>();

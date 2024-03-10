@@ -17,7 +17,7 @@ public class TestEnemy : EnemyBase,IDamagable,ISelectable,IGrabbable,IHaveWeakPo
 
     Vector3 diffWeekPointVec;
 
-    const float ENEMY_SPEED = 4;
+    const float ENEMY_SPEED = 2;
 
     const float ATTACK_RANGE_RADIUS = 2;
     const float ATTACK_INTERVAL = 0.5f;
@@ -180,6 +180,7 @@ public class TestEnemy : EnemyBase,IDamagable,ISelectable,IGrabbable,IHaveWeakPo
 
     public void AddDamage(float damage) 
     {
+        HpDisplay(enemyTrans.position + new Vector3(0,0.5f,0),damage);
         Debug.Log(this.name + ":" + damage);
     }
 
@@ -196,6 +197,7 @@ public class TestEnemy : EnemyBase,IDamagable,ISelectable,IGrabbable,IHaveWeakPo
 
     public void AddWeakDamage(float damage)
     {
+        HpDisplay(enemyTrans.position + new Vector3(0, 0.5f, 0), damage * 2);
         Debug.Log(this.name + ": 弱点 :" + damage * 2);
     }
 

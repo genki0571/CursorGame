@@ -9,6 +9,9 @@ public class Storm : MonoBehaviour
     const float STORM_SPEED = 2;
     const float BORDER_LENGTH = 3;
 
+    const float DAMAGE = 10;
+    float attackTimer = 0;
+
     public bool isSleep;
 
     Transform stormTrans;
@@ -72,7 +75,26 @@ public class Storm : MonoBehaviour
                 }
             }
 
-            //時間を計測
+            //AddDamageまでの時間を計測
+            if (attackTimer <= 1) 
+            {
+                attackTimer += Time.deltaTime;
+            }
+            if (attackTimer >= 1) 
+            {
+                for (int i = 0; i < withinEnemies.Count; i++)
+                {
+                    IDamagable damagable = withinEnemies[i].GetComponent<IDamagable>();
+                    if (damagable != null)
+                    {
+                        damagable.AddDamage(DAMAGE);
+                    }
+                }
+
+                attackTimer = 0;
+            }
+
+            //Resetまでの時間を計測
             if (timer <= INTERVAL)
             {
                 timer += Time.deltaTime;
@@ -90,6 +112,7 @@ public class Storm : MonoBehaviour
         isSleep = true;
         renderer.enabled = false;
         timer = 0;
+        attackTimer = 0;
         rb.velocity = Vector2.zero;
     }
 

@@ -6,7 +6,7 @@ public class HammerFirstAttack : MonoBehaviour,ILeftAttacker
 {
     const float ATTACK_DAMAGE = 20;
 
-    const float ATTACK_INTERVAL = 0.6f;
+    const float ATTACK_INTERVAL = 0.1f;
     float attackTimer = 0;
 
     bool isReady;

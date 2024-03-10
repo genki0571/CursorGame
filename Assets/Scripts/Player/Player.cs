@@ -87,8 +87,8 @@ public class Player : MonoBehaviour
     void Start()
     {
         //仮
-        var leftAttack = gameObject.AddComponent<LoadTunderFirstAttack>();
-        var longPressAttack = gameObject.AddComponent<ThunderAndWindMixRangeAttack>();
+        var leftAttack = gameObject.AddComponent<DoubleClickAttack>();
+        var longPressAttack = gameObject.AddComponent<RangeSelect>();
         var rightAttack0 = gameObject.AddComponent<FallTextAttack>();
         var rightAttack1 = gameObject.AddComponent<InstallTxtTallet>();
         var rightAttack2 = gameObject.AddComponent<OpenAttack>();

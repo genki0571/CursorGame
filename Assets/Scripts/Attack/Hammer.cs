@@ -6,7 +6,7 @@ public class Hammer : MonoBehaviour
 {
     float attackDamage;
 
-    const float ATTACK_INTERVAL = 0.3f;
+    const float ATTACK_INTERVAL = 0.1f;
     float attackTimer = 0;
 
     public bool isSleep;
