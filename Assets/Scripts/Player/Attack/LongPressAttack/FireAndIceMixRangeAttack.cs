@@ -7,10 +7,12 @@ public class FireAndIceMixRangeAttack : MonoBehaviour,ILongPressAttacker
     const float FIRE_DAMAGE = 10;
     const float ICE_DAMAGE = 5;
 
+    GameObject longPressDisplay;
+
     // Start is called before the first frame update
     void Start()
     {
-
+        longPressDisplay = GetComponent<Player>().longPressDisplay;
     }
 
     // Update is called once per frame
@@ -25,7 +27,7 @@ public class FireAndIceMixRangeAttack : MonoBehaviour,ILongPressAttacker
         if (damagable != null)
         {
             Element element = GetElementKind(range);
-            damagable.AddElement(element);
+            damagable.AddElement(element,longPressDisplay.transform.position);
 
             float damage = 0;
             if (element == Element.Fire)

@@ -6,5 +6,5 @@ public interface IDamagable
 {
     public void AddDamage(float damage) { }
 
-    public void AddElement(Element element) { }
+    public void AddElement(Element element,Vector3 centerPos) { }
 }

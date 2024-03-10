@@ -60,14 +60,14 @@ public class Player : MonoBehaviour
     const int GRAB_FRAME_INTERVAL = 15;
 
     bool beforeLongPress;
-    Vector2 longPressStartPos;
+    public Vector2 longPressStartPos;
     public List<IDamagable> withinRangeDamagable;
     public List<GameObject> withinRangeEnemies;
     Range range;
 
-    const float MIX_INTERVAL_FRAME = 10;
     const int MIX_CNT = 10;
-    int mixCnt = 0;
+    [SerializeField]int mixCnt = 0;
+    [SerializeField]bool isMix;
 
     enum CheckAxis { Begin, Virtical,Horizontal }
 
@@ -76,12 +76,11 @@ public class Player : MonoBehaviour
     CheckAxis checkAxis = CheckAxis.Begin;
     Virtical beforeVirtical;
     Horizontal beforeHorizontal;
-    bool isMix;
 
     public bool isSelectEnemy;
     public List<GameObject> selectingEnemies = new List<GameObject>();
 
-    [SerializeField] GameObject longPressDisplay;
+    [SerializeField] public GameObject longPressDisplay;
     [SerializeField] GameObject commandMenu;
 
     // Start is called before the first frame update
@@ -89,7 +88,7 @@ public class Player : MonoBehaviour
     {
         //仮
         var leftAttack = gameObject.AddComponent<LoadTunderFirstAttack>();
-        var longPressAttack = gameObject.AddComponent<RangeSelect>();
+        var longPressAttack = gameObject.AddComponent<ThunderAndWindMixRangeAttack>();
         var rightAttack0 = gameObject.AddComponent<FallTextAttack>();
         var rightAttack1 = gameObject.AddComponent<InstallTxtTallet>();
         var rightAttack2 = gameObject.AddComponent<OpenAttack>();
@@ -381,11 +380,16 @@ public class Player : MonoBehaviour
                     {
                         range = Range.Mix;
                     }
+                    longPressAttacker.Attack(null, range);
                 }
-                for (int i = 0; i < withinRangeEnemies.Count; i++)
+                else 
                 {
-                    longPressAttacker.Attack(withinRangeEnemies[i], range);
+                    for (int i = 0; i < withinRangeEnemies.Count; i++)
+                    {
+                        longPressAttacker.Attack(withinRangeEnemies[i], range);
+                    }
                 }
+                
                 //Mix関連の情報の初期化
                 beforeHorizontal = Horizontal.Empty;
                 beforeVirtical = Virtical.Empty;

@@ -7,10 +7,12 @@ public class NormalRangeAttack : MonoBehaviour,ILongPressAttacker
     Element element = Element.Normal;
     const float DAMAGE = 5;
 
+    GameObject longPressDisplay;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        longPressDisplay = GetComponent<Player>().longPressDisplay;
     }
 
     // Update is called once per frame

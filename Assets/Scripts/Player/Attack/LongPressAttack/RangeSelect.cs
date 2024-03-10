@@ -6,9 +6,12 @@ public class RangeSelect : MonoBehaviour,ILongPressAttacker
 {
     Player player;
 
+    GameObject longPressDisplay;
+
     // Start is called before the first frame update
     void Start()
     {
+        longPressDisplay = GetComponent<Player>().longPressDisplay;
         player = GetComponent<Player>();
     }
 

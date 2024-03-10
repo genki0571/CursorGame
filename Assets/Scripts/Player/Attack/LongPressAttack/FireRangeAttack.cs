@@ -5,12 +5,14 @@ using UnityEngine;
 public class FireRangeAttack : MonoBehaviour,ILongPressAttacker
 {
     Element element = Element.Fire;
-    const float FIRE_DAMAGE = 10; 
+    const float FIRE_DAMAGE = 10;
+
+    GameObject longPressDisplay;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        longPressDisplay = GetComponent<Player>().longPressDisplay;
     }
 
     // Update is called once per frame
@@ -25,7 +27,7 @@ public class FireRangeAttack : MonoBehaviour,ILongPressAttacker
         if (damagable != null)
         {
             damagable.AddDamage(FIRE_DAMAGE);
-            damagable.AddElement(GetElementKind(range));
+            damagable.AddElement(GetElementKind(range), longPressDisplay.transform.position);
         }
     }
 

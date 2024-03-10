@@ -9,7 +9,7 @@ public class ScanWeakPoint : MonoBehaviour,IRightAttacker
          
     Command command = global::Command.Scan;
 
-    List<GameObject> activeEnemies = new List<GameObject>();
+    [SerializeField] List<GameObject> activeEnemies = new List<GameObject>();
     List<Transform> targetObjs = new List<Transform>();
     GameObject targetsPool;
     GameObject targetObj;

@@ -6,6 +6,8 @@ public class PCFieldController : MonoBehaviour
 {
     public static PCFieldController instance;
 
+    public Server server;
+
     //Prefabs
     [SerializeField] TxtTallet txtTallet;
     [SerializeField] PngBuster pngBuster;
@@ -14,6 +16,8 @@ public class PCFieldController : MonoBehaviour
     [SerializeField] FireWallPost fireWallPost;
     [SerializeField] FireWall fireWall;
     [SerializeField] public GameObject scanTargetObj;
+    [SerializeField] public GameObject windArea;
+    [SerializeField] public GameObject storm;
     
     //Pool
     public List<TxtTallet> txtTallets = new List<TxtTallet>();

@@ -10,6 +10,8 @@ public class Server : MonoBehaviour,IGrabbable
     Vector3 diffPlayerVec = Vector2.zero;
     [SerializeField] PCFieldController pcFieldController;
 
+    float serverHp = 0;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -40,5 +42,10 @@ public class Server : MonoBehaviour,IGrabbable
 
         serverTrans.position = pcFieldController.GetPos(this.gameObject, serverTrans.position);
 
+    }
+
+    public void AddDamage(float damage) 
+    {
+        serverHp -= damage;
     }
 }

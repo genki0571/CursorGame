@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FireAndIceRangeAttack : MonoBehaviour,ILongPressAttacker
+public class ThunderRangeAttack : MonoBehaviour,ILongPressAttacker
 {
-    const float FIRE_DAMAGE = 10;
-    const float ICE_DAMAGE = 5;
+    const float THUNDER_DAMAGE = 10;
 
     GameObject longPressDisplay;
 
@@ -18,7 +17,7 @@ public class FireAndIceRangeAttack : MonoBehaviour,ILongPressAttacker
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void Attack(GameObject selectEnemy, Range range)
@@ -30,34 +29,18 @@ public class FireAndIceRangeAttack : MonoBehaviour,ILongPressAttacker
             damagable.AddElement(element, longPressDisplay.transform.position);
 
             float damage = 0;
-            if (element == Element.Fire)
+            if (element == Element.Thunder)
             {
-                damage = FIRE_DAMAGE;
-            }
-            else if (element == Element.Ice)
-            {
-                damage = ICE_DAMAGE;
+                damage = THUNDER_DAMAGE;
             }
             damagable.AddDamage(damage);
         }
-        
+
     }
 
     public Element GetElementKind(Range range)
     {
-        Element element = Element.Normal;
-        if (range == Range.Right)
-        {
-            element = Element.Fire;
-        }
-        else if (range == Range.Left)
-        {
-            element = Element.Ice;
-        }
-        else 
-        {
-            element = Element.Empty;
-        }
+        Element element = Element.Thunder;
         return element;
     }
 }
