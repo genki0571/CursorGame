@@ -4,20 +4,25 @@ using UnityEngine;
 
 public class PlayerInput : MonoBehaviour
 {
-    Player player;
+    public static PlayerInput instance;
 
-
-    const int LONGPRESS_INTERVAL_FRAME = 40;
-    int longPressCnt;
+    const int HOLD_INTERVAL_FRAME = 40;
+    int holdCnt;
 
     [SerializeField] bool isLeftClick;
     [SerializeField] bool isRightClick;
-    [SerializeField] bool isLongPressDown;
-    [SerializeField] bool isLongPress;
+    [SerializeField] bool isHoldStart;
+    [SerializeField] bool isHold;
+    [SerializeField] bool isHoldEnd;
+
+    private void Awake()
+    {
+        instance = this;
+    }
 
     private void Start()
     {
-        player = GetComponent<Player>();
+
     }
 
     // Update is called once per frame
@@ -36,47 +41,67 @@ public class PlayerInput : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            longPressCnt = 0;
+            holdCnt = 0;
             isLeftClick = false;
-            isLongPress = false;
-            isLongPressDown = true;
+            isHold = false;
+            isHoldStart = true;
+            isHoldEnd = false;
         }
         else if (Input.GetMouseButton(0))
         {
-            longPressCnt += 1;
+            holdCnt += 1;
             isLeftClick = false;
-            isLongPress = false;
-            isLongPressDown = false;
+            isHold = false;
+            isHoldStart = false;
+            isHoldEnd = false;
 
             //長押ししているなら
-            if (longPressCnt >= LONGPRESS_INTERVAL_FRAME) 
+            if (holdCnt >= HOLD_INTERVAL_FRAME) 
             {
-                isLongPress = true;
-                //Debug.Log("LongPress");
+                isHold = true;
+                //Debug.Log("Hold");
             }
         }
         else if (Input.GetMouseButtonUp(0))
         {
-            if (longPressCnt <= LONGPRESS_INTERVAL_FRAME)
+            if (holdCnt <= HOLD_INTERVAL_FRAME)
             {
                 isLeftClick = true;
                 //Debug.Log("LeftClick");
             }
-            isLongPress = false;
-            isLongPressDown = false;
+            isHold = false;
+            isHoldStart = false;
+            isHoldEnd = true;
+            
         }
         else 
         {
             isLeftClick = false;
-            isLongPress = false;
-            isLongPressDown = false;
+            isHold = false;
+            isHoldStart = false;
+            isHoldEnd = false;
         }
+    }
 
-        //Playerに代入
-        player.isLeftClick = isLeftClick;
-        player.isRightClick = isRightClick;
-        player.isLongPressDown = isLongPressDown;
-        player.isLongPress = isLongPress;
+    public bool IsLeftClick() 
+    {
+        return isLeftClick;
+    }
 
+    public bool IsRightClick()
+    {
+        return isRightClick;
+    }
+    public bool IsHold()
+    {
+        return isHold;
+    }
+    public bool IsHoldStart()
+    {
+        return isHoldStart;
+    }
+    public bool IsHoldEnd()
+    {
+        return isHoldEnd;
     }
 }

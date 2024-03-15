@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LongPressDisplay : MonoBehaviour
+public class HoldDisplay : MonoBehaviour
 {
     public List<IDamagable> withinRangeDamagable = new List<IDamagable>();
     public List<GameObject> withinRangeEnemies = new List<GameObject>();
-    [SerializeField] Player player;
+    [SerializeField] PlayerAttack playerAttack;
 
     // Start is called before the first frame update
     void Start()

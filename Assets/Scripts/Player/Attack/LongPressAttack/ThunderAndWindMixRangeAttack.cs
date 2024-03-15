@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ThunderAndWindMixRangeAttack : MonoBehaviour,ILongPressAttacker
+public class ThunderAndWindMixRangeAttack : MonoBehaviour,IHoldAttacker
 {
     const float THUNDER_DAMAGE = 10;
     const float WIND_DAMAGE = 0;
 
-    GameObject longPressDisplay;
-    Player player;
+    GameObject holdDisplay;
+    PlayerAttack playerAttack;
 
 
     PCFieldController pcFieldController => PCFieldController.instance;
@@ -20,8 +20,8 @@ public class ThunderAndWindMixRangeAttack : MonoBehaviour,ILongPressAttacker
     // Start is called before the first frame update
     void Start()
     {
-        player = GetComponent<Player>();
-        longPressDisplay = player.longPressDisplay;
+        playerAttack = GetComponent<PlayerAttack>();
+        holdDisplay = playerAttack.holdDisplay;
 
         windAreaObj = pcFieldController.windArea;
         stormObj = pcFieldController.storm;
@@ -61,7 +61,7 @@ public class ThunderAndWindMixRangeAttack : MonoBehaviour,ILongPressAttacker
         {
             if (damagable != null)
             {
-                damagable.AddElement(Element.Thunder, longPressDisplay.transform.position);
+                damagable.AddElement(Element.Thunder, holdDisplay.transform.position);
                 damage = THUNDER_DAMAGE;
                 damagable.AddDamage(damage);
             }
@@ -72,7 +72,7 @@ public class ThunderAndWindMixRangeAttack : MonoBehaviour,ILongPressAttacker
             {
                 if (windAreas[i].isSleep)
                 {
-                    windAreas[i].Initialize(longPressDisplay.transform);
+                    windAreas[i].Initialize(holdDisplay.transform);
                     break;
                 }
             }
@@ -83,7 +83,7 @@ public class ThunderAndWindMixRangeAttack : MonoBehaviour,ILongPressAttacker
             {
                 if (storms[i].isSleep)
                 {
-                    storms[i].Initialize(player.longPressStartPos);
+                    storms[i].Initialize(playerAttack.holdStartPos);
                     break;
                 }
             }

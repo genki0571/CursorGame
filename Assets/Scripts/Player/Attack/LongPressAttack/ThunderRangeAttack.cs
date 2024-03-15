@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ThunderRangeAttack : MonoBehaviour,ILongPressAttacker
+public class ThunderRangeAttack : MonoBehaviour,IHoldAttacker
 {
     const float THUNDER_DAMAGE = 10;
 
-    GameObject longPressDisplay;
+    GameObject holdDisplay;
 
     // Start is called before the first frame update
     void Start()
     {
-        longPressDisplay = GetComponent<Player>().longPressDisplay;
+        holdDisplay = GetComponent<PlayerAttack>().holdDisplay;
     }
 
     // Update is called once per frame
@@ -26,7 +26,7 @@ public class ThunderRangeAttack : MonoBehaviour,ILongPressAttacker
         if (damagable != null)
         {
             Element element = GetElementKind(range);
-            damagable.AddElement(element, longPressDisplay.transform.position);
+            damagable.AddElement(element, holdDisplay.transform.position);
 
             float damage = 0;
             if (element == Element.Thunder)

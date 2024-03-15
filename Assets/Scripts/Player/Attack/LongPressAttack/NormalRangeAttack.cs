@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NormalRangeAttack : MonoBehaviour,ILongPressAttacker
+public class NormalRangeAttack : MonoBehaviour,IHoldAttacker
 {
     Element element = Element.Normal;
     const float DAMAGE = 5;
 
-    GameObject longPressDisplay;
+    GameObject holdDisplay;
 
     // Start is called before the first frame update
     void Start()
     {
-        longPressDisplay = GetComponent<Player>().longPressDisplay;
+        holdDisplay = GetComponent<PlayerAttack>().holdDisplay;
     }
 
     // Update is called once per frame

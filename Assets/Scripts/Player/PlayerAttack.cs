@@ -37,10 +37,12 @@ public enum Range
 }
 
 
-public class Player : MonoBehaviour
+public class PlayerAttack : MonoBehaviour
 {
+    PlayerInput playerInput => PlayerInput.instance;
+
     ILeftAttacker leftAttacker;
-    ILongPressAttacker longPressAttacker;
+    IHoldAttacker holdAttacker;
     public List<IRightAttacker> rightAttackers = new List<IRightAttacker>();
 
     Transform cursorTrans;
@@ -49,8 +51,9 @@ public class Player : MonoBehaviour
     //
     public bool isLeftClick;
     public bool isRightClick;
-    public bool isLongPressDown;
-    public bool isLongPress;
+    public bool isHoldStart;
+    public bool isHold;
+    public bool isHoldEnd;
 
     bool isRange;
 
@@ -59,8 +62,8 @@ public class Player : MonoBehaviour
     int grabCnt = 0;
     const int GRAB_FRAME_INTERVAL = 15;
 
-    bool beforeLongPress;
-    public Vector2 longPressStartPos;
+    bool beforeHold;
+    public Vector2 holdStartPos;
     public List<IDamagable> withinRangeDamagable;
     public List<GameObject> withinRangeEnemies;
     Range range;
@@ -80,7 +83,7 @@ public class Player : MonoBehaviour
     public bool isSelectEnemy;
     public List<GameObject> selectingEnemies = new List<GameObject>();
 
-    [SerializeField] public GameObject longPressDisplay;
+    [SerializeField] public GameObject holdDisplay;
     [SerializeField] GameObject commandMenu;
 
     // Start is called before the first frame update
@@ -88,7 +91,7 @@ public class Player : MonoBehaviour
     {
         //仮
         var leftAttack = gameObject.AddComponent<DoubleClickAttack>();
-        var longPressAttack = gameObject.AddComponent<RangeSelect>();
+        var HoldAttack = gameObject.AddComponent<RangeSelect>();
         var rightAttack0 = gameObject.AddComponent<FallTextAttack>();
         var rightAttack1 = gameObject.AddComponent<InstallTxtTallet>();
         var rightAttack2 = gameObject.AddComponent<OpenAttack>();
@@ -96,8 +99,9 @@ public class Player : MonoBehaviour
         var rightAttack4 = gameObject.AddComponent<InstallPngBuster>();
         var rightAttack5 = gameObject.AddComponent<FireWallFirstAttack>();
         var rightAttack6 = gameObject.AddComponent<ScanWeakPoint>();
+        var rightAttack7 = gameObject.AddComponent<InstallZipFile>();
         leftAttacker = leftAttack.GetComponent<ILeftAttacker>();
-        longPressAttacker = longPressAttack.GetComponent<ILongPressAttacker>();
+        holdAttacker = HoldAttack.GetComponent<IHoldAttacker>();
         rightAttackers.Add(rightAttack0);
         rightAttackers.Add(rightAttack1);
         rightAttackers.Add(rightAttack2);
@@ -105,21 +109,27 @@ public class Player : MonoBehaviour
         rightAttackers.Add(rightAttack4);
         rightAttackers.Add(rightAttack5);
         rightAttackers.Add(rightAttack6);
+        rightAttackers.Add(rightAttack7);
 
         cursorTrans = GetComponent<Transform>();
 
-        withinRangeDamagable = longPressDisplay.GetComponent<LongPressDisplay>().withinRangeDamagable;
-        withinRangeEnemies = longPressDisplay.GetComponent<LongPressDisplay>().withinRangeEnemies;
+        withinRangeDamagable = holdDisplay.GetComponent<HoldDisplay>().withinRangeDamagable;
+        withinRangeEnemies = holdDisplay.GetComponent<HoldDisplay>().withinRangeEnemies;
     }
 
     // Update is called once per frame
     void Update()
     {
+
+        //マウスの入力状態の取得
+        GetMouseState();
+
+
         cursorPos = cursorTrans.position;
 
         Ray2D ray = new Ray2D(transform.position, transform.up);
         RaycastHit2D hit = new RaycastHit2D();
-        if (isRightClick || isLeftClick || isLongPress || beforeLongPress) 
+        if (isRightClick || isLeftClick || isHold || beforeHold) 
         {
             int layerMask = ~(1 << LayerMask.NameToLayer("RangeCheck"));
             hit = Physics2D.Raycast(ray.origin, ray.direction, 1f,layerMask);
@@ -142,6 +152,7 @@ public class Player : MonoBehaviour
         {
             isSelectEnemy = true;
         }
+
 
         //左クリックしたとき
         if (isLeftClick) 
@@ -221,14 +232,14 @@ public class Player : MonoBehaviour
             }
         }
 
-        if (isLongPressDown)
+        if (isHoldStart)
         {
-            longPressStartPos = cursorTrans.position;
+            holdStartPos = cursorTrans.position;
             grabCnt = 0;
 
         }
 
-        if (isLongPress)
+        if (isHold)
         {
 
             if (!isRange && !isGrabbing) 
@@ -260,19 +271,19 @@ public class Player : MonoBehaviour
             //範囲選択
             if (isRange) 
             {
-                float width = Mathf.Abs(cursorPos.x - longPressStartPos.x);
-                float height = Mathf.Abs(cursorPos.y - longPressStartPos.y);
-                Vector2 centerPos = longPressStartPos + ((cursorPos - longPressStartPos) / 2);
+                float width = Mathf.Abs(cursorPos.x - holdStartPos.x);
+                float height = Mathf.Abs(cursorPos.y - holdStartPos.y);
+                Vector2 centerPos = holdStartPos + ((cursorPos - holdStartPos) / 2);
 
-                longPressDisplay.transform.position = centerPos;
-                longPressDisplay.transform.localScale = new Vector2(width, height);
-                longPressDisplay.SetActive(true);
+                holdDisplay.transform.position = centerPos;
+                holdDisplay.transform.localScale = new Vector2(width, height);
+                holdDisplay.SetActive(true);
 
-                if (cursorPos.x >= longPressStartPos.x)
+                if (cursorPos.x >= holdStartPos.x)
                 {
                     range = Range.Right;
                 }
-                else if(cursorPos.x <= longPressStartPos.x)
+                else if(cursorPos.x <= holdStartPos.x)
                 {
                     range = Range.Left;
                 }
@@ -280,21 +291,21 @@ public class Player : MonoBehaviour
 
                 //Mix判定
                 Virtical virtical = Virtical.Upper;
-                if (cursorPos.y >= longPressStartPos.y)
+                if (cursorPos.y >= holdStartPos.y)
                 {
                     virtical = Virtical.Upper;
                 }
-                else if (cursorPos.y <= longPressStartPos.y)
+                else if (cursorPos.y <= holdStartPos.y)
                 {
                     virtical = Virtical.Lower;
                 }
 
                 Horizontal horizontal = Horizontal.Right;
-                if (cursorPos.x >= longPressStartPos.x) 
+                if (cursorPos.x >= holdStartPos.x) 
                 {
                     horizontal = Horizontal.Right;
                 }
-                else if(cursorPos.x <= longPressStartPos.x) 
+                else if(cursorPos.x <= holdStartPos.x) 
                 {
                     horizontal = Horizontal.Left;
                 }
@@ -369,24 +380,24 @@ public class Player : MonoBehaviour
         }
         else 
         {
-            if (beforeLongPress)
+            if (beforeHold)
             {
                 Debug.Log("長押し解除");
 
                 //範囲選択攻撃
                 if (isMix)
                 {
-                    if (longPressAttacker.GetElementKind(Range.Mix) != Element.Empty)
+                    if (holdAttacker.GetElementKind(Range.Mix) != Element.Empty)
                     {
                         range = Range.Mix;
                     }
-                    longPressAttacker.Attack(null, range);
+                    holdAttacker.Attack(null, range);
                 }
                 else 
                 {
                     for (int i = 0; i < withinRangeEnemies.Count; i++)
                     {
-                        longPressAttacker.Attack(withinRangeEnemies[i], range);
+                        holdAttacker.Attack(withinRangeEnemies[i], range);
                     }
                 }
                 
@@ -409,7 +420,7 @@ public class Player : MonoBehaviour
                 }
                 commandMenu.SetActive(false);
 
-                if (isGrabbing) 
+                if (isGrabbing)
                 {
                     grabbable.Putting();
                     for (int i = 0; i < selectingEnemies.Count; i++)
@@ -417,7 +428,7 @@ public class Player : MonoBehaviour
                         IGrabbable grabbable = selectingEnemies[i].GetComponent<IGrabbable>();
                         if (grabbable != null)
                         {
-                            grabbable.Grabbing(cursorTrans);
+                            grabbable.Putting();
                         }
                     }
                     selectingEnemies = new List<GameObject>();
@@ -426,9 +437,9 @@ public class Player : MonoBehaviour
             isRange = false;
             isGrabbing = false;
 
-            longPressDisplay.SetActive(false);
+            holdDisplay.SetActive(false);
         }
-        beforeLongPress = isLongPress;
+        beforeHold = isHold;
     }
 
     void ActionCommand(Command command) 
@@ -450,5 +461,14 @@ public class Player : MonoBehaviour
                 rightAttackers[i].Command(commandMenu.transform.position,selectables);
             }
         }
+    }
+
+    private void GetMouseState() 
+    {
+        isLeftClick = playerInput.IsLeftClick();
+        isRightClick = playerInput.IsRightClick();
+        isHold = playerInput.IsHold();
+        isHoldStart = playerInput.IsHoldStart();
+        isHoldEnd = playerInput.IsHoldEnd();
     }
 }

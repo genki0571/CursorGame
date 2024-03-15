@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RangeSelect : MonoBehaviour,ILongPressAttacker
+public class RangeSelect : MonoBehaviour,IHoldAttacker
 {
-    Player player;
+    PlayerAttack playerAttack;
 
-    GameObject longPressDisplay;
+    GameObject holdDisplay;
 
     // Start is called before the first frame update
     void Start()
     {
-        longPressDisplay = GetComponent<Player>().longPressDisplay;
-        player = GetComponent<Player>();
+        holdDisplay = GetComponent<PlayerAttack>().holdDisplay;
+        playerAttack = GetComponent<PlayerAttack>();
     }
 
     // Update is called once per frame
@@ -27,9 +27,9 @@ public class RangeSelect : MonoBehaviour,ILongPressAttacker
         if (selectable != null) 
         {
             bool already = false;
-            for (int i = 0; i < player.selectingEnemies.Count; i++)
+            for (int i = 0; i < playerAttack.selectingEnemies.Count; i++)
             {
-                if (selectEnemy == player.selectingEnemies[i]) 
+                if (selectEnemy == playerAttack.selectingEnemies[i]) 
                 {
                     already = true;
                 }
@@ -37,7 +37,7 @@ public class RangeSelect : MonoBehaviour,ILongPressAttacker
 
             if (!already)
             {
-                player.selectingEnemies.Add(selectEnemy);
+                playerAttack.selectingEnemies.Add(selectEnemy);
             }
         }
     }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface ILongPressAttacker
+public interface IHoldAttacker
 {
     void Attack(GameObject selectEnemy,Range range) { }
 

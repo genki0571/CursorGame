@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TestEnemy : EnemyBase,IDamagable,ISelectable,IGrabbable,IHaveWeakPoint
 {
@@ -41,6 +42,18 @@ public class TestEnemy : EnemyBase,IDamagable,ISelectable,IGrabbable,IHaveWeakPo
     // Start is called before the first frame update
     void Start()
     {
+        renderer = GetComponent<SpriteRenderer>();
+
+        Image[] images = GetComponentsInChildren<Image>();
+        for (int i = 0; i < images.Length; i++)
+        {
+            if (images[i].type == Image.Type.Filled)
+            {
+                hpImage = images[i];
+                break;
+            }
+        }
+
         server = pcFieldController.server;
         serverTrans = server.transform;
         enemyTrans = this.GetComponent<Transform>();
@@ -48,11 +61,15 @@ public class TestEnemy : EnemyBase,IDamagable,ISelectable,IGrabbable,IHaveWeakPo
 
         diffWeekPointVec = new Vector3(Random.Range(-WEEK_POINT_POS_MAX_X,WEEK_POINT_POS_MAX_X),
             Random.Range(-WEEK_POINT_POS_MAX_Y,WEEK_POINT_POS_MAX_Y),0);
+
+        Reset();
     }
 
     // Update is called once per frame
     void Update()
     {
+        HpDisplay();
+
         enemyVelocity = Vector3.zero;
         Vector2 serverVec = (serverTrans.position - enemyTrans.position);
         Vector2 severDir = serverVec.normalized;
@@ -102,6 +119,11 @@ public class TestEnemy : EnemyBase,IDamagable,ISelectable,IGrabbable,IHaveWeakPo
         else if (state == State.Stop) 
         {
             
+        }
+
+        if (hp <= 0) 
+        {
+            Reset();
         }
 
         //Element効果を付与されているとき
@@ -180,7 +202,8 @@ public class TestEnemy : EnemyBase,IDamagable,ISelectable,IGrabbable,IHaveWeakPo
 
     public void AddDamage(float damage) 
     {
-        HpDisplay(enemyTrans.position + new Vector3(0,0.5f,0),damage);
+        DamageDisplay(enemyTrans.position + new Vector3(0,0.5f,0),damage);
+        hp -= damage;
         Debug.Log(this.name + ":" + damage);
     }
 
@@ -197,7 +220,8 @@ public class TestEnemy : EnemyBase,IDamagable,ISelectable,IGrabbable,IHaveWeakPo
 
     public void AddWeakDamage(float damage)
     {
-        HpDisplay(enemyTrans.position + new Vector3(0, 0.5f, 0), damage * 2);
+        DamageDisplay(enemyTrans.position + new Vector3(0, 0.5f, 0), damage * 2);
+        hp -= damage * 2;
         Debug.Log(this.name + ": 弱点 :" + damage * 2);
     }
 
@@ -231,6 +255,9 @@ public class TestEnemy : EnemyBase,IDamagable,ISelectable,IGrabbable,IHaveWeakPo
 
     public void Delete()
     {
+        //仮
+        DamageDisplay(enemyTrans.position + new Vector3(0, 0.5f, 0), 1000);
+        hp -= 1000;
         Debug.Log("Delete");
     }
 

@@ -11,6 +11,7 @@ public class PCFieldController : MonoBehaviour
     //Prefabs
     [SerializeField] TxtTallet txtTallet;
     [SerializeField] PngBuster pngBuster;
+    [SerializeField] ZipFile zipFile;
     [SerializeField] Hammer hammerAttack;
     [SerializeField] LoadTunder loadTunderAttack;
     [SerializeField] FireWallPost fireWallPost;
@@ -26,6 +27,7 @@ public class PCFieldController : MonoBehaviour
     public List<LoadTunder> loadTunders = new List<LoadTunder>();
     public List<FireWallPost> fireWallPosts = new List<FireWallPost>();
     public List<FireWall> fireWalls = new List<FireWall>();
+    public List<ZipFile> zipFiles = new List<ZipFile>();
 
     [SerializeField] Camera camera;
     Vector3 cameraLeftUpperPos;
@@ -37,8 +39,6 @@ public class PCFieldController : MonoBehaviour
     Vector3[,] putPos = new Vector3[12,7]; 
     bool[,] isPut = new bool[12,7];
 
-    //Player
-    Player player;
 
     // Start is called before the first frame update
     void Awake()
@@ -95,6 +95,15 @@ public class PCFieldController : MonoBehaviour
             FireWall fire = Instantiate(fireWall, transform.position, Quaternion.identity);
             fire.transform.parent = fireWallPostPool.transform;
             fireWalls.Add(fire);
+        }
+        //ZIPファイル
+        GameObject zipFilePool = new GameObject("ZipFilePostPool");
+        zipFilePool.transform.parent = this.transform;
+        for (int i = 0; i < 3; i++)
+        {
+            ZipFile zip = Instantiate(zipFile, transform.position, Quaternion.identity);
+            zip.transform.parent = zipFilePool.transform;
+            zipFiles.Add(zip);
         }
 
         cameraLeftUpperPos = camera.ScreenToWorldPoint(new Vector2(0, Screen.height));

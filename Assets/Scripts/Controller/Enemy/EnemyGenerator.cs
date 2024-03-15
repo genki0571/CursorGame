@@ -6,11 +6,11 @@ public class EnemyGenerator : MonoBehaviour
 {
     public static EnemyGenerator instance;
 
-    FaseManager[] faseManagers;
+    PhaseManager[] phaseManagers;
 
-    public int faseNum = 0;
-    public int faseEnemyNum;
-    int endFaseNum;
+    public int phaseNum = 0;
+    public int phaseEnemyNum;
+    int endPhaseNum;
 
     private float popTimer;
     Vector2 cameraLeftLowPos;
@@ -37,21 +37,16 @@ public class EnemyGenerator : MonoBehaviour
         rightUpperPopPos = cameraRightUpperPos + new Vector2(1,1);
 
 
-        faseManagers = GetComponentsInChildren<FaseManager>();
-        endFaseNum = faseManagers.Length - 1;
+        phaseManagers = GetComponentsInChildren<PhaseManager>();
+        endPhaseNum = phaseManagers.Length - 1;
 
-        for (int i = 0; i < faseManagers.Length; i++)
+        for (int i = 0; i < phaseManagers.Length; i++)
         {
-            for (int j = 0; j < faseManagers[i].faseEnemies.Length; j++)
+            for (int j = 0; j < phaseManagers[i].phaseEnemies.Length; j++)
             {
-                allEnemies.Add(faseManagers[i].faseEnemies[j]);
-                allEnemyBase.Add(faseManagers[i].faseEnemies[j].GetComponent<EnemyBase>());
+                allEnemies.Add(phaseManagers[i].phaseEnemies[j]);
+                allEnemyBase.Add(phaseManagers[i].phaseEnemies[j].GetComponent<EnemyBase>());
             }
-        }
-
-        for (int i = 0; i < allEnemyBase.Count; i++)
-        {
-            allEnemyBase[i].Reset();
         }
     }
 
@@ -70,27 +65,27 @@ public class EnemyGenerator : MonoBehaviour
 
         popTimer += Time.deltaTime;
 
-        if (faseNum < faseManagers.Length)
+        if (phaseNum < phaseManagers.Length)
         {
-            if (faseEnemyNum < faseManagers[faseNum].faseEnemies.Length)
+            if (phaseEnemyNum < phaseManagers[phaseNum].phaseEnemies.Length)
             {
-                if (popTimer >= faseManagers[faseNum].GetPopInterval())
+                if (popTimer >= phaseManagers[phaseNum].GetPopInterval())
                 {
-                    faseManagers[faseNum].faseEnemyBases[faseEnemyNum].Initialize();
-                    faseManagers[faseNum].faseEnemies[faseEnemyNum].transform.position = GetPopPos();
+                    phaseManagers[phaseNum].phaseEnemyBases[phaseEnemyNum].Initialize();
+                    phaseManagers[phaseNum].phaseEnemies[phaseEnemyNum].transform.position = GetPopPos();
                     popTimer = 0;
-                    faseEnemyNum += 1;
+                    phaseEnemyNum += 1;
                 }
             }
         }
 
-        if (faseEnemyNum >= faseManagers[faseNum].faseEnemies.Length)
+        if (phaseEnemyNum >= phaseManagers[phaseNum].phaseEnemyBases.Length)
         {
-            if (faseNum < faseManagers.Length)
+            if (phaseNum < phaseManagers.Length)
             {
-                for (int i = 0; i < faseManagers[faseNum].faseEnemyBases.Length; i++)
+                for (int i = 0; i < phaseManagers[phaseNum].phaseEnemyBases.Length; i++)
                 {
-                    if (faseManagers[faseNum].faseEnemyBases[i].state == EnemyBase.State.Sleep)
+                    if (phaseManagers[phaseNum].phaseEnemyBases[i].state == EnemyBase.State.Sleep)
                     {
 
                     }
@@ -99,17 +94,19 @@ public class EnemyGenerator : MonoBehaviour
                         break;
                     }
 
-                    if (i == faseManagers[faseNum].faseEnemyBases.Length - 1)
+                    if (i == phaseManagers[phaseNum].phaseEnemyBases.Length - 1)
                     {
                         //次のフェーズへ進む
-                        faseNum += 1;
+                        phaseNum += 1;
+                        phaseEnemyNum = 0;
+                        break;
                     }
                 }
             }
         }
         
 
-        if (faseNum > endFaseNum) 
+        if (phaseNum > endPhaseNum) 
         {
             Debug.Log("フェーズ完了");
         }

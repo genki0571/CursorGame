@@ -5,12 +5,14 @@ using UnityEngine.UI;
 
 public class EnemyBase : MonoBehaviour
 {
-    public float hp;
+    [System.NonSerialized]public float hp;
     public float maxHp;
+
+    [System.NonSerialized] public SpriteRenderer renderer;
 
     EnemyUIGenerator uiGenerator => EnemyUIGenerator.instance;
     [SerializeField] List<DamageDisplay> damageDisplays;
-    public Image hpSlider;
+    [System.NonSerialized] public Image hpImage;
 
     public enum State
     {
@@ -31,14 +33,30 @@ public class EnemyBase : MonoBehaviour
     public void Initialize()
     {
         state = State.StateDecide;
+        renderer.enabled = true;
+        hp = maxHp;
+
+        GameObject canvas = transform.GetChild(0).gameObject;
+        canvas.SetActive(true);
     }
 
     public void Reset()
     {
         state = State.Sleep;
+        renderer.enabled = false;
+
+        GameObject canvas = transform.GetChild(0).gameObject;
+        canvas.SetActive(false);
+
+        transform.position = new Vector3(0,50,0);
     }
 
-    public void HpDisplay(Vector3 pos, float damage)
+    /// <summary>
+    /// ダメージの数値を表記する
+    /// </summary>
+    /// <param name="pos">表示場所</param>
+    /// <param name="damage">ダメージ量</param>
+    public void DamageDisplay(Vector3 pos, float damage)
     {
         damageDisplays = uiGenerator.damageDisplays;
 
@@ -50,5 +68,13 @@ public class EnemyBase : MonoBehaviour
                 break;
             }
         }
+    }
+
+    /// <summary>
+    /// HPを表示する
+    /// </summary>
+    public void HpDisplay() 
+    {
+        hpImage.fillAmount = (hp/maxHp);
     }
 }

@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ThunderAndWindRangeAttack : MonoBehaviour,ILongPressAttacker
+public class ThunderAndWindRangeAttack : MonoBehaviour,IHoldAttacker
 {
     const float THUNDER_DAMAGE = 10;
     const float WIND_DAMAGE = 0;
 
-    GameObject longPressDisplay;
+    GameObject holdDisplay;
 
     PCFieldController pcFieldController => PCFieldController.instance;
     GameObject windAreaObj;
@@ -16,7 +16,7 @@ public class ThunderAndWindRangeAttack : MonoBehaviour,ILongPressAttacker
     // Start is called before the first frame update
     void Start()
     {
-        longPressDisplay = GetComponent<Player>().longPressDisplay;
+        holdDisplay = GetComponent<PlayerAttack>().holdDisplay;
         windAreaObj = pcFieldController.windArea;
         GameObject windAreaPool = new GameObject("WindAreaPool");
         for (int i = 0; i < 3; i++)
@@ -48,7 +48,7 @@ public class ThunderAndWindRangeAttack : MonoBehaviour,ILongPressAttacker
         {
             if (damagable != null)
             {
-                damagable.AddElement(Element.Thunder, longPressDisplay.transform.position);
+                damagable.AddElement(Element.Thunder, holdDisplay.transform.position);
                 damage = THUNDER_DAMAGE;
                 damagable.AddDamage(damage);
             }
@@ -59,7 +59,7 @@ public class ThunderAndWindRangeAttack : MonoBehaviour,ILongPressAttacker
             {
                 if (windAreas[i].isSleep)
                 {
-                    windAreas[i].Initialize(longPressDisplay.transform);
+                    windAreas[i].Initialize(holdDisplay.transform);
                     break;
                 }
             }

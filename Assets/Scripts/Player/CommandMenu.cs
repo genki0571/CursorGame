@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CommandMenu : MonoBehaviour
 {
-    [SerializeField] Player player;
+    [SerializeField] PlayerAttack playerAttack;
     List<Command> commands = new List<Command>();
 
     [SerializeField] GameObject openCommandBlock;
@@ -23,9 +23,9 @@ public class CommandMenu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        for (int i = 0; i < player.rightAttackers.Count; i++)
+        for (int i = 0; i < playerAttack.rightAttackers.Count; i++)
         {
-            commands.Add(player.rightAttackers[i].GetCommandKind());
+            commands.Add(playerAttack.rightAttackers[i].GetCommandKind());
         }
     }
 
@@ -42,9 +42,7 @@ public class CommandMenu : MonoBehaviour
         */
         installTxtCommandBlock.SetActive(false);
         installPngCommandBlock.SetActive(false);
-        /*
         installZipCommandBlock.SetActive(false);
-        */
 
         int commandCnt = 0;
         for (int i = 0; i < commands.Count; i++)
@@ -53,7 +51,7 @@ public class CommandMenu : MonoBehaviour
             if (commands[i] == Command.EnemyPaste || commands[i] == Command.Delete || commands[i] == Command.Open) 
             {
                 //敵を選択しているとき
-                if (player.isSelectEnemy)
+                if (playerAttack.isSelectEnemy)
                 {
                     commandBlock = GetCommandBlock(commands[i]);
                 }

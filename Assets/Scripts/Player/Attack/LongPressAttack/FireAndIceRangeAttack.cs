@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FireAndIceRangeAttack : MonoBehaviour,ILongPressAttacker
+public class FireAndIceRangeAttack : MonoBehaviour,IHoldAttacker
 {
     const float FIRE_DAMAGE = 10;
     const float ICE_DAMAGE = 5;
 
-    GameObject longPressDisplay;
+    GameObject holdDisplay;
 
     // Start is called before the first frame update
     void Start()
     {
-        longPressDisplay = GetComponent<Player>().longPressDisplay;
+        holdDisplay = GetComponent<PlayerAttack>().holdDisplay;
     }
 
     // Update is called once per frame
@@ -27,7 +27,7 @@ public class FireAndIceRangeAttack : MonoBehaviour,ILongPressAttacker
         if (damagable != null)
         {
             Element element = GetElementKind(range);
-            damagable.AddElement(element, longPressDisplay.transform.position);
+            damagable.AddElement(element, holdDisplay.transform.position);
 
             float damage = 0;
             if (element == Element.Fire)
