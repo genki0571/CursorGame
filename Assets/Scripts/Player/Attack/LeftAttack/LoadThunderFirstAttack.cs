@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LoadTunderFirstAttack : MonoBehaviour,ILeftAttacker
+public class LoadThunderFirstAttack : MonoBehaviour,ILeftAttacker
 {
     const float ATTACK_DAMAGE = 30;
 
@@ -10,14 +10,14 @@ public class LoadTunderFirstAttack : MonoBehaviour,ILeftAttacker
     float attackTimer = 0;
 
     bool isReady;
-    List<LoadTunder> loadTunders = new List<LoadTunder>();
+    List<LoadThunder> LoadThunders = new List<LoadThunder>();
 
     PCFieldController pcFieldController => PCFieldController.instance;
 
     // Start is called before the first frame update
     void Start()
     {
-        loadTunders = pcFieldController.loadTunders;
+        LoadThunders = pcFieldController.loadThunders;
     }
 
     // Update is called once per frame
@@ -42,11 +42,11 @@ public class LoadTunderFirstAttack : MonoBehaviour,ILeftAttacker
     {
         if (isReady)
         {
-            for (int i = 0; i < loadTunders.Count; i++)
+            for (int i = 0; i < LoadThunders.Count; i++)
             {
-                if (loadTunders[i].isSleep)
+                if (LoadThunders[i].isSleep)
                 {
-                    loadTunders[i].Initialize(ATTACK_DAMAGE, cursorTrans.position);
+                    LoadThunders[i].Initialize(ATTACK_DAMAGE, cursorTrans.position);
                     break;
                 }
             }

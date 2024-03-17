@@ -42,8 +42,14 @@ public class TxtBullet : MonoBehaviour
                 Reset();
             }
 
+            
             if (aimEnemy)
             {
+                if ((trans.position - aimEnemy.transform.position).sqrMagnitude >= 36)
+                {
+                    Reset();
+                }
+
                 Vector3 bulletVelocity = (aimEnemy.transform.position - trans.position).normalized;
                 rb.velocity = bulletVelocity * BULLET_SPEED;
             }

@@ -8,10 +8,25 @@ public class ThunderRangeAttack : MonoBehaviour,IHoldAttacker
 
     GameObject holdDisplay;
 
+    PCFieldController pcFieldController => PCFieldController.instance;
+
+    GameObject electricShockObj;
+    List<ElectricShock> electricShocks = new List<ElectricShock>();
+
     // Start is called before the first frame update
     void Start()
     {
         holdDisplay = GetComponent<PlayerAttack>().holdDisplay;
+
+        electricShockObj = pcFieldController.electricShock;
+        GameObject electricShockPool = new GameObject("ElectricShockPool");
+        for (int i = 0; i < 10; i++)
+        {
+            GameObject electric = Instantiate(electricShockObj, new Vector3(0, 95, 0), Quaternion.identity);
+            ElectricShock ele = electric.GetComponent<ElectricShock>();
+            electric.transform.parent = electricShockPool.transform;
+            electricShocks.Add(ele);
+        }
     }
 
     // Update is called once per frame
@@ -28,12 +43,17 @@ public class ThunderRangeAttack : MonoBehaviour,IHoldAttacker
             Element element = GetElementKind(range);
             damagable.AddElement(element, holdDisplay.transform.position);
 
-            float damage = 0;
             if (element == Element.Thunder)
             {
-                damage = THUNDER_DAMAGE;
+                for (int i = 0; i < electricShocks.Count; i++)
+                {
+                    if (electricShocks[i].isSleep) 
+                    {
+                        electricShocks[i].Initialize(selectEnemy);
+                        break;
+                    }
+                }
             }
-            damagable.AddDamage(damage);
         }
 
     }

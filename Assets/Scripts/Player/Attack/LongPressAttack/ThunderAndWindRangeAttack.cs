@@ -10,6 +10,8 @@ public class ThunderAndWindRangeAttack : MonoBehaviour,IHoldAttacker
     GameObject holdDisplay;
 
     PCFieldController pcFieldController => PCFieldController.instance;
+    GameObject electricShockObj;
+    List<ElectricShock> electricShocks = new List<ElectricShock>();
     GameObject windAreaObj;
     List<WindArea> windAreas = new List<WindArea>();
 
@@ -19,6 +21,17 @@ public class ThunderAndWindRangeAttack : MonoBehaviour,IHoldAttacker
         holdDisplay = GetComponent<PlayerAttack>().holdDisplay;
         windAreaObj = pcFieldController.windArea;
         GameObject windAreaPool = new GameObject("WindAreaPool");
+
+        electricShockObj = pcFieldController.electricShock;
+        GameObject electricShockPool = new GameObject("ElectricShockPool");
+        for (int i = 0; i < 10; i++)
+        {
+            GameObject electric = Instantiate(electricShockObj, new Vector3(0, 95, 0), Quaternion.identity);
+            ElectricShock ele = electric.GetComponent<ElectricShock>();
+            electric.transform.parent = electricShockPool.transform;
+            electricShocks.Add(ele);
+        }
+
         for (int i = 0; i < 3; i++)
         {
             GameObject area = Instantiate(windAreaObj,new Vector3(0,95,0),Quaternion.identity);
@@ -43,14 +56,15 @@ public class ThunderAndWindRangeAttack : MonoBehaviour,IHoldAttacker
             damagable = selectEnemy.GetComponent<IDamagable>();
         }
 
-        float damage = 0;
         if (element == Element.Thunder)
         {
-            if (damagable != null)
+            for (int i = 0; i < electricShocks.Count; i++)
             {
-                damagable.AddElement(Element.Thunder, holdDisplay.transform.position);
-                damage = THUNDER_DAMAGE;
-                damagable.AddDamage(damage);
+                if (electricShocks[i].isSleep)
+                {
+                    electricShocks[i].Initialize(selectEnemy);
+                    break;
+                }
             }
         }
         else if (element == Element.Wind)

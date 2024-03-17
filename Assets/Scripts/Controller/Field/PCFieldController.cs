@@ -9,25 +9,32 @@ public class PCFieldController : MonoBehaviour
     public Server server;
 
     //Prefabs
+    [SerializeField] FallText fallText;
     [SerializeField] TxtTallet txtTallet;
     [SerializeField] PngBuster pngBuster;
     [SerializeField] ZipFile zipFile;
     [SerializeField] Hammer hammerAttack;
-    [SerializeField] LoadTunder loadTunderAttack;
+    [SerializeField] LoadThunder loadThunderAttack;
     [SerializeField] FireWallPost fireWallPost;
     [SerializeField] FireWall fireWall;
     [SerializeField] public GameObject scanTargetObj;
     [SerializeField] public GameObject windArea;
+    [SerializeField] public GameObject electricShock;
     [SerializeField] public GameObject storm;
-    
+
+    [SerializeField] public GameObject selectTargetPool;
+
     //Pool
+    public List<FallText> fallTexts = new List<FallText>();
     public List<TxtTallet> txtTallets = new List<TxtTallet>();
     public List<PngBuster> pngBusters = new List<PngBuster>();
     public List<Hammer> hammers = new List<Hammer>();
-    public List<LoadTunder> loadTunders = new List<LoadTunder>();
+    public List<LoadThunder> loadThunders = new List<LoadThunder>();
     public List<FireWallPost> fireWallPosts = new List<FireWallPost>();
     public List<FireWall> fireWalls = new List<FireWall>();
     public List<ZipFile> zipFiles = new List<ZipFile>();
+
+    public List<Transform> selectTargets;
 
     [SerializeField] Camera camera;
     Vector3 cameraLeftUpperPos;
@@ -47,6 +54,16 @@ public class PCFieldController : MonoBehaviour
 
         //設置系のものを生成しておく
 
+        //FallText
+        GameObject fallTextPool = new GameObject("FallTextPool");
+        fallTextPool.transform.parent = this.transform;
+        fallTextPool.transform.localPosition = Vector3.zero;
+        for (int i = 0; i < 3; i++)
+        {
+            FallText text = Instantiate(fallText, transform.position, Quaternion.identity);
+            text.transform.parent = fallTextPool.transform;
+            fallTexts.Add(text);
+        }
         //TXTタレット
         GameObject txtTalletPool = new GameObject("TxtTalletPool");
         txtTalletPool.transform.parent = this.transform;
@@ -68,20 +85,20 @@ public class PCFieldController : MonoBehaviour
         //ハンマー
         GameObject hammerPool = new GameObject("HammerPool");
         hammerPool.transform.parent = this.transform;
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 10; i++)
         {
             Hammer hammer = Instantiate(hammerAttack, transform.position, Quaternion.identity);
             hammer.transform.parent = hammerPool.transform;
             hammers.Add(hammer);
         }
         //ロードサンダー
-        GameObject loadTunderPool = new GameObject("LoadTunderPool");
-        loadTunderPool.transform.parent = this.transform;
+        GameObject loadThunderPool = new GameObject("LoadThunderPool");
+        loadThunderPool.transform.parent = this.transform;
         for (int i = 0; i < 10; i++)
         {
-            LoadTunder loadTunder = Instantiate(loadTunderAttack, transform.position, Quaternion.identity);
-            loadTunder.transform.parent = loadTunderPool.transform;
-            loadTunders.Add(loadTunder);
+            LoadThunder loadThunder = Instantiate(loadThunderAttack, transform.position, Quaternion.identity);
+            loadThunder.transform.parent = loadThunderPool.transform;
+            loadThunders.Add(loadThunder);
         }
         //ファイアウォール
         GameObject fireWallPostPool = new GameObject("FireWallPostPool");
@@ -105,6 +122,14 @@ public class PCFieldController : MonoBehaviour
             zip.transform.parent = zipFilePool.transform;
             zipFiles.Add(zip);
         }
+
+        //SelectTarget
+        Transform[] targets = selectTargetPool.GetComponentsInChildren<Transform>();
+        for (int i = 0; i < targets.Length; i++)
+        {
+            selectTargets.Add(targets[i]);
+        }
+        selectTargets.Remove(selectTargetPool.transform);
 
         cameraLeftUpperPos = camera.ScreenToWorldPoint(new Vector2(0, Screen.height));
         cameraLeftUpperPos.z = 0;

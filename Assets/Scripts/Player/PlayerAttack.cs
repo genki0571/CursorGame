@@ -40,6 +40,7 @@ public enum Range
 public class PlayerAttack : MonoBehaviour
 {
     PlayerInput playerInput => PlayerInput.instance;
+    PCFieldController pcFieldController => PCFieldController.instance;
 
     ILeftAttacker leftAttacker;
     IHoldAttacker holdAttacker;
@@ -91,7 +92,7 @@ public class PlayerAttack : MonoBehaviour
     {
         //仮
         var leftAttack = gameObject.AddComponent<DoubleClickAttack>();
-        var HoldAttack = gameObject.AddComponent<RangeSelect>();
+        var holdAttack = gameObject.AddComponent<ThunderRangeAttack>();
         var rightAttack0 = gameObject.AddComponent<FallTextAttack>();
         var rightAttack1 = gameObject.AddComponent<InstallTxtTallet>();
         var rightAttack2 = gameObject.AddComponent<OpenAttack>();
@@ -101,7 +102,7 @@ public class PlayerAttack : MonoBehaviour
         var rightAttack6 = gameObject.AddComponent<ScanWeakPoint>();
         var rightAttack7 = gameObject.AddComponent<InstallZipFile>();
         leftAttacker = leftAttack.GetComponent<ILeftAttacker>();
-        holdAttacker = HoldAttack.GetComponent<IHoldAttacker>();
+        holdAttacker = holdAttack.GetComponent<IHoldAttacker>();
         rightAttackers.Add(rightAttack0);
         rightAttackers.Add(rightAttack1);
         rightAttackers.Add(rightAttack2);
@@ -169,20 +170,47 @@ public class PlayerAttack : MonoBehaviour
                 }
             }
 
-            //選択を解除
-            selectingEnemies = new List<GameObject>();
-            commandMenu.SetActive(false);
-
             //攻撃を使用
             if (!alreadyAttack)
             {
                 Transform hitTrans = null;
+                GameObject hitObj = null;
                 if (hit.collider) 
                 {
-                    hitTrans = hit.transform.GetComponent<Transform>();
+                    hitTrans = hit.transform;
+                    hitObj = hit.transform.gameObject;
                 }
-                leftAttacker.Attack(cursorTrans, hitTrans);
+
+                if (selectingEnemies.Count >= 2) 
+                {
+                    bool multiplePossible = false;
+                    for (int i = 0; i < selectingEnemies.Count; i++)
+                    {
+                        if (selectingEnemies[i] == hitObj) 
+                        {
+                            multiplePossible = true;
+                            break;
+                        }
+                    }
+                    Debug.Log(multiplePossible);
+                    if (multiplePossible) 
+                    {
+                        for (int i = 0; i < selectingEnemies.Count; i++)
+                        {
+                            leftAttacker.Attack(cursorTrans,selectingEnemies[i].transform);
+                        }
+                    }
+                }
+                else 
+                {
+                    leftAttacker.Attack(cursorTrans, hitTrans);
+                }
             }
+
+
+            //選択を解除
+            selectingEnemies.Clear();
+            commandMenu.SetActive(false);
         }
 
         //右クリックした時
@@ -196,7 +224,7 @@ public class PlayerAttack : MonoBehaviour
                     ActionCommand(command);
 
                     //選択を解除
-                    selectingEnemies = new List<GameObject>();
+                    selectingEnemies.Clear();
                     commandMenu.SetActive(false);
                 }
                 else 
@@ -225,7 +253,7 @@ public class PlayerAttack : MonoBehaviour
             else 
             {
                 //選択を解除
-                selectingEnemies = new List<GameObject>();
+                selectingEnemies.Clear();
 
                 commandMenu.transform.position = cursorPos;
                 commandMenu.SetActive(true);
@@ -431,7 +459,7 @@ public class PlayerAttack : MonoBehaviour
                             grabbable.Putting();
                         }
                     }
-                    selectingEnemies = new List<GameObject>();
+                    selectingEnemies.Clear();
                 }
             }
             isRange = false;
@@ -440,6 +468,21 @@ public class PlayerAttack : MonoBehaviour
             holdDisplay.SetActive(false);
         }
         beforeHold = isHold;
+
+        int num = 0;
+        if (selectingEnemies.Count != 0) 
+        {
+            for (int i = 0; i < selectingEnemies.Count; i++)
+            {
+                pcFieldController.selectTargets[i].position = selectingEnemies[i].transform.position;
+            }
+            num = selectingEnemies.Count;
+        }
+
+        for (int i = num; i < pcFieldController.selectTargets.Count; i++)
+        {
+            pcFieldController.selectTargets[i].localPosition = Vector3.zero;
+        }
     }
 
     void ActionCommand(Command command) 

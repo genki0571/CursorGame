@@ -12,6 +12,8 @@ public class ThunderAndWindMixRangeAttack : MonoBehaviour,IHoldAttacker
 
 
     PCFieldController pcFieldController => PCFieldController.instance;
+    GameObject electricShockObj;
+    List<ElectricShock> electricShocks = new List<ElectricShock>();
     GameObject windAreaObj;
     List<WindArea> windAreas = new List<WindArea>();
     GameObject stormObj;
@@ -23,18 +25,28 @@ public class ThunderAndWindMixRangeAttack : MonoBehaviour,IHoldAttacker
         playerAttack = GetComponent<PlayerAttack>();
         holdDisplay = playerAttack.holdDisplay;
 
+        electricShockObj = pcFieldController.electricShock;
+        GameObject electricShockPool = new GameObject("ElectricShockPool");
+        for (int i = 0; i < 10; i++)
+        {
+            GameObject electric = Instantiate(electricShockObj, new Vector3(0, 95, 0),Quaternion.identity);
+            ElectricShock ele = electric.GetComponent<ElectricShock>();
+            electric.transform.parent = electricShockPool.transform;
+            electricShocks.Add(ele);
+        }
+
         windAreaObj = pcFieldController.windArea;
         stormObj = pcFieldController.storm;
         GameObject windAreaPool = new GameObject("WindAreaPool");
         GameObject stormPool = new GameObject("StormPool");
         for (int i = 0; i < 1; i++)
         {
-            GameObject area = Instantiate(windAreaObj, new Vector3(0, 95, 0), Quaternion.identity);
+            GameObject area = Instantiate(windAreaObj, new Vector3(1, 95, 0), Quaternion.identity);
             WindArea windArea = area.GetComponent<WindArea>();
             windAreas.Add(windArea);
             area.transform.parent = windAreaPool.transform;
 
-            GameObject sto = Instantiate(stormObj,new Vector3(1,95,0),Quaternion.identity);
+            GameObject sto = Instantiate(stormObj,new Vector3(2,95,0),Quaternion.identity);
             Storm s = sto.GetComponent<Storm>();
             storms.Add(s);
             sto.transform.parent = stormPool.transform;
@@ -56,14 +68,19 @@ public class ThunderAndWindMixRangeAttack : MonoBehaviour,IHoldAttacker
             damagable = selectEnemy.GetComponent<IDamagable>();
         }
 
-        float damage = 0;
+
         if (element == Element.Thunder)
         {
             if (damagable != null)
             {
-                damagable.AddElement(Element.Thunder, holdDisplay.transform.position);
-                damage = THUNDER_DAMAGE;
-                damagable.AddDamage(damage);
+                for (int i = 0; i < electricShocks.Count; i++)
+                {
+                    if (electricShocks[i].isSleep)
+                    {
+                        electricShocks[i].Initialize(selectEnemy);
+                        break;
+                    }
+                }
             }
         }
         else if (element == Element.Wind)

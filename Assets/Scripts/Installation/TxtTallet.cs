@@ -66,8 +66,6 @@ public class TxtTallet : MonoBehaviour ,IGrabbable
 
     private void Shot() 
     {
-        Debug.Log("SHOT");
-
         TxtBullet bullet = null;
         for (int i = 0; i < txtBullets.Length; i++)
         {

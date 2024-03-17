@@ -78,10 +78,9 @@ public class EnemyGenerator : MonoBehaviour
                 }
             }
         }
-
-        if (phaseEnemyNum >= phaseManagers[phaseNum].phaseEnemyBases.Length)
+        if (phaseNum < phaseManagers.Length)
         {
-            if (phaseNum < phaseManagers.Length)
+            if (phaseEnemyNum >= phaseManagers[phaseNum].phaseEnemyBases.Length)
             {
                 for (int i = 0; i < phaseManagers[phaseNum].phaseEnemyBases.Length; i++)
                 {

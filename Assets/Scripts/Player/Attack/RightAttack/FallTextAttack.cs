@@ -4,39 +4,34 @@ using UnityEngine;
 
 public class FallTextAttack : MonoBehaviour,IRightAttacker
 {
+    PCFieldController pcFieldController => PCFieldController.instance;
+
     Command command = global::Command.FallText;
 
-    const float ATTACK_INTERVAL = 0.5f;
-    float attackTimer = 0;
-
-    Vector2 FallPos = Vector2.zero;
-    bool isFall;
+    List<FallText> fallTexts;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        fallTexts = pcFieldController.fallTexts;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (isFall) 
-        {
-            attackTimer += Time.deltaTime;
-            if (attackTimer >= ATTACK_INTERVAL) 
-            {
 
-                isFall = false;
-            }
-        }
     }
 
     public void Command(Vector3 pos, List<ISelectable> selectDamagables) 
     {
-        Debug.Log("FallText");
-        FallPos = pos;
-        isFall = true;
+        for (int i = 0; i < fallTexts.Count; i++)
+        {
+            if (fallTexts[i].isSleep) 
+            {
+                fallTexts[i].Initialize(pos);
+                break;
+            }
+        }
     }
 
     public Command GetCommandKind() 
