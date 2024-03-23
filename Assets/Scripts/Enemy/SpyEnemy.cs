@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SpyEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWeakPoint
 {
@@ -41,27 +42,54 @@ public class SpyEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWea
     float elementTimer = 0;
 
     float CursorDis;
+
+    bool hide;
+    bool discovery;
     // Start is called before the first frame update
     void Start()
     {
+        renderer = GetComponent<SpriteRenderer>();
+
+        Image[] images = GetComponentsInChildren<Image>();
+        for (int i = 0; i < images.Length; i++)
+        {
+            if (images[i].type == Image.Type.Filled)
+            {
+                hpImage = images[i];
+                break;
+            }
+        }
+
         server = pcFieldController.server;
         serverTrans = server.transform;
         enemyTrans = this.GetComponent<Transform>();
         rb = GetComponent<Rigidbody2D>();
         Cursor = GameObject.Find("Player");
 
+        hide = false;
+        discovery = false;
+        
         diffWeekPointVec = new Vector3(Random.Range(-WEEK_POINT_POS_MAX_X, WEEK_POINT_POS_MAX_X),
             Random.Range(-WEEK_POINT_POS_MAX_Y, WEEK_POINT_POS_MAX_Y), 0);
+
+        Reset();
     }
 
     // Update is called once per frame
     void Update()
     {
+        HpDisplay();
+
         CursorDis = Vector3.Distance(Cursor.transform.position, enemyTrans.position);
-        if (CursorDis <= 0.5) state = State.Stop;
+        if (CursorDis <= 0.5&&discovery==false)
+        {
+            state = State.Stop;
+            hide = true;
+        }
         enemyVelocity = Vector3.zero;
         Vector2 serverVec = (serverTrans.position - enemyTrans.position);
         Vector2 severDir = serverVec.normalized;
+
         if (state == State.None)
         {
 
@@ -106,8 +134,16 @@ public class SpyEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWea
         }
         else if (state == State.Stop)
         {
-            //ダメージを受けない
-            //開くをされたら解除+しばらくこの状態にならない
+            if (CursorDis > 0.5f)
+            {
+                hide = false;
+                state = State.StateDecide;
+            }
+        }
+
+        if (hp <= 0)
+        {
+            Reset();
         }
 
         //Element効果を付与されているとき
@@ -186,6 +222,13 @@ public class SpyEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWea
 
     public void AddDamage(float damage)
     {
+        if (hide)
+        {
+            damage *= 0;
+            Debug.Log(this.name + ":" + "hide");
+        }
+        DamageDisplay(enemyTrans.position + new Vector3(0, 0.5f, 0), damage);
+        hp -= damage;
         Debug.Log(this.name + ":" + damage);
     }
 
@@ -202,6 +245,8 @@ public class SpyEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWea
 
     public void AddWeakDamage(float damage)
     {
+        DamageDisplay(enemyTrans.position + new Vector3(0, 0.5f, 0), damage * 2);
+        hp -= damage * 2;
         Debug.Log(this.name + ": 弱点 :" + damage * 2);
     }
 
@@ -230,11 +275,18 @@ public class SpyEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWea
 
     public void Open()
     {
+        if (state == State.Stop && hide)
+        {
+            discovery = true;
+            hide = false;
+        }
         Debug.Log("Open" + ":" + this.name);
     }
 
     public void Delete()
     {
+        DamageDisplay(enemyTrans.position + new Vector3(0, 0.5f, 0), 1000);
+        hp -= 1000;
         Debug.Log("Delete");
     }
 

@@ -577,8 +577,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38b0e2ab4f7110a49b0c865d2f12c4d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hp: 0
   maxHp: 0
+  damageDisplays: []
   state: 0
   haveElement: 0
 --- !u!212 &114719713
@@ -799,8 +799,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0099568c0b4a513469e7676f838c4142, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  faseNum: 0
-  faseEnemyNum: 0
+  phaseNum: 0
+  phaseEnemyNum: 0
 --- !u!114 &333662696
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -813,20 +813,160 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6daabb3c17ba3a04b9b6be5c5d4a3559, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  faseNum: 0
-  faseEnemyPrefabs:
-  - {fileID: 1482542586}
-  - {fileID: 1482542586}
-  - {fileID: 1482542586}
-  - {fileID: 1482542586}
-  - {fileID: 1482542586}
-  - {fileID: 1482542586}
-  - {fileID: 1482542586}
-  - {fileID: 1482542586}
-  - {fileID: 1482542586}
-  - {fileID: 1482542586}
+  phaseNum: 0
+  phaseEnemyPrefabs: []
   minPopInterval: 1
   maxPopInterval: 2
+--- !u!1 &424320936
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 424320940}
+  - component: {fileID: 424320939}
+  - component: {fileID: 424320938}
+  - component: {fileID: 424320937}
+  - component: {fileID: 424320941}
+  m_Layer: 0
+  m_Name: Spy
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!50 &424320937
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 424320936}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
+--- !u!61 &424320938
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 424320936}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 0.8828125}
+    newSize: {x: 1, y: 0.8828125}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 0.8828125}
+  m_EdgeRadius: 0
+--- !u!212 &424320939
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 424320936}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_Sprite: {fileID: 2747690628134850419, guid: b670ab75dde984907b8570040daa08c5, type: 3}
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 1, y: 0.8828125}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
+--- !u!4 &424320940
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 424320936}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2.3319554, y: 0.44703236, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 21
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &424320941
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 424320936}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 641f4d092a9addf4ead0739f818e6d61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHp: 0
+  damageDisplays: []
+  state: 2
+  haveElement: 0
 --- !u!1 &454770629
 GameObject:
   m_ObjectHideFlags: 0
@@ -1056,7 +1196,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b70ffc220f0b13438edf3915c0d210f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 1947306463}
+  playerAttack: {fileID: 0}
   openCommandBlock: {fileID: 1149322147}
   fallTextCommandBlock: {fileID: 1372700126}
   fireWallCommandBlock: {fileID: 67635587}
@@ -1249,21 +1389,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   server: {fileID: 1224039840}
+  fallText: {fileID: 0}
   txtTallet: {fileID: 941979013}
   pngBuster: {fileID: 1046520318}
+  zipFile: {fileID: 0}
   hammerAttack: {fileID: 1960996735}
-  loadTunderAttack: {fileID: 2115950906}
+  loadThunderAttack: {fileID: 0}
   fireWallPost: {fileID: 1696838213}
   fireWall: {fileID: 1196142935}
   scanTargetObj: {fileID: 606800033}
   windArea: {fileID: 1459178237}
+  electricShock: {fileID: 0}
   storm: {fileID: 933937343}
+  selectTargetPool: {fileID: 0}
+  fallTexts: []
   txtTallets: []
   pngBusters: []
   hammers: []
-  loadTunders: []
+  loadThunders: []
   fireWallPosts: []
   fireWalls: []
+  zipFiles: []
+  selectTargets: []
   camera: {fileID: 1341140537}
 --- !u!1 &606800033
 GameObject:
@@ -2194,8 +2341,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed4e97e71061910449766227cda0720b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hp: 10
   maxHp: 10
+  damageDisplays: []
   state: 1
   haveElement: 0
   child: {fileID: 3976718326746028282, guid: ebc9941c08e08b143b5fdefcc546309d, type: 3}
@@ -3810,7 +3957,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   withinRangeEnemies: []
-  player: {fileID: 0}
+  playerAttack: {fileID: 0}
 --- !u!50 &1451996430
 Rigidbody2D:
   serializedVersion: 4
@@ -3963,8 +4110,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38b0e2ab4f7110a49b0c865d2f12c4d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hp: 0
   maxHp: 0
+  damageDisplays: []
   state: 0
   haveElement: 0
 --- !u!212 &1482542588
@@ -4140,8 +4287,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f94a9dd630b710a4a81bd348072cd5d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hp: 1
   maxHp: 1
+  damageDisplays: []
   state: 1
   haveElement: 0
 --- !u!212 &1525159224
@@ -5629,8 +5776,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isLeftClick: 0
   isRightClick: 0
-  isLongPressDown: 0
-  isLongPress: 0
+  isHoldStart: 0
+  isHold: 0
+  isHoldEnd: 0
 --- !u!4 &1947306462
 Transform:
   m_ObjectHideFlags: 0
@@ -5662,15 +5810,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isLeftClick: 0
   isRightClick: 0
-  isLongPressDown: 0
-  isLongPress: 0
-  longPressStartPos: {x: 0, y: 0}
+  isHoldStart: 0
+  isHold: 0
+  isHoldEnd: 0
+  holdStartPos: {x: 0, y: 0}
   withinRangeEnemies: []
   mixCnt: 0
   isMix: 0
   isSelectEnemy: 0
   selectingEnemies: []
-  longPressDisplay: {fileID: 1451996425}
+  holdDisplay: {fileID: 0}
   commandMenu: {fileID: 513731027}
 --- !u!212 &1947306464
 SpriteRenderer:

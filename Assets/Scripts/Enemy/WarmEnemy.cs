@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class WarmEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWeakPoint
 {
@@ -49,6 +50,18 @@ public class WarmEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWe
     // Start is called before the first frame update
     void Start()
     {
+        renderer = GetComponent<SpriteRenderer>();
+
+        Image[] images = GetComponentsInChildren<Image>();
+        for (int i = 0; i < images.Length; i++)
+        {
+            if (images[i].type == Image.Type.Filled)
+            {
+                hpImage = images[i];
+                break;
+            }
+        }
+
         server = pcFieldController.server;
         serverTrans = server.transform;
         enemyTrans = this.GetComponent<Transform>();
@@ -56,19 +69,18 @@ public class WarmEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWe
 
         diffWeekPointVec = new Vector3(Random.Range(-WEEK_POINT_POS_MAX_X, WEEK_POINT_POS_MAX_X),
             Random.Range(-WEEK_POINT_POS_MAX_Y, WEEK_POINT_POS_MAX_Y), 0);
+
+        Reset();
     }
 
     // Update is called once per frame
     void Update()
     {
+        HpDisplay();
+
         enemyVelocity = Vector3.zero;
         Vector2 serverVec = (serverTrans.position - enemyTrans.position);
         Vector2 severDir = serverVec.normalized;
-
-        if (hp <= 0)
-        {
-            state = State.Death;
-        }
 
         if (state == State.None)
         {
@@ -116,9 +128,10 @@ public class WarmEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWe
         {
 
         }
-        else if (state == State.Death)
+
+        if (hp <= 0)
         {
-            diffSpornPointVec = new Vector3 (Random.Range(SPORN_POINT_POS_MIN_X, SPORN_POINT_POS_MAX_X),
+            diffSpornPointVec = new Vector3(Random.Range(SPORN_POINT_POS_MIN_X, SPORN_POINT_POS_MAX_X),
                 Random.Range(SPORN_POINT_POS_MIN_Y, SPORN_POINT_POS_MAX_Y), 0);
             Vector3 warm_point1 = SpornPoint1();
             Vector3 warm_point2 = SpornPoint2();
@@ -126,7 +139,7 @@ public class WarmEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWe
             Debug.Log(warm_point2);
             Instantiate(child, warm_point1, Quaternion.identity);
             Instantiate(child, warm_point2, Quaternion.identity);
-            Delete();
+            Reset();
         }
 
         //Element効果を付与されているとき
@@ -205,6 +218,8 @@ public class WarmEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWe
 
     public void AddDamage(float damage)
     {
+        DamageDisplay(enemyTrans.position + new Vector3(0, 0.5f, 0), damage);
+        hp -= damage;
         Debug.Log(this.name + ":" + damage);
     }
 
@@ -221,6 +236,8 @@ public class WarmEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWe
 
     public void AddWeakDamage(float damage)
     {
+        DamageDisplay(enemyTrans.position + new Vector3(0, 0.5f, 0), damage * 2);
+        hp -= damage * 2;
         Debug.Log(this.name + ": 弱点 :" + damage * 2);
     }
 

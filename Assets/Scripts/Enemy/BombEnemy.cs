@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BombEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWeakPoint
 {
@@ -38,11 +39,25 @@ public class BombEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWe
     float fireDamageTimer = 0;
     float elementTimer = 0;
     float bombTimer = 0;
+    float hp_check = 0;
 
     int count = 3;
+
     // Start is called before the first frame update
     void Start()
     {
+        renderer = GetComponent<SpriteRenderer>();
+
+        Image[] images = GetComponentsInChildren<Image>();
+        for (int i = 0; i < images.Length; i++)
+        {
+            if (images[i].type == Image.Type.Filled)
+            {
+                hpImage = images[i];
+                break;
+            }
+        }
+
         server = pcFieldController.server;
         serverTrans = server.transform;
         enemyTrans = this.GetComponent<Transform>();
@@ -50,11 +65,16 @@ public class BombEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWe
 
         diffWeekPointVec = new Vector3(Random.Range(-WEEK_POINT_POS_MAX_X, WEEK_POINT_POS_MAX_X),
             Random.Range(-WEEK_POINT_POS_MAX_Y, WEEK_POINT_POS_MAX_Y), 0);
+
+        hp_check = hp;
+        Reset();
     }
 
     // Update is called once per frame
     void Update()
     {
+        HpDisplay();
+
         enemyVelocity = Vector3.zero;
         Vector2 serverVec = (serverTrans.position - enemyTrans.position);
         Vector2 severDir = serverVec.normalized;
@@ -103,17 +123,27 @@ public class BombEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWe
         }
         else if (state == State.Stop)
         {
-
-        }
-        else if (state == State.Death)
-        {
             bombTimer += Time.deltaTime;
             if (bombTimer >= 3)
             {
                 Debug.Log("Bomb!");
                 //Instantiate(爆発,enemyTrans,Quaternion.identity);
-                Delete();
+                Reset();
             }
+        }
+        else if (state == State.Death)
+        {
+            
+        }
+
+        if (hp <= 0)
+        {
+            Reset();
+        }
+
+        if(hp < hp_check)
+        {
+            state = State.Stop;
         }
 
         //Element効果を付与されているとき
@@ -188,6 +218,7 @@ public class BombEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWe
         }
 
         rb.velocity = enemyVelocity;
+        hp_check = hp;
     }
 
     public void AddDamage(float damage)

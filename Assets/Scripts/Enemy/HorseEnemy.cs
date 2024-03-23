@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HorseEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWeakPoint
 {
@@ -43,6 +44,18 @@ public class HorseEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveW
     // Start is called before the first frame update
     void Start()
     {
+        renderer = GetComponent<SpriteRenderer>();
+
+        Image[] images = GetComponentsInChildren<Image>();
+        for (int i = 0; i < images.Length; i++)
+        {
+            if (images[i].type == Image.Type.Filled)
+            {
+                hpImage = images[i];
+                break;
+            }
+        }
+
         server = pcFieldController.server;
         serverTrans = server.transform;
         enemyTrans = this.GetComponent<Transform>();
@@ -57,6 +70,8 @@ public class HorseEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveW
     // Update is called once per frame
     void Update()
     {
+        HpDisplay();
+
         enemyVelocity = Vector3.zero;
         Vector2 serverVec = (serverTrans.position - enemyTrans.position);
         Vector2 severDir = serverVec.normalized;
@@ -106,6 +121,11 @@ public class HorseEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveW
         else if (state == State.Stop)
         {
 
+        }
+
+        if (hp <= 0)
+        {
+            Reset();
         }
 
         //Element効果を付与されているとき
@@ -187,8 +207,10 @@ public class HorseEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveW
         if (armer)
         {
             Debug.Log("block");
-            Debug.Log(this.name + ":" + damage * 0.2);
+            damage *= 0.2f;
         }
+        DamageDisplay(enemyTrans.position + new Vector3(0, 0.5f, 0), damage);
+        hp -= damage;
         Debug.Log(this.name + ":" + damage);
     }
 
@@ -213,6 +235,8 @@ public class HorseEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveW
                 armer = false;
             }
         }
+        DamageDisplay(enemyTrans.position + new Vector3(0, 0.5f, 0), damage * 2);
+        hp -= damage * 2;
         Debug.Log(this.name + ": 弱点 :" + damage * 2);
     }
 
@@ -246,6 +270,8 @@ public class HorseEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveW
 
     public void Delete()
     {
+        DamageDisplay(enemyTrans.position + new Vector3(0, 0.5f, 0), 1000);
+        hp -= 1000;
         Debug.Log("Delete");
     }
 
