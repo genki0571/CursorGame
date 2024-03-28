@@ -17,12 +17,13 @@ public class PCFieldController : MonoBehaviour
     [SerializeField] LoadThunder loadThunderAttack;
     [SerializeField] FireWallPost fireWallPost;
     [SerializeField] FireWall fireWall;
-    [SerializeField] public GameObject scanTargetObj;
     [SerializeField] public GameObject windArea;
     [SerializeField] public GameObject electricShock;
     [SerializeField] public GameObject storm;
+    [SerializeField] public GameObject explotion;
 
     [SerializeField] public GameObject selectTargetPool;
+    [SerializeField] public GameObject targetPool;
 
     //Pool
     public List<FallText> fallTexts = new List<FallText>();
@@ -33,6 +34,7 @@ public class PCFieldController : MonoBehaviour
     public List<FireWallPost> fireWallPosts = new List<FireWallPost>();
     public List<FireWall> fireWalls = new List<FireWall>();
     public List<ZipFile> zipFiles = new List<ZipFile>();
+    public List<Transform> targetObjs = new List<Transform>();
 
     public List<Transform> selectTargets;
 
@@ -121,6 +123,13 @@ public class PCFieldController : MonoBehaviour
             ZipFile zip = Instantiate(zipFile, transform.position, Quaternion.identity);
             zip.transform.parent = zipFilePool.transform;
             zipFiles.Add(zip);
+        }
+
+        //WeekPoint
+        Transform[] tarObjs = targetPool.GetComponentsInChildren<Transform>();
+        for (int i = 0; i < tarObjs.Length; i++)
+        {
+            targetObjs.Add(tarObjs[i]);
         }
 
         //SelectTarget

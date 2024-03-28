@@ -6,6 +6,8 @@ public class SingleClickAttack : MonoBehaviour,ILeftAttacker
 {
     const float DAMAGE = 10;
 
+    PCFieldController pcFieldController => PCFieldController.instance;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -42,6 +44,8 @@ public class SingleClickAttack : MonoBehaviour,ILeftAttacker
                     damageTarget.AddDamage(DAMAGE);
                 }
             }
+
+            
         }
     }
 }

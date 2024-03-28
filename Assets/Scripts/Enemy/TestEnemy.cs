@@ -5,24 +5,10 @@ using UnityEngine.UI;
 
 public class TestEnemy : EnemyBase,IDamagable,ISelectable,IGrabbable,IHaveWeakPoint
 {
-    PCFieldController pcFieldController => PCFieldController.instance;
-    Server server;
-    Transform serverTrans;
-
-    Transform enemyTrans;
-    Rigidbody2D rb;
-
-    Vector3 enemyVelocity;
 
     Vector3 diffPlayerVec = Vector2.zero;
 
     Vector3 diffWeekPointVec;
-
-    const float ENEMY_SPEED = 2;
-
-    const float ATTACK_RANGE_RADIUS = 2;
-    const float ATTACK_INTERVAL = 0.5f;
-    float attackTimer = 0;
 
     const float WEEK_POINT_RADIUS = 0.5f;
     const float WEEK_POINT_POS_MAX_X = 0.5f;
@@ -40,101 +26,35 @@ public class TestEnemy : EnemyBase,IDamagable,ISelectable,IGrabbable,IHaveWeakPo
     float elementTimer = 0;
 
     // Start is called before the first frame update
-    void Start()
+    public  override void Start()
     {
-        renderer = GetComponent<SpriteRenderer>();
+        base.Start();
 
-        Image[] images = GetComponentsInChildren<Image>();
-        for (int i = 0; i < images.Length; i++)
-        {
-            if (images[i].type == Image.Type.Filled)
-            {
-                hpImage = images[i];
-                break;
-            }
-        }
-
-        server = pcFieldController.server;
-        serverTrans = server.transform;
-        enemyTrans = this.GetComponent<Transform>();
-        rb = GetComponent<Rigidbody2D>();
-
-        diffWeekPointVec = new Vector3(Random.Range(-WEEK_POINT_POS_MAX_X,WEEK_POINT_POS_MAX_X),
-            Random.Range(-WEEK_POINT_POS_MAX_Y,WEEK_POINT_POS_MAX_Y),0);
-
-        Reset();
+        diffWeekPointVec = new Vector3(Random.Range(-WEEK_POINT_POS_MAX_X, WEEK_POINT_POS_MAX_X),
+            Random.Range(-WEEK_POINT_POS_MAX_Y, WEEK_POINT_POS_MAX_Y), 0);
     }
 
     // Update is called once per frame
-    void Update()
+    public override void Update()
     {
-        HpDisplay();
+        base.Update();
 
-        enemyVelocity = Vector3.zero;
-        Vector2 serverVec = (serverTrans.position - enemyTrans.position);
-        Vector2 severDir = serverVec.normalized;
+        CheckElement();
 
-        if (state == State.None)
-        {
+        rb.velocity = enemyVelocity;
+    }
 
-        }
-        else if (state == State.StateDecide)
-        {
-            //仮
-            state = State.GoServer;
-            attackTimer = 0;
-        }
-        else if (state == State.Sleep)
-        {
-
-        }
-        else if (state == State.Grabed)
-        {
-
-        }
-        else if (state == State.GoServer)
-        {
-            enemyVelocity = severDir * ENEMY_SPEED;
-            if (serverVec.sqrMagnitude <= ATTACK_RANGE_RADIUS * ATTACK_RANGE_RADIUS)
-            {
-                state = State.Attack;
-            }
-        }
-        else if(state == State.Attack) 
-        {
-            if (attackTimer <= ATTACK_INTERVAL)
-            {
-                attackTimer += Time.deltaTime;
-            }
-            if (attackTimer >= ATTACK_INTERVAL) 
-            {
-                if (serverVec.sqrMagnitude >= ATTACK_RANGE_RADIUS * ATTACK_RANGE_RADIUS)
-                {
-                    Debug.Log("ATTACK");
-                }
-                attackTimer = 0;
-                state = State.StateDecide;
-            }
-        }
-        else if (state == State.Stop) 
-        {
-            
-        }
-
-        if (hp <= 0) 
-        {
-            Reset();
-        }
-
+    private void CheckElement() 
+    {
         //Element効果を付与されているとき
         if (haveElement != Element.Empty)
         {
             elementTimer += Time.deltaTime;
 
-            if (haveElement == Element.Fire) 
+            if (haveElement == Element.Fire)
             {
                 fireDamageTimer += Time.deltaTime;
-                if (fireDamageTimer >= 1) 
+                if (fireDamageTimer >= 1)
                 {
                     AddDamage(FIRE_DURATION_DAMAGE);
                     fireDamageTimer = 0;
@@ -170,13 +90,13 @@ public class TestEnemy : EnemyBase,IDamagable,ISelectable,IGrabbable,IHaveWeakPo
                 Vector2 windDir = windVec.normalized;
                 float windDisSqr = windVec.sqrMagnitude;
 
-                float windSpeed = WIND_SPEED * (1/windDisSqr);
+                float windSpeed = WIND_SPEED * (1 / windDisSqr);
                 if (windSpeed >= WIND_MAX_SPEED)
                 {
                     windSpeed = WIND_MAX_SPEED;
                 }
                 enemyVelocity = windDir * windSpeed;
-                
+
 
                 haveElement = Element.Empty;
             }
@@ -194,10 +114,7 @@ public class TestEnemy : EnemyBase,IDamagable,ISelectable,IGrabbable,IHaveWeakPo
 
                 haveElement = Element.Empty;
             }
-
         }
-
-        rb.velocity = enemyVelocity;
     }
 
     public void AddDamage(float damage) 

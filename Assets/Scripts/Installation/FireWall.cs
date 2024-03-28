@@ -19,6 +19,8 @@ public class FireWall : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        
+
         renderer = GetComponent<SpriteRenderer>();
         rangeCheck = GetComponent<RangeCheck>();
         withinEnemies = rangeCheck.withinDamegableObjects;

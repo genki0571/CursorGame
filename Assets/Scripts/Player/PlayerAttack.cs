@@ -92,7 +92,7 @@ public class PlayerAttack : MonoBehaviour
     {
         //仮
         var leftAttack = gameObject.AddComponent<DoubleClickAttack>();
-        var holdAttack = gameObject.AddComponent<ThunderRangeAttack>();
+        var holdAttack = gameObject.AddComponent<FireAndIceMixRangeAttack>();
         var rightAttack0 = gameObject.AddComponent<FallTextAttack>();
         var rightAttack1 = gameObject.AddComponent<InstallTxtTallet>();
         var rightAttack2 = gameObject.AddComponent<OpenAttack>();

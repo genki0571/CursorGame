@@ -11,8 +11,6 @@ public class ScanWeakPoint : MonoBehaviour,IRightAttacker
 
     [SerializeField] List<GameObject> activeEnemies = new List<GameObject>();
     List<Transform> targetObjs = new List<Transform>();
-    GameObject targetsPool;
-    GameObject targetObj;
 
     bool isScanning;
     const float SCAN_INTERVAL = 3f;
@@ -22,15 +20,7 @@ public class ScanWeakPoint : MonoBehaviour,IRightAttacker
     void Start()
     {
         activeEnemies = enemyGenerator.activeEnemies;
-        targetObj = pcFieldController.scanTargetObj;
-        targetsPool = new GameObject("TargetsPool");
-        for (int i = 0; i < 30; i++)
-        {
-            GameObject target1 = Instantiate(targetObj, new Vector3(0,100,0),Quaternion.identity);
-            Transform targetTrans = target1.transform;
-            targetTrans.parent = targetsPool.transform;
-            targetObjs.Add(targetTrans);
-        }
+        targetObjs = pcFieldController.targetObjs;
     }
 
     // Update is called once per frame
