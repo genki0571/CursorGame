@@ -3,28 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SpyEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWeakPoint
+public class WarmEnemy_small : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWeakPoint
 {
-    PCFieldController pcFieldController => PCFieldController.instance;
-    Server server;
-    Transform serverTrans;
-
-    Transform enemyTrans;
-    Rigidbody2D rb;
-
-    GameObject Cursor;
-
-    Vector3 enemyVelocity;
 
     Vector3 diffPlayerVec = Vector2.zero;
 
     Vector3 diffWeekPointVec;
-
-    const float ENEMY_SPEED = 4;
-
-    const float ATTACK_RANGE_RADIUS = 2;
-    const float ATTACK_INTERVAL = 0.5f;
-    float attackTimer = 0;
 
     const float WEEK_POINT_RADIUS = 0.5f;
     const float WEEK_POINT_POS_MAX_X = 0.5f;
@@ -36,20 +20,15 @@ public class SpyEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWea
     const float WIND_SPEED = 20;
     const float WIND_MAX_SPEED = 60;
     const float FIRE_DURATION_DAMAGE = 5;
-
-    const float HIDE_DIS = 5.0f;
     Vector3 elemetnPoint;
 
     float fireDamageTimer = 0;
     float elementTimer = 0;
 
-    float CursorDis;
-
-    bool hide;
-    bool discovery;
     // Start is called before the first frame update
-    void Start()
+    public override void Start()
     {
+        hp = maxHp;
         renderer = GetComponent<SpriteRenderer>();
 
         Image[] images = GetComponentsInChildren<Image>();
@@ -66,89 +45,23 @@ public class SpyEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWea
         serverTrans = server.transform;
         enemyTrans = this.GetComponent<Transform>();
         rb = GetComponent<Rigidbody2D>();
-        Cursor = GameObject.Find("Player");
 
-        hide = false;
-        discovery = false;
-        
         diffWeekPointVec = new Vector3(Random.Range(-WEEK_POINT_POS_MAX_X, WEEK_POINT_POS_MAX_X),
             Random.Range(-WEEK_POINT_POS_MAX_Y, WEEK_POINT_POS_MAX_Y), 0);
-
-       // Reset();
     }
 
     // Update is called once per frame
-    void Update()
+    public override void Update()
     {
-        HpDisplay();
+        base.Update();
 
-        CursorDis = Vector3.Distance(Cursor.transform.position, enemyTrans.position);
-        if (CursorDis <= HIDE_DIS&&discovery==false)
-        {
-            state = State.Stop;
-            hide = true;
-            Debug.Log("hide");
-        }
-        enemyVelocity = Vector3.zero;
-        Vector2 serverVec = (serverTrans.position - enemyTrans.position);
-        Vector2 severDir = serverVec.normalized;
+        CheckElement();
 
-        if (state == State.None)
-        {
+        rb.velocity = enemyVelocity;
+    }
 
-        }
-        else if (state == State.StateDecide)
-        {
-            //仮
-            state = State.GoServer;
-            attackTimer = 0;
-        }
-        else if (state == State.Sleep)
-        {
-
-        }
-        else if (state == State.Grabed)
-        {
-
-        }
-        else if (state == State.GoServer)
-        {
-            enemyVelocity = severDir * ENEMY_SPEED;
-            if (serverVec.sqrMagnitude <= ATTACK_RANGE_RADIUS * ATTACK_RANGE_RADIUS)
-            {
-                state = State.Attack;
-            }
-        }
-        else if (state == State.Attack)
-        {
-            if (attackTimer <= ATTACK_INTERVAL)
-            {
-                attackTimer += Time.deltaTime;
-            }
-            if (attackTimer >= ATTACK_INTERVAL)
-            {
-                if (serverVec.sqrMagnitude >= ATTACK_RANGE_RADIUS * ATTACK_RANGE_RADIUS)
-                {
-                    Debug.Log("ATTACK");
-                }
-                attackTimer = 0;
-                state = State.StateDecide;
-            }
-        }
-        else if (state == State.Stop)
-        {
-            if (CursorDis > HIDE_DIS)
-            {
-                hide = false;
-                state = State.StateDecide;
-            }
-        }
-
-        if (hp <= 0)
-        {
-            Reset();
-        }
-
+    private void CheckElement()
+    {
         //Element効果を付与されているとき
         if (haveElement != Element.Empty)
         {
@@ -217,19 +130,11 @@ public class SpyEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWea
 
                 haveElement = Element.Empty;
             }
-
         }
-
-        rb.velocity = enemyVelocity;
     }
 
     public void AddDamage(float damage)
     {
-        if (hide)
-        {
-            damage *= 0;
-            Debug.Log(this.name + ":" + "hide");
-        }
         DamageDisplay(enemyTrans.position + new Vector3(0, 0.5f, 0), damage);
         hp -= damage;
         Debug.Log(this.name + ":" + damage);
@@ -278,16 +183,12 @@ public class SpyEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWea
 
     public void Open()
     {
-        if (state == State.Stop && hide)
-        {
-            discovery = true;
-            hide = false;
-        }
         Debug.Log("Open" + ":" + this.name);
     }
 
     public void Delete()
     {
+        //仮
         DamageDisplay(enemyTrans.position + new Vector3(0, 0.5f, 0), 1000);
         hp -= 1000;
         Debug.Log("Delete");

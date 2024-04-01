@@ -141,11 +141,6 @@ public class BombEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWe
             Reset();
         }
 
-        if(hp < hp_check)
-        {
-            state = State.Stop;
-        }
-
         //Element効果を付与されているとき
         if (haveElement != Element.Empty)
         {
@@ -218,11 +213,17 @@ public class BombEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWe
         }
 
         rb.velocity = enemyVelocity;
+        if (hp < hp_check)
+        {
+            state = State.Stop;
+        }
         hp_check = hp;
     }
 
     public void AddDamage(float damage)
     {
+        DamageDisplay(enemyTrans.position + new Vector3(0, 0.5f, 0), damage);
+        hp -= damage;
         Debug.Log(this.name + ":" + damage);
     }
 
@@ -239,6 +240,8 @@ public class BombEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWe
 
     public void AddWeakDamage(float damage)
     {
+        DamageDisplay(enemyTrans.position + new Vector3(0, 0.5f, 0), damage * 2);
+        hp -= damage * 2;
         Debug.Log(this.name + ": 弱点 :" + damage * 2);
     }
 
