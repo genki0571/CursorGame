@@ -29,6 +29,11 @@ public class LobbyDivision : MonoBehaviour
         
     }
 
+    /// <summary>
+    /// カーソルの場所から対応する区域を判別する.
+    /// </summary>
+    /// <param name="cursorPos">カーソルの座標</param>
+    /// <returns>対応する区域</returns>
     public LobbyPosition CursorPartitioning(Vector3 cursorPos)
     {
         LobbyPosition position = new LobbyPosition(0, 0);

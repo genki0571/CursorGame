@@ -11,6 +11,7 @@ public enum LobbyItemType
     Setting,        // 設定.
     EmptyFolder,    // 空フォルダ.
     NonEmptyFolder, // 空でないフォルダ.
+    FullFolder,     // 満タンのフォルダ.
     Item1,          // 持ち物1.
     Item2,          // 持ち物2.
     Item3,          // 持ち物3.
