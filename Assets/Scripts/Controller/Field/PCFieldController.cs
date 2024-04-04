@@ -48,6 +48,12 @@ public class PCFieldController : MonoBehaviour
     Vector3[,] putPos = new Vector3[12,7]; 
     bool[,] isPut = new bool[12,7];
 
+    public float volumeNum;
+    public PowerMode powerMode;
+    public bool isAirlineMode;
+    public bool isInternetConnect;
+    public FontType fontType;
+
 
     // Start is called before the first frame update
     void Awake()

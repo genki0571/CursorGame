@@ -39,6 +39,8 @@ public enum Range
 
 public class PlayerAttack : MonoBehaviour
 {
+    static public PlayerAttack instance;
+
     PlayerInput playerInput => PlayerInput.instance;
     PCFieldController pcFieldController => PCFieldController.instance;
 
@@ -87,6 +89,13 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] public GameObject holdDisplay;
     [SerializeField] GameObject commandMenu;
 
+    [System.NonSerialized]public bool isGrabSlider;
+
+    private void Awake()
+    {
+        instance = this;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -128,7 +137,7 @@ public class PlayerAttack : MonoBehaviour
 
         cursorPos = cursorTrans.position;
 
-        Ray2D ray = new Ray2D(transform.position, transform.up);
+        Ray2D ray = new Ray2D(transform.position, transform.forward);
         RaycastHit2D hit = new RaycastHit2D();
         if (isRightClick || isLeftClick || isHold || beforeHold) 
         {
@@ -264,13 +273,11 @@ public class PlayerAttack : MonoBehaviour
         {
             holdStartPos = cursorTrans.position;
             grabCnt = 0;
-
         }
 
         if (isHold)
         {
-
-            if (!isRange && !isGrabbing) 
+            if (!isRange && !isGrabbing && !isGrabSlider) 
             {
                 if (hit.collider)
                 {
@@ -487,23 +494,27 @@ public class PlayerAttack : MonoBehaviour
 
     void ActionCommand(Command command) 
     {
-        for (int i = 0; i < rightAttackers.Count; i++)
+        if (command != Command.Empty)
         {
-            if (command == rightAttackers[i].GetCommandKind()) 
+            for (int i = 0; i < rightAttackers.Count; i++)
             {
-                List<ISelectable> selectables = new List<ISelectable>();
-                for (int j = 0; j < selectingEnemies.Count; j++)
+                if (command == rightAttackers[i].GetCommandKind())
                 {
-                    ISelectable selectable = selectingEnemies[j].GetComponent<ISelectable>();
-                    if (selectable != null) 
+                    List<ISelectable> selectables = new List<ISelectable>();
+                    for (int j = 0; j < selectingEnemies.Count; j++)
                     {
-                        selectables.Add(selectable);
+                        ISelectable selectable = selectingEnemies[j].GetComponent<ISelectable>();
+                        if (selectable != null)
+                        {
+                            selectables.Add(selectable);
+                        }
                     }
-                }
 
-                rightAttackers[i].Command(commandMenu.transform.position,selectables);
+                    rightAttackers[i].Command(commandMenu.transform.position, selectables);
+                }
             }
         }
+        
     }
 
     private void GetMouseState() 
