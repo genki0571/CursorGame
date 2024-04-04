@@ -12,6 +12,9 @@ public class WarmEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWe
     Transform enemyTrans;
     Rigidbody2D rb;
 
+    [SerializeField] GameObject[] child;
+    [System.NonSerialized] public EnemyBase[] childEnemyBases;
+
     Vector3 enemyVelocity;
 
     Vector3 diffPlayerVec = Vector2.zero;
@@ -20,7 +23,8 @@ public class WarmEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWe
 
     Vector3 diffSpornPointVec;
 
-    [SerializeField] GameObject child;
+    Vector3[] WarmPointVec;
+
     const float ENEMY_SPEED = 4;
 
     const float ATTACK_RANGE_RADIUS = 2;
@@ -61,6 +65,10 @@ public class WarmEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWe
                 break;
             }
         }
+
+        childEnemyBases = new EnemyBase[child.Length];
+
+        WarmPointVec = new Vector3[child.Length];
 
         server = pcFieldController.server;
         serverTrans = server.transform;
@@ -126,20 +134,36 @@ public class WarmEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWe
         }
         else if (state == State.Stop)
         {
+            if (childEnemyBases[0].state == EnemyBase.State.Sleep && childEnemyBases[1].state == EnemyBase.State.Sleep)
+            {
+                Debug.Log("normal_death");
+                Reset();
+            }
+        }
+        else if (state == State.Death)
+        {
+            Debug.Log("Death");
 
+            var _parent = this.transform.parent;
+            diffSpornPointVec = new Vector3(Random.Range(SPORN_POINT_POS_MIN_X, SPORN_POINT_POS_MAX_X),
+                Random.Range(SPORN_POINT_POS_MIN_Y, SPORN_POINT_POS_MAX_Y), 0);
+            WarmPointVec[0] = SpornPoint1();
+            WarmPointVec[1] = SpornPoint2();
+            state = State.Stop;
+            for (int i = 0; i < child.Length; i++)
+            {
+                GameObject enemy = Instantiate(child[0], WarmPointVec[i], Quaternion.identity, _parent);
+                childEnemyBases[i] = enemy.GetComponent<EnemyBase>();
+                Debug.Log("GetChild");
+            }
+            transform.position = new Vector3(0, 50, 0);
         }
 
         if (hp <= 0)
         {
-            diffSpornPointVec = new Vector3(Random.Range(SPORN_POINT_POS_MIN_X, SPORN_POINT_POS_MAX_X),
-                Random.Range(SPORN_POINT_POS_MIN_Y, SPORN_POINT_POS_MAX_Y), 0);
-            Vector3 warm_point1 = SpornPoint1();
-            Vector3 warm_point2 = SpornPoint2();
-            Debug.Log(warm_point1);
-            Debug.Log(warm_point2);
-            Instantiate(child, warm_point1, Quaternion.identity);
-            Instantiate(child, warm_point2, Quaternion.identity);
-            Reset();
+            if (state != State.Stop && state != State.Sleep) state = State.Death;
+            else if (state == State.Sleep) state = State.Sleep;
+            else state = State.Stop;
         }
 
         //Element効果を付与されているとき

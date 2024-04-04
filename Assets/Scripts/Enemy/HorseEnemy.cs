@@ -230,9 +230,11 @@ public class HorseEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveW
         if (armer)
         {
             weekcount--;
+            damage *= 0.5f;
             if (weekcount <= 0)
             {
                 armer = false;
+                Debug.Log("armer break");
             }
         }
         DamageDisplay(enemyTrans.position + new Vector3(0, 0.5f, 0), damage * 2);

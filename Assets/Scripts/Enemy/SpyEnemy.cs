@@ -36,6 +36,8 @@ public class SpyEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWea
     const float WIND_SPEED = 20;
     const float WIND_MAX_SPEED = 60;
     const float FIRE_DURATION_DAMAGE = 5;
+
+    const float HIDE_DIS = 5.0f;
     Vector3 elemetnPoint;
 
     float fireDamageTimer = 0;
@@ -72,7 +74,7 @@ public class SpyEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWea
         diffWeekPointVec = new Vector3(Random.Range(-WEEK_POINT_POS_MAX_X, WEEK_POINT_POS_MAX_X),
             Random.Range(-WEEK_POINT_POS_MAX_Y, WEEK_POINT_POS_MAX_Y), 0);
 
-        Reset();
+       // Reset();
     }
 
     // Update is called once per frame
@@ -81,10 +83,11 @@ public class SpyEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWea
         HpDisplay();
 
         CursorDis = Vector3.Distance(Cursor.transform.position, enemyTrans.position);
-        if (CursorDis <= 0.5&&discovery==false)
+        if (CursorDis <= HIDE_DIS&&discovery==false)
         {
             state = State.Stop;
             hide = true;
+            Debug.Log("hide");
         }
         enemyVelocity = Vector3.zero;
         Vector2 serverVec = (serverTrans.position - enemyTrans.position);
@@ -134,7 +137,7 @@ public class SpyEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWea
         }
         else if (state == State.Stop)
         {
-            if (CursorDis > 0.5f)
+            if (CursorDis > HIDE_DIS)
             {
                 hide = false;
                 state = State.StateDecide;
