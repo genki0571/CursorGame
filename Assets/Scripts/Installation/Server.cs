@@ -4,13 +4,22 @@ using UnityEngine;
 
 public class Server : MonoBehaviour,IGrabbable
 {
+    static public Server instance;
+
     Transform serverTrans;
     bool isGrabed;
 
     Vector3 diffPlayerVec = Vector2.zero;
-    [SerializeField] PCFieldController pcFieldController;
+    PCFieldController pcFieldController => PCFieldController.instance;
 
-    float serverHp = 0;
+    public float maxServerHp = 100;
+    public float serverHp;
+
+    void Awake() 
+    {
+        instance = this;
+        serverHp = maxServerHp;
+    }
 
     // Start is called before the first frame update
     void Start()

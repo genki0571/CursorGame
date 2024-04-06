@@ -10,6 +10,8 @@ public class FireAndIceMixRangeAttack : MonoBehaviour,IHoldAttacker
     const float FIRE_DAMAGE = 10;
     const float ICE_DAMAGE = 5;
 
+    const float MAX_LENGTH = 5;
+
     GameObject holdDisplay;
 
     // Start is called before the first frame update
@@ -88,5 +90,10 @@ public class FireAndIceMixRangeAttack : MonoBehaviour,IHoldAttacker
             element = Element.FireAndIce;
         }
         return element;
+    }
+
+    public float GetMaxLength()
+    {
+        return MAX_LENGTH;
     }
 }

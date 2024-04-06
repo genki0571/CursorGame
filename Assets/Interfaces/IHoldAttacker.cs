@@ -11,4 +11,9 @@ public interface IHoldAttacker
         Element element = Element.Normal;
         return element;
     }
+
+    float GetMaxLength() 
+    {
+        return 0;
+    }
 }

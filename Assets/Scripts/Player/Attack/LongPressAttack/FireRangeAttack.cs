@@ -7,6 +7,8 @@ public class FireRangeAttack : MonoBehaviour,IHoldAttacker
     Element element = Element.Fire;
     const float FIRE_DAMAGE = 10;
 
+    const float MAX_LENGTH = 5;
+
     GameObject holdDisplay;
 
     // Start is called before the first frame update
@@ -41,5 +43,10 @@ public class FireRangeAttack : MonoBehaviour,IHoldAttacker
         {
             return element;
         }
+    }
+
+    public float GetMaxLength()
+    {
+        return MAX_LENGTH;
     }
 }

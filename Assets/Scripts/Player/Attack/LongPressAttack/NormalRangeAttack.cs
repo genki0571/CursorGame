@@ -7,6 +7,8 @@ public class NormalRangeAttack : MonoBehaviour,IHoldAttacker
     Element element = Element.Normal;
     const float DAMAGE = 5;
 
+    const float MAX_LENGTH = 5;
+
     GameObject holdDisplay;
 
     // Start is called before the first frame update
@@ -40,5 +42,10 @@ public class NormalRangeAttack : MonoBehaviour,IHoldAttacker
         {
             return element;
         }
+    }
+
+    public float GetMaxLength()
+    {
+        return MAX_LENGTH;
     }
 }

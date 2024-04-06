@@ -6,6 +6,8 @@ public class ThunderRangeAttack : MonoBehaviour,IHoldAttacker
 {
     const float THUNDER_DAMAGE = 10;
 
+    const float MAX_LENGTH = 5;
+
     GameObject holdDisplay;
 
     PCFieldController pcFieldController => PCFieldController.instance;
@@ -62,5 +64,10 @@ public class ThunderRangeAttack : MonoBehaviour,IHoldAttacker
     {
         Element element = Element.Thunder;
         return element;
+    }
+
+    public float GetMaxLength()
+    {
+        return MAX_LENGTH;
     }
 }

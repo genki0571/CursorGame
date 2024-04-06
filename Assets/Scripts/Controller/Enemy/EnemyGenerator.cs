@@ -11,6 +11,7 @@ public class EnemyGenerator : MonoBehaviour
     public int phaseNum = 0;
     public int phaseEnemyNum;
     int endPhaseNum;
+    bool popedSponer;
 
     private float popTimer;
     Vector2 cameraLeftLowPos;
@@ -69,6 +70,15 @@ public class EnemyGenerator : MonoBehaviour
         {
             if (phaseEnemyNum < phaseManagers[phaseNum].phaseEnemies.Length)
             {
+                if (!popedSponer)
+                {
+                    for (int j = 0; j < phaseManagers[phaseNum].sponers.Length; j++)
+                    {
+                        phaseManagers[phaseNum].sponers[j].Initialize(phaseManagers[phaseNum].sponerPos[j]);
+                    }
+                    popedSponer = true;
+                }
+
                 if (popTimer >= phaseManagers[phaseNum].GetPopInterval())
                 {
                     phaseManagers[phaseNum].phaseEnemyBases[phaseEnemyNum].Initialize();
@@ -98,6 +108,7 @@ public class EnemyGenerator : MonoBehaviour
                         //次のフェーズへ進む
                         phaseNum += 1;
                         phaseEnemyNum = 0;
+                        popedSponer = false;
                         break;
                     }
                 }

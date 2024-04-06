@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class RangeSelect : MonoBehaviour,IHoldAttacker
 {
+    const float MAX_LENGTH = 5;
+
     PlayerAttack playerAttack;
 
     GameObject holdDisplay;
@@ -45,5 +47,10 @@ public class RangeSelect : MonoBehaviour,IHoldAttacker
     public Element GetElementKind(Range range)
     {
         return Element.Empty;
+    }
+
+    public float GetMaxLength()
+    {
+        return MAX_LENGTH;
     }
 }

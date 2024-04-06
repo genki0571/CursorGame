@@ -7,6 +7,8 @@ public class ThunderAndWindMixRangeAttack : MonoBehaviour,IHoldAttacker
     const float THUNDER_DAMAGE = 10;
     const float WIND_DAMAGE = 0;
 
+    const float MAX_LENGTH = 5;
+
     GameObject holdDisplay;
     PlayerAttack playerAttack;
 
@@ -125,5 +127,10 @@ public class ThunderAndWindMixRangeAttack : MonoBehaviour,IHoldAttacker
             element = Element.ThunderAndWind;
         }
         return element;
+    }
+
+    public float GetMaxLength()
+    {
+        return MAX_LENGTH;
     }
 }

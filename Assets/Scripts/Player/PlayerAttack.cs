@@ -306,9 +306,21 @@ public class PlayerAttack : MonoBehaviour
             //範囲選択
             if (isRange) 
             {
+                Vector2 dirX = new Vector2((cursorPos.x - holdStartPos.x),0).normalized;
+                Vector2 dirY = new Vector2(0,(cursorPos.y - holdStartPos.y)).normalized;
                 float width = Mathf.Abs(cursorPos.x - holdStartPos.x);
                 float height = Mathf.Abs(cursorPos.y - holdStartPos.y);
-                Vector2 centerPos = holdStartPos + ((cursorPos - holdStartPos) / 2);
+                float maxLength = holdAttacker.GetMaxLength();
+                if (width >= maxLength) 
+                {
+                    width = maxLength;
+                }
+                if (height >= maxLength) 
+                {
+                    height = maxLength;
+                }
+                Vector2 centerVec = new Vector2(dirX.x * (width/2),dirY.y * (height/2));
+                Vector2 centerPos = holdStartPos + centerVec;
 
                 holdDisplay.transform.position = centerPos;
                 holdDisplay.transform.localScale = new Vector2(width, height);
@@ -323,79 +335,8 @@ public class PlayerAttack : MonoBehaviour
                     range = Range.Left;
                 }
 
-
                 //Mix判定
-                Virtical virtical = Virtical.Upper;
-                if (cursorPos.y >= holdStartPos.y)
-                {
-                    virtical = Virtical.Upper;
-                }
-                else if (cursorPos.y <= holdStartPos.y)
-                {
-                    virtical = Virtical.Lower;
-                }
-
-                Horizontal horizontal = Horizontal.Right;
-                if (cursorPos.x >= holdStartPos.x) 
-                {
-                    horizontal = Horizontal.Right;
-                }
-                else if(cursorPos.x <= holdStartPos.x) 
-                {
-                    horizontal = Horizontal.Left;
-                }
-
-                if (beforeVirtical == Virtical.Empty) 
-                {
-                    beforeVirtical = virtical;
-                }
-                if (beforeHorizontal == Horizontal.Empty) 
-                {
-                    beforeHorizontal = horizontal;
-                }
-
-
-                if (checkAxis == CheckAxis.Begin) 
-                {
-                    if (beforeHorizontal != horizontal)
-                    {
-                        checkAxis = CheckAxis.Virtical;
-                        mixCnt += 1;
-                    }
-                    else if(beforeVirtical != virtical)
-                    {
-                        checkAxis = CheckAxis.Horizontal;
-                        mixCnt += 1;
-                    }
-                }
-                else if (checkAxis == CheckAxis.Virtical)
-                {
-                    if (beforeVirtical != virtical)
-                    {
-                        checkAxis = CheckAxis.Horizontal;
-                        mixCnt += 1;
-                    }
-                }
-                else if (checkAxis == CheckAxis.Horizontal)
-                {
-                    if (beforeHorizontal != horizontal)
-                    {
-                        checkAxis = CheckAxis.Virtical;
-                        mixCnt += 1;
-                    }
-                }
-
-                beforeVirtical = virtical;
-                beforeHorizontal = horizontal;
-
-                if (mixCnt >= MIX_CNT)
-                {
-                    isMix = true;
-                }
-                else 
-                {
-                    isMix = false;
-                }
+                IsMix();
 
             }
 
@@ -524,5 +465,80 @@ public class PlayerAttack : MonoBehaviour
         isHold = playerInput.IsHold();
         isHoldStart = playerInput.IsHoldStart();
         isHoldEnd = playerInput.IsHoldEnd();
+    }
+
+    private void IsMix() 
+    {
+        Virtical virtical = Virtical.Upper;
+        if (cursorPos.y >= holdStartPos.y)
+        {
+            virtical = Virtical.Upper;
+        }
+        else if (cursorPos.y <= holdStartPos.y)
+        {
+            virtical = Virtical.Lower;
+        }
+
+        Horizontal horizontal = Horizontal.Right;
+        if (cursorPos.x >= holdStartPos.x)
+        {
+            horizontal = Horizontal.Right;
+        }
+        else if (cursorPos.x <= holdStartPos.x)
+        {
+            horizontal = Horizontal.Left;
+        }
+
+        if (beforeVirtical == Virtical.Empty)
+        {
+            beforeVirtical = virtical;
+        }
+        if (beforeHorizontal == Horizontal.Empty)
+        {
+            beforeHorizontal = horizontal;
+        }
+
+
+        if (checkAxis == CheckAxis.Begin)
+        {
+            if (beforeHorizontal != horizontal)
+            {
+                checkAxis = CheckAxis.Virtical;
+                mixCnt += 1;
+            }
+            else if (beforeVirtical != virtical)
+            {
+                checkAxis = CheckAxis.Horizontal;
+                mixCnt += 1;
+            }
+        }
+        else if (checkAxis == CheckAxis.Virtical)
+        {
+            if (beforeVirtical != virtical)
+            {
+                checkAxis = CheckAxis.Horizontal;
+                mixCnt += 1;
+            }
+        }
+        else if (checkAxis == CheckAxis.Horizontal)
+        {
+            if (beforeHorizontal != horizontal)
+            {
+                checkAxis = CheckAxis.Virtical;
+                mixCnt += 1;
+            }
+        }
+
+        beforeVirtical = virtical;
+        beforeHorizontal = horizontal;
+
+        if (mixCnt >= MIX_CNT)
+        {
+            isMix = true;
+        }
+        else
+        {
+            isMix = false;
+        }
     }
 }

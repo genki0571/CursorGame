@@ -13,17 +13,26 @@ public class PhaseManager : MonoBehaviour
     [SerializeField] public float minPopInterval;
     [SerializeField] public float maxPopInterval;
 
+    [SerializeField] public EnemySponer[] sponers;
+    [SerializeField] public Vector2[] sponerPos;
+
+    GameObject phaseObjPool;
+
     private void Awake()
     {
         phaseEnemies = new GameObject[phaseEnemyPrefabs.Length];
         phaseEnemyBases = new EnemyBase[phaseEnemyPrefabs.Length];
-        GameObject phaseObjPool = new GameObject("Phase" + phaseNum + "EnemyPool");
+        phaseObjPool = new GameObject("Phase" + phaseNum + "EnemyPool");
         for (int i = 0; i < phaseEnemies.Length; i++)
         {
             GameObject enemy = Instantiate(phaseEnemyPrefabs[i], transform.position, Quaternion.identity);
             enemy.transform.parent = phaseObjPool.transform;
             phaseEnemies[i] = enemy;
             phaseEnemyBases[i] = enemy.GetComponent<EnemyBase>();
+        }
+        for (int i = 0; i < sponers.Length; i++)
+        {
+            sponers[i].phaseObjPool = phaseObjPool;
         }
     }
 

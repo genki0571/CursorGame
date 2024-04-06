@@ -31,13 +31,13 @@ public class EnemyBase : MonoBehaviour
 
 
     public PCFieldController pcFieldController => PCFieldController.instance;
-    public Server server;
-    public Transform serverTrans;
+    [System.NonSerialized] public Server server;
+    [System.NonSerialized] public Transform serverTrans;
 
-    public Transform enemyTrans;
-    public Rigidbody2D rb;
+    [System.NonSerialized] public Transform enemyTrans;
+    [System.NonSerialized] public Rigidbody2D rb;
 
-    public Vector3 enemyVelocity;
+    [System.NonSerialized] public Vector3 enemyVelocity;
 
     const float ENEMY_SPEED = 2;
 
