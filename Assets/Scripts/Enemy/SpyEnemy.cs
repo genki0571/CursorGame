@@ -12,7 +12,8 @@ public class SpyEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWea
     Transform enemyTrans;
     Rigidbody2D rb;
 
-    GameObject Cursor;
+    PlayerAttack playerAttack => PlayerAttack.instance;
+    Transform cursorTrans;
 
     Vector3 enemyVelocity;
 
@@ -43,10 +44,10 @@ public class SpyEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWea
     float fireDamageTimer = 0;
     float elementTimer = 0;
 
-    float CursorDis;
+    float cursorDisSqr;
 
-    bool hide;
-    bool discovery;
+    bool isHide;
+    bool isDiscovered;
     // Start is called before the first frame update
     void Start()
     {
@@ -66,10 +67,10 @@ public class SpyEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWea
         serverTrans = server.transform;
         enemyTrans = this.GetComponent<Transform>();
         rb = GetComponent<Rigidbody2D>();
-        Cursor = GameObject.Find("Player");
+        cursorTrans = playerAttack.transform;
 
-        hide = false;
-        discovery = false;
+        isHide = false;
+        isDiscovered = false;
         
         diffWeekPointVec = new Vector3(Random.Range(-WEEK_POINT_POS_MAX_X, WEEK_POINT_POS_MAX_X),
             Random.Range(-WEEK_POINT_POS_MAX_Y, WEEK_POINT_POS_MAX_Y), 0);
@@ -82,11 +83,11 @@ public class SpyEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWea
     {
         HpDisplay();
 
-        CursorDis = Vector3.Distance(Cursor.transform.position, enemyTrans.position);
-        if (CursorDis <= HIDE_DIS&&discovery==false)
+        cursorDisSqr = (cursorTrans.position - enemyTrans.position).sqrMagnitude;
+        if (cursorDisSqr <= HIDE_DIS * HIDE_DIS&&isDiscovered==false)
         {
             state = State.Stop;
-            hide = true;
+            isHide = true;
             Debug.Log("hide");
         }
         enemyVelocity = Vector3.zero;
@@ -137,9 +138,9 @@ public class SpyEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWea
         }
         else if (state == State.Stop)
         {
-            if (CursorDis > HIDE_DIS)
+            if (cursorDisSqr > HIDE_DIS * HIDE_DIS)
             {
-                hide = false;
+                isHide = false;
                 state = State.StateDecide;
             }
         }
@@ -225,7 +226,7 @@ public class SpyEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWea
 
     public void AddDamage(float damage)
     {
-        if (hide)
+        if (isHide)
         {
             damage *= 0;
             Debug.Log(this.name + ":" + "hide");
@@ -278,10 +279,10 @@ public class SpyEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWea
 
     public void Open()
     {
-        if (state == State.Stop && hide)
+        if (state == State.Stop && isHide)
         {
-            discovery = true;
-            hide = false;
+            isDiscovered = true;
+            isHide = false;
         }
         Debug.Log("Open" + ":" + this.name);
     }

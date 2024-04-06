@@ -39,7 +39,7 @@ public class BombEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWe
     float fireDamageTimer = 0;
     float elementTimer = 0;
     float bombTimer = 0;
-    float hp_check = 0;
+    float hpCheck = 0;
 
     int count = 3;
 
@@ -66,7 +66,7 @@ public class BombEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWe
         diffWeekPointVec = new Vector3(Random.Range(-WEEK_POINT_POS_MAX_X, WEEK_POINT_POS_MAX_X),
             Random.Range(-WEEK_POINT_POS_MAX_Y, WEEK_POINT_POS_MAX_Y), 0);
 
-        hp_check = hp;
+        hpCheck = hp;
         Reset();
     }
 
@@ -213,11 +213,11 @@ public class BombEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWe
         }
 
         rb.velocity = enemyVelocity;
-        if (hp < hp_check)
+        if (hp < hpCheck)
         {
             state = State.Stop;
         }
-        hp_check = hp;
+        hpCheck = hp;
     }
 
     public void AddDamage(float damage)

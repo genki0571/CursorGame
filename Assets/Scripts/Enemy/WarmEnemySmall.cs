@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class WarmEnemy_small : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWeakPoint
+public class WarmEnemySmall : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWeakPoint
 {
 
     Vector3 diffPlayerVec = Vector2.zero;

@@ -39,8 +39,8 @@ public class HorseEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveW
     float fireDamageTimer = 0;
     float elementTimer = 0;
 
-    bool armer;
-    int weekcount = 0;
+    bool have_armer;
+    int weekCount = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -64,7 +64,7 @@ public class HorseEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveW
         diffWeekPointVec = new Vector3(Random.Range(-WEEK_POINT_POS_MAX_X, WEEK_POINT_POS_MAX_X),
             Random.Range(-WEEK_POINT_POS_MAX_Y, WEEK_POINT_POS_MAX_Y), 0);
 
-        armer = true;
+        have_armer = true;
     }
 
     // Update is called once per frame
@@ -204,7 +204,7 @@ public class HorseEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveW
 
     public void AddDamage(float damage)
     {
-        if (armer)
+        if (have_armer)
         {
             Debug.Log("block");
             damage *= 0.2f;
@@ -227,13 +227,13 @@ public class HorseEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveW
 
     public void AddWeakDamage(float damage)
     {
-        if (armer)
+        if (have_armer)
         {
-            weekcount--;
+            weekCount--;
             damage *= 0.5f;
-            if (weekcount <= 0)
+            if (weekCount <= 0)
             {
-                armer = false;
+                have_armer = false;
                 Debug.Log("armer break");
             }
         }

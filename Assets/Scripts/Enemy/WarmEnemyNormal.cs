@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class WarmEnemy_normal : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWeakPoint
+public class WarmEnemyNormal : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWeakPoint
 {
     PCFieldController pcFieldController => PCFieldController.instance;
     Server server;
