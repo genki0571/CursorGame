@@ -10,69 +10,45 @@ public class ScanWeakPoint : MonoBehaviour,IRightAttacker
     Command command = global::Command.Scan;
 
     [SerializeField] List<GameObject> activeEnemies = new List<GameObject>();
-    List<Transform> targetObjs = new List<Transform>();
-
+    List<WeekPoint> weekPoints = new List<WeekPoint>();
+   
     bool isScanning;
     const float SCAN_INTERVAL = 3f;
-    float scanTimer = 0;
 
     // Start is called before the first frame update
     void Start()
     {
         activeEnemies = enemyGenerator.activeEnemies;
-        targetObjs = pcFieldController.targetObjs;
+        weekPoints = pcFieldController.weekPoints;
     }
 
     // Update is called once per frame
     void Update()
     {
 
-        if (isScanning)
-        {
-            if (scanTimer <= SCAN_INTERVAL)
-            {
-                scanTimer += Time.deltaTime;
-            }
-            if (scanTimer >= SCAN_INTERVAL) 
-            {
-                scanTimer = 0;
-                isScanning = false;
-
-                for (int i = 0; i < targetObjs.Count; i++)
-                {
-                    if (targetObjs[i].position.y != 100)
-                    {
-                        targetObjs[i].position = new Vector3(0,100,0);
-                    }
-                }
-            }
-            else 
-            {
-                int num = 0;
-                for (int i = 0; i < activeEnemies.Count; i++)
-                {
-                    if (activeEnemies[i] != null)
-                    {
-                        IHaveWeakPoint haveWeakPoint = activeEnemies[i].GetComponent<IHaveWeakPoint>();
-                        if (haveWeakPoint != null)
-                        {
-                            targetObjs[num].position = haveWeakPoint.GetWeekPoint();
-                            num++;
-                        }
-                    }
-                }
-            }
-        }
-        else 
-        {
-            
-            scanTimer = 0;
-        }
     }
 
     public void Command(Vector3 pos, List<ISelectable> selectDamagables)
     {
         isScanning = true;
+        for (int i = 0; i < activeEnemies.Count; i++)
+        {
+            if (activeEnemies[i] != null)
+            {
+                IHaveWeakPoint haveWeakPoint = activeEnemies[i].GetComponent<IHaveWeakPoint>();
+                if (haveWeakPoint != null)
+                {
+                    for (int j = 0; j < weekPoints.Count; j++)
+                    {
+                        if (weekPoints[j].isSleep) 
+                        {
+                            weekPoints[j].ShowPoint(haveWeakPoint, SCAN_INTERVAL);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public Command GetCommandKind()

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FireWallFirstAttack : MonoBehaviour,IRightAttacker
+public class FireWallAttack : MonoBehaviour,IRightAttacker
 {
-    int level = 2;
+    public int level = 0;
     const float FIRE_DAMAGE = 10;
 
     Command command = global::Command.FireWall;

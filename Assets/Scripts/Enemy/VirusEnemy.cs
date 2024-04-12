@@ -1,11 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
-public class TestEnemy : EnemyBase,IDamagable,ISelectable,IGrabbable,IHaveWeakPoint
+public class VirusEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWeakPoint
 {
-
     Vector3 diffPlayerVec = Vector2.zero;
 
     Vector3 diffWeekPointVec;
@@ -25,13 +23,20 @@ public class TestEnemy : EnemyBase,IDamagable,ISelectable,IGrabbable,IHaveWeakPo
     float fireDamageTimer = 0;
     float elementTimer = 0;
 
+    const float ATTACK_CURSOR_SPEED = 4;
+    float attackCursorTimer = 0;
+    const float ATTACK_CURSOR_INTERVAL = 3f;
+    List<EnemyAttack> enemyAttacks;
+
     // Start is called before the first frame update
-    public  override void Start()
+    public override void Start()
     {
         base.Start();
 
         diffWeekPointVec = new Vector3(Random.Range(-WEEK_POINT_POS_MAX_X, WEEK_POINT_POS_MAX_X),
             Random.Range(-WEEK_POINT_POS_MAX_Y, WEEK_POINT_POS_MAX_Y), 0);
+
+        enemyAttacks = pcFieldController.enemyAttacks;
     }
 
     // Update is called once per frame
@@ -41,10 +46,37 @@ public class TestEnemy : EnemyBase,IDamagable,ISelectable,IGrabbable,IHaveWeakPo
 
         CheckElement();
 
+        if (state != State.Sleep) 
+        {
+            attackCursorTimer += Time.deltaTime;
+            if (attackCursorTimer >= ATTACK_CURSOR_INTERVAL)
+            {
+                AttackCursor();
+                attackCursorTimer = 0;
+            }
+        }
+        
+
         rb.velocity = enemyVelocity;
     }
 
-    private void CheckElement() 
+    void AttackCursor() 
+    {
+        for (int i = 0; i < 8; i++)
+        {
+            Vector3 dir = Quaternion.Euler(0,0,45 * i) * new Vector3(0,1,0);
+            for (int j = 0; j < enemyAttacks.Count; j++)
+            {
+                if (enemyAttacks[j].isSleep) 
+                {
+                    enemyAttacks[j].Initialize(enemyTrans.position,dir,ATTACK_CURSOR_SPEED);
+                    break;
+                }
+            }
+        }
+    }
+    
+    private void CheckElement()
     {
         //Element効果を付与されているとき
         if (haveElement != Element.Empty)
@@ -117,16 +149,16 @@ public class TestEnemy : EnemyBase,IDamagable,ISelectable,IGrabbable,IHaveWeakPo
         }
     }
 
-    public void AddDamage(float damage) 
+    public void AddDamage(float damage)
     {
-        DamageDisplay(enemyTrans.position + new Vector3(0,0.5f,0),damage);
+        DamageDisplay(enemyTrans.position + new Vector3(0, 0.5f, 0), damage);
         hp -= damage;
     }
 
-    public void AddElement(Element element,Vector3 centerPos) 
+    public void AddElement(Element element, Vector3 centerPos)
     {
         bool changeHaveElement = (haveElement != element);
-        if (changeHaveElement) 
+        if (changeHaveElement)
         {
             elementTimer = 0;
         }
@@ -145,7 +177,7 @@ public class TestEnemy : EnemyBase,IDamagable,ISelectable,IGrabbable,IHaveWeakPo
     {
         bool isAttackWeekPoint = false;
         float sqrDistance = (pos - (enemyTrans.position + diffWeekPointVec)).sqrMagnitude;
-        if (sqrDistance <= WEEK_POINT_RADIUS*WEEK_POINT_RADIUS) 
+        if (sqrDistance <= WEEK_POINT_RADIUS * WEEK_POINT_RADIUS)
         {
             isAttackWeekPoint = true;
         }
@@ -153,7 +185,7 @@ public class TestEnemy : EnemyBase,IDamagable,ISelectable,IGrabbable,IHaveWeakPo
         return isAttackWeekPoint;
     }
 
-    public Vector3 GetWeekPoint() 
+    public Vector3 GetWeekPoint()
     {
         return (enemyTrans.position + diffWeekPointVec);
     }
@@ -163,7 +195,7 @@ public class TestEnemy : EnemyBase,IDamagable,ISelectable,IGrabbable,IHaveWeakPo
         //セレクト中を表示
     }
 
-    public void Open() 
+    public void Open()
     {
         Debug.Log("Open" + ":" + this.name);
     }
@@ -178,7 +210,7 @@ public class TestEnemy : EnemyBase,IDamagable,ISelectable,IGrabbable,IHaveWeakPo
 
     public void Grabbing(Transform cursorTrans)
     {
-        if (state != State.Grabed) 
+        if (state != State.Grabed)
         {
             diffPlayerVec = enemyTrans.position - cursorTrans.position;
         }
@@ -186,7 +218,7 @@ public class TestEnemy : EnemyBase,IDamagable,ISelectable,IGrabbable,IHaveWeakPo
         state = State.Grabed;
     }
 
-    public void Putting() 
+    public void Putting()
     {
         state = State.StateDecide;
     }

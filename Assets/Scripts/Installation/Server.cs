@@ -11,9 +11,18 @@ public class Server : MonoBehaviour,IGrabbable
 
     Vector3 diffPlayerVec = Vector2.zero;
     PCFieldController pcFieldController => PCFieldController.instance;
+    PlayerState playerState => PlayerState.instance;
+    Transform playerTrans;
 
     public float maxServerHp = 100;
     public float serverHp;
+
+    [SerializeField] float recoveryRadius;
+    int recoveryAmount = 1;
+    float recoveryTimer = 0;
+    const float RECOVERY_INTERVAL = 4f;
+
+    public bool isConnection;
 
     void Awake() 
     {
@@ -25,13 +34,36 @@ public class Server : MonoBehaviour,IGrabbable
     void Start()
     {
         serverTrans = GetComponent<Transform>();
+        playerTrans = playerState.transform;
         Putting();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        float sqrDis = (playerTrans.position - serverTrans.position).sqrMagnitude;
+        if (sqrDis <= recoveryRadius * recoveryRadius) 
+        {
+            isConnection = true;
+        }
+        else 
+        {
+            recoveryTimer = 0;
+            isConnection = false;
+        }
+
+        if (isConnection) 
+        {
+            if (!playerState.isDead) 
+            {
+                recoveryTimer += Time.deltaTime;
+                if (recoveryTimer >= RECOVERY_INTERVAL)
+                {
+                    playerState.Recovery(recoveryAmount);
+                    recoveryTimer = 0;
+                }
+            }
+        }
     }
 
     public void Grabbing(Transform cursorTrans)
@@ -56,5 +88,6 @@ public class Server : MonoBehaviour,IGrabbable
     public void AddDamage(float damage) 
     {
         serverHp -= damage;
+        Debug.Log("Server:"+damage);
     }
 }

@@ -24,6 +24,11 @@ public class EnemyGenerator : MonoBehaviour
 
     [System.NonSerialized] public List<GameObject> activeEnemies = new List<GameObject>();
 
+    [SerializeField] GameObject SponeDirObjUpper;
+    [SerializeField] GameObject SponeDirObjLower;
+    [SerializeField] GameObject SponeDirObjLeft;
+    [SerializeField] GameObject SponeDirObjRight;
+
     private void Awake()
     {
         instance = this;
@@ -114,7 +119,8 @@ public class EnemyGenerator : MonoBehaviour
                 }
             }
         }
-        
+
+        ShowSponeDir();
 
         if (phaseNum > endPhaseNum) 
         {
@@ -129,23 +135,54 @@ public class EnemyGenerator : MonoBehaviour
         switch (rand)
         {
             case 0://上から
-                popPos.y = rightUpperPopPos.y;
-                popPos.x = (Random.Range(leftLowPopPos.x, rightUpperPopPos.x));
+                if (phaseManagers[phaseNum].canSponeUpper)
+                {
+                    popPos.y = rightUpperPopPos.y;
+                    popPos.x = (Random.Range(leftLowPopPos.x, rightUpperPopPos.x));
+                }
                 break;
             case 1://右から
-                popPos.x = rightUpperPopPos.x;
-                popPos.y = (Random.Range(leftLowPopPos.y, rightUpperPopPos.y));
+                if (phaseManagers[phaseNum].canUpperRight)
+                {
+                    popPos.x = rightUpperPopPos.x;
+                    popPos.y = (Random.Range(leftLowPopPos.y, rightUpperPopPos.y));
+                }
                 break;
             case 2://下から
-                popPos.y = leftLowPopPos.y;
-                popPos.x = (Random.Range(leftLowPopPos.x, rightUpperPopPos.x));
+                if (phaseManagers[phaseNum].canSponeLower)
+                {
+                    popPos.y = leftLowPopPos.y;
+                    popPos.x = (Random.Range(leftLowPopPos.x, rightUpperPopPos.x));
+                }
                 break;
             case 3://左から
-                popPos.x = leftLowPopPos.x;
-                popPos.y = (Random.Range(leftLowPopPos.y, rightUpperPopPos.y));
+                if (phaseManagers[phaseNum].canUpperLeft)
+                {
+                    popPos.x = leftLowPopPos.x;
+                    popPos.y = (Random.Range(leftLowPopPos.y, rightUpperPopPos.y));
+                }
                 break;
         }
 
+        if (popPos == Vector3.zero) 
+        {
+            popPos = GetPopPos();
+        }
         return popPos;
+    }
+
+    void ShowSponeDir() 
+    {
+        if (SponeDirObjUpper != null) 
+        {
+            if (phaseNum < phaseManagers.Length)
+            {
+                PhaseManager phase = phaseManagers[phaseNum];
+                SponeDirObjUpper.SetActive(phase.canSponeUpper);
+                SponeDirObjLower.SetActive(phase.canSponeLower);
+                SponeDirObjLeft.SetActive(phase.canUpperLeft);
+                SponeDirObjRight.SetActive(phase.canUpperRight);
+            }
+        }
     }
 }

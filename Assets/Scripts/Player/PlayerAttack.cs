@@ -40,6 +40,7 @@ public enum Range
 public class PlayerAttack : MonoBehaviour
 {
     static public PlayerAttack instance;
+    PlayerState playerState => PlayerState.instance;
 
     PlayerInput playerInput => PlayerInput.instance;
     PCFieldController pcFieldController => PCFieldController.instance;
@@ -99,27 +100,13 @@ public class PlayerAttack : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //仮
-        var leftAttack = gameObject.AddComponent<DoubleClickAttack>();
-        var holdAttack = gameObject.AddComponent<FireAndIceMixRangeAttack>();
-        var rightAttack0 = gameObject.AddComponent<FallTextAttack>();
-        var rightAttack1 = gameObject.AddComponent<InstallTxtTallet>();
-        var rightAttack2 = gameObject.AddComponent<OpenAttack>();
-        var rightAttack3 = gameObject.AddComponent<DeleteAttack>();
-        var rightAttack4 = gameObject.AddComponent<InstallPngBuster>();
-        var rightAttack5 = gameObject.AddComponent<FireWallFirstAttack>();
-        var rightAttack6 = gameObject.AddComponent<ScanWeakPoint>();
-        var rightAttack7 = gameObject.AddComponent<InstallZipFile>();
-        leftAttacker = leftAttack.GetComponent<ILeftAttacker>();
-        holdAttacker = holdAttack.GetComponent<IHoldAttacker>();
-        rightAttackers.Add(rightAttack0);
-        rightAttackers.Add(rightAttack1);
-        rightAttackers.Add(rightAttack2);
-        rightAttackers.Add(rightAttack3);
-        rightAttackers.Add(rightAttack4);
-        rightAttackers.Add(rightAttack5);
-        rightAttackers.Add(rightAttack6);
-        rightAttackers.Add(rightAttack7);
+        leftAttacker = GetComponent<ILeftAttacker>();
+        holdAttacker = GetComponent<IHoldAttacker>();
+        IRightAttacker[] rAttackers = GetComponents<IRightAttacker>();
+        for (int i = 0; i < rAttackers.Length; i++)
+        {
+            rightAttackers.Add(rAttackers[i]);
+        }
 
         cursorTrans = GetComponent<Transform>();
 
@@ -133,161 +120,184 @@ public class PlayerAttack : MonoBehaviour
 
         //マウスの入力状態の取得
         GetMouseState();
+        if (playerState.IsVirus(Virus.ClickInvert) && !playerState.isDead) 
+        {
+            bool temp = isRightClick;
+            isRightClick = isLeftClick;
+            isLeftClick = temp;
+        }
 
 
         cursorPos = cursorTrans.position;
 
-        Ray2D ray = new Ray2D(transform.position, transform.forward);
-        RaycastHit2D hit = new RaycastHit2D();
-        if (isRightClick || isLeftClick || isHold || beforeHold) 
+        if (!playerState.isDead) 
         {
-            int layerMask = ~(1 << LayerMask.NameToLayer("RangeCheck"));
-            hit = Physics2D.Raycast(ray.origin, ray.direction, 1f,layerMask);
-        }
-        IButton button = null;
-        IDamagable damagable = null;
-        ISelectable selectable = null;
-        if (hit.collider) 
-        {
-            button = hit.transform.GetComponent<IButton>();
-            damagable = hit.transform.GetComponent<IDamagable>();
-            selectable = hit.transform.GetComponent<ISelectable>();
-        }
-
-        if (selectingEnemies.Count == 0)
-        {
-            isSelectEnemy = false;
-        }
-        else 
-        {
-            isSelectEnemy = true;
-        }
-
-
-        //左クリックしたとき
-        if (isLeftClick) 
-        {
-            bool alreadyAttack = false;
-
+            Ray2D ray = new Ray2D(transform.position, transform.forward);
+            RaycastHit2D hit = new RaycastHit2D();
+            if (isRightClick || isLeftClick || isHold || beforeHold)
+            {
+                int layerMask = ~(1 << LayerMask.NameToLayer("RangeCheck"));
+                hit = Physics2D.Raycast(ray.origin, ray.direction, 1f, layerMask);
+            }
+            IButton button = null;
+            IDamagable damagable = null;
+            ISelectable selectable = null;
             if (hit.collider)
             {
-                if (button != null)
-                {
-                    Command command = button.Pushed();
-                    ActionCommand(command);
-                    alreadyAttack = true;
-                }
+                button = hit.transform.GetComponent<IButton>();
+                damagable = hit.transform.GetComponent<IDamagable>();
+                selectable = hit.transform.GetComponent<ISelectable>();
             }
 
-            //攻撃を使用
-            if (!alreadyAttack)
+            if (selectingEnemies.Count == 0)
             {
-                Transform hitTrans = null;
-                GameObject hitObj = null;
-                if (hit.collider) 
-                {
-                    hitTrans = hit.transform;
-                    hitObj = hit.transform.gameObject;
-                }
-
-                if (selectingEnemies.Count >= 2) 
-                {
-                    bool multiplePossible = false;
-                    for (int i = 0; i < selectingEnemies.Count; i++)
-                    {
-                        if (selectingEnemies[i] == hitObj) 
-                        {
-                            multiplePossible = true;
-                            break;
-                        }
-                    }
-                    Debug.Log(multiplePossible);
-                    if (multiplePossible) 
-                    {
-                        for (int i = 0; i < selectingEnemies.Count; i++)
-                        {
-                            leftAttacker.Attack(cursorTrans,selectingEnemies[i].transform);
-                        }
-                    }
-                }
-                else 
-                {
-                    leftAttacker.Attack(cursorTrans, hitTrans);
-                }
+                isSelectEnemy = false;
+            }
+            else
+            {
+                isSelectEnemy = true;
             }
 
 
-            //選択を解除
-            selectingEnemies.Clear();
-            commandMenu.SetActive(false);
-        }
-
-        //右クリックした時
-        if (isRightClick)
-        {
-            if (hit.collider)
+            //左クリックしたとき
+            if (isLeftClick)
             {
-                if (button != null)
-                {
-                    Command command = button.Pushed();
-                    ActionCommand(command);
+                bool alreadyAttack = false;
 
-                    //選択を解除
-                    selectingEnemies.Clear();
-                    commandMenu.SetActive(false);
-                }
-                else 
-                {
-                    commandMenu.transform.position = cursorPos;
-                    commandMenu.SetActive(true);
-                }
-
-                if (selectable != null) 
-                {
-                    bool already = false;
-                    for (int i = 0; i < selectingEnemies.Count; i++)
-                    {
-                        if (hit.transform.gameObject == selectingEnemies[i])
-                        {
-                            already = true;
-                        }
-                    }
-
-                    if (!already)
-                    {
-                        selectingEnemies.Add(hit.transform.gameObject);
-                    }
-                }
-            }
-            else 
-            {
-                //選択を解除
-                selectingEnemies.Clear();
-
-                commandMenu.transform.position = cursorPos;
-                commandMenu.SetActive(true);
-            }
-        }
-
-        if (isHoldStart)
-        {
-            holdStartPos = cursorTrans.position;
-            grabCnt = 0;
-        }
-
-        if (isHold)
-        {
-            if (!isRange && !isGrabbing && !isGrabSlider) 
-            {
                 if (hit.collider)
                 {
-                    grabbable = hit.transform.GetComponent<IGrabbable>();
-                    if (grabbable != null)
+                    if (button != null)
                     {
-                        grabCnt += 1;
-                        if (grabCnt >= GRAB_FRAME_INTERVAL) 
+                        Command command = button.Pushed();
+                        ActionCommand(command);
+                        alreadyAttack = true;
+                    }
+                }
+
+
+                if (!playerState.IsVirus(Virus.CannotLeftClick))
+                {
+                    //攻撃を使用
+                    if (!alreadyAttack)
+                    {
+                        Transform hitTrans = null;
+                        GameObject hitObj = null;
+                        if (hit.collider)
                         {
-                            isGrabbing = true;
+                            hitTrans = hit.transform;
+                            hitObj = hit.transform.gameObject;
+                        }
+
+                        if (selectingEnemies.Count >= 2)
+                        {
+                            bool multiplePossible = false;
+                            for (int i = 0; i < selectingEnemies.Count; i++)
+                            {
+                                if (selectingEnemies[i] == hitObj)
+                                {
+                                    multiplePossible = true;
+                                    break;
+                                }
+                            }
+                            Debug.Log(multiplePossible);
+                            if (multiplePossible)
+                            {
+                                for (int i = 0; i < selectingEnemies.Count; i++)
+                                {
+                                    leftAttacker.Attack(cursorTrans, selectingEnemies[i].transform);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            leftAttacker.Attack(cursorTrans, hitTrans);
+                        }
+                    }
+
+                }
+
+
+                //選択を解除
+                selectingEnemies.Clear();
+                commandMenu.SetActive(false);
+            }
+
+            //右クリックした時
+            if (isRightClick)
+            {
+                if (!playerState.IsVirus(Virus.CannotRightClick))
+                {
+                    if (hit.collider)
+                    {
+                        if (button != null)
+                        {
+                            Command command = button.Pushed();
+                            ActionCommand(command);
+
+                            //選択を解除
+                            selectingEnemies.Clear();
+                            commandMenu.SetActive(false);
+                        }
+                        else
+                        {
+                            commandMenu.transform.position = cursorPos;
+                            commandMenu.SetActive(true);
+                        }
+
+                        if (selectable != null)
+                        {
+                            bool already = false;
+                            for (int i = 0; i < selectingEnemies.Count; i++)
+                            {
+                                if (hit.transform.gameObject == selectingEnemies[i])
+                                {
+                                    already = true;
+                                }
+                            }
+
+                            if (!already)
+                            {
+                                selectingEnemies.Add(hit.transform.gameObject);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        //選択を解除
+                        selectingEnemies.Clear();
+
+                        commandMenu.transform.position = cursorPos;
+                        commandMenu.SetActive(true);
+                    }
+                }
+
+            }
+
+            if (isHoldStart)
+            {
+                holdStartPos = cursorTrans.position;
+                grabCnt = 0;
+            }
+
+            if (isHold)
+            {
+                if (!isRange && !isGrabbing && !isGrabSlider)
+                {
+                    if (hit.collider)
+                    {
+                        grabbable = hit.transform.GetComponent<IGrabbable>();
+                        if (grabbable != null)
+                        {
+                            grabCnt += 1;
+                            if (grabCnt >= GRAB_FRAME_INTERVAL)
+                            {
+                                isGrabbing = true;
+                            }
+                        }
+                        else
+                        {
+                            isRange = true;
+                            isGrabbing = false;
                         }
                     }
                     else
@@ -296,140 +306,149 @@ public class PlayerAttack : MonoBehaviour
                         isGrabbing = false;
                     }
                 }
-                else
+
+                if (playerState.IsVirus(Virus.CannnotHold))
                 {
-                    isRange = true;
+                    isRange = false;
+                }
+                if (playerState.IsVirus(Virus.CannotGrab))
+                {
                     isGrabbing = false;
                 }
-            }
 
-            //範囲選択
-            if (isRange) 
-            {
-                Vector2 dirX = new Vector2((cursorPos.x - holdStartPos.x),0).normalized;
-                Vector2 dirY = new Vector2(0,(cursorPos.y - holdStartPos.y)).normalized;
-                float width = Mathf.Abs(cursorPos.x - holdStartPos.x);
-                float height = Mathf.Abs(cursorPos.y - holdStartPos.y);
-                float maxLength = holdAttacker.GetMaxLength();
-                if (width >= maxLength) 
+                //範囲選択
+                if (isRange)
                 {
-                    width = maxLength;
-                }
-                if (height >= maxLength) 
-                {
-                    height = maxLength;
-                }
-                Vector2 centerVec = new Vector2(dirX.x * (width/2),dirY.y * (height/2));
-                Vector2 centerPos = holdStartPos + centerVec;
-
-                holdDisplay.transform.position = centerPos;
-                holdDisplay.transform.localScale = new Vector2(width, height);
-                holdDisplay.SetActive(true);
-
-                if (cursorPos.x >= holdStartPos.x)
-                {
-                    range = Range.Right;
-                }
-                else if(cursorPos.x <= holdStartPos.x)
-                {
-                    range = Range.Left;
-                }
-
-                //Mix判定
-                IsMix();
-
-            }
-
-            //つかむ
-            if (isGrabbing)
-            {
-                grabbable.Grabbing(cursorTrans);
-                for (int i = 0; i < selectingEnemies.Count; i++)
-                {
-                    IGrabbable grabbable = selectingEnemies[i].GetComponent<IGrabbable>();
-                    if (grabbable != null) 
+                    Vector2 dirX = new Vector2((cursorPos.x - holdStartPos.x), 0).normalized;
+                    Vector2 dirY = new Vector2(0, (cursorPos.y - holdStartPos.y)).normalized;
+                    float width = Mathf.Abs(cursorPos.x - holdStartPos.x);
+                    float height = Mathf.Abs(cursorPos.y - holdStartPos.y);
+                    float maxLength = holdAttacker.GetMaxLength();
+                    if (width >= maxLength)
                     {
-                        grabbable.Grabbing(cursorTrans);
+                        width = maxLength;
                     }
-                }
-            }
-        }
-        else 
-        {
-            if (beforeHold)
-            {
-                Debug.Log("長押し解除");
-
-                //範囲選択攻撃
-                if (isMix)
-                {
-                    if (holdAttacker.GetElementKind(Range.Mix) != Element.Empty)
+                    if (height >= maxLength)
                     {
-                        range = Range.Mix;
+                        height = maxLength;
                     }
-                    holdAttacker.Attack(null, range);
-                }
-                else 
-                {
-                    for (int i = 0; i < withinRangeEnemies.Count; i++)
+                    Vector2 centerVec = new Vector2(dirX.x * (width / 2), dirY.y * (height / 2));
+                    Vector2 centerPos = holdStartPos + centerVec;
+
+                    holdDisplay.transform.position = centerPos;
+                    holdDisplay.transform.localScale = new Vector2(width, height);
+                    holdDisplay.SetActive(true);
+
+                    if (cursorPos.x >= holdStartPos.x)
                     {
-                        holdAttacker.Attack(withinRangeEnemies[i], range);
+                        range = Range.Right;
                     }
-                }
-                
-                //Mix関連の情報の初期化
-                beforeHorizontal = Horizontal.Empty;
-                beforeVirtical = Virtical.Empty;
-                isMix = false;
-                mixCnt = 0;
-
-
-                //コマンド選択
-                if (hit.collider)
-                {
-                    if (button != null)
+                    else if (cursorPos.x <= holdStartPos.x)
                     {
-                        Command command = button.Pushed();
-                        ActionCommand(command);
-                        selectingEnemies = new List<GameObject>();
+                        range = Range.Left;
                     }
-                }
-                commandMenu.SetActive(false);
 
+                    //Mix判定
+                    IsMix();
+
+                }
+
+                //つかむ
                 if (isGrabbing)
                 {
-                    grabbable.Putting();
+                    grabbable.Grabbing(cursorTrans);
                     for (int i = 0; i < selectingEnemies.Count; i++)
                     {
                         IGrabbable grabbable = selectingEnemies[i].GetComponent<IGrabbable>();
                         if (grabbable != null)
                         {
-                            grabbable.Putting();
+                            grabbable.Grabbing(cursorTrans);
                         }
                     }
-                    selectingEnemies.Clear();
                 }
             }
-            isRange = false;
-            isGrabbing = false;
-
-            holdDisplay.SetActive(false);
-        }
-        beforeHold = isHold;
-
-        int num = 0;
-        if (selectingEnemies.Count != 0) 
-        {
-            for (int i = 0; i < selectingEnemies.Count; i++)
+            else
             {
-                pcFieldController.selectTargets[i].position = selectingEnemies[i].transform.position;
-            }
-            num = selectingEnemies.Count;
-        }
+                if (beforeHold)
+                {
+                    Debug.Log("長押し解除");
 
-        for (int i = num; i < pcFieldController.selectTargets.Count; i++)
-        {
-            pcFieldController.selectTargets[i].localPosition = Vector3.zero;
+                    if (isRange)
+                    {
+                        //範囲選択攻撃
+                        if (isMix)
+                        {
+                            if (holdAttacker.GetElementKind(Range.Mix) != Element.Empty)
+                            {
+                                range = Range.Mix;
+                            }
+                            holdAttacker.Attack(null, range);
+                        }
+                        else
+                        {
+                            for (int i = 0; i < withinRangeEnemies.Count; i++)
+                            {
+                                holdAttacker.Attack(withinRangeEnemies[i], range);
+                            }
+                        }
+                    }
+
+
+                    //Mix関連の情報の初期化
+                    beforeHorizontal = Horizontal.Empty;
+                    beforeVirtical = Virtical.Empty;
+                    isMix = false;
+                    mixCnt = 0;
+
+
+                    //コマンド選択
+                    if (hit.collider)
+                    {
+                        if (button != null)
+                        {
+                            Command command = button.Pushed();
+                            ActionCommand(command);
+                            selectingEnemies = new List<GameObject>();
+                        }
+                    }
+                    commandMenu.SetActive(false);
+
+                    if (isGrabbing)
+                    {
+                        grabbable.Putting();
+                        for (int i = 0; i < selectingEnemies.Count; i++)
+                        {
+                            IGrabbable grabbable = selectingEnemies[i].GetComponent<IGrabbable>();
+                            if (grabbable != null)
+                            {
+                                grabbable.Putting();
+                            }
+                        }
+                        selectingEnemies.Clear();
+                    }
+                }
+                isRange = false;
+                isGrabbing = false;
+
+                holdDisplay.SetActive(false);
+            }
+            beforeHold = isHold;
+
+            int num = 0;
+            if (selectingEnemies.Count != 0)
+            {
+                for (int i = 0; i < selectingEnemies.Count; i++)
+                {
+                    pcFieldController.selectTargets[i].position = selectingEnemies[i].transform.position;
+                }
+                num = selectingEnemies.Count;
+            }
+
+            for (int i = num; i < pcFieldController.selectTargets.Count; i++)
+            {
+                pcFieldController.selectTargets[i].localPosition = Vector3.zero;
+            }
+
         }
     }
 

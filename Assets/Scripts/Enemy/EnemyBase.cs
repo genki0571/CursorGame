@@ -8,6 +8,8 @@ public class EnemyBase : MonoBehaviour
     [System.NonSerialized]public float hp;
     public float maxHp;
 
+   float damage = 5;
+
     [System.NonSerialized] public SpriteRenderer renderer;
 
     EnemyUIGenerator uiGenerator => EnemyUIGenerator.instance;
@@ -31,7 +33,7 @@ public class EnemyBase : MonoBehaviour
 
 
     public PCFieldController pcFieldController => PCFieldController.instance;
-    [System.NonSerialized] public Server server;
+    public Server server;
     [System.NonSerialized] public Transform serverTrans;
 
     [System.NonSerialized] public Transform enemyTrans;
@@ -39,10 +41,10 @@ public class EnemyBase : MonoBehaviour
 
     [System.NonSerialized] public Vector3 enemyVelocity;
 
-    const float ENEMY_SPEED = 2;
+    public float enemySpeed = 1;
 
     const float ATTACK_RANGE_RADIUS = 2;
-    const float ATTACK_INTERVAL = 0.5f;
+    const float ATTACK_INTERVAL = 2f;
     float attackTimer = 0;
 
     // Start is called before the first frame update
@@ -98,7 +100,7 @@ public class EnemyBase : MonoBehaviour
         }
         else if (state == State.GoServer)
         {
-            enemyVelocity = severDir * ENEMY_SPEED;
+            enemyVelocity = severDir * enemySpeed;
             if (serverVec.sqrMagnitude <= ATTACK_RANGE_RADIUS * ATTACK_RANGE_RADIUS)
             {
                 state = State.Attack;
@@ -112,9 +114,9 @@ public class EnemyBase : MonoBehaviour
             }
             if (attackTimer >= ATTACK_INTERVAL)
             {
-                if (serverVec.sqrMagnitude >= ATTACK_RANGE_RADIUS * ATTACK_RANGE_RADIUS)
+                if (serverVec.sqrMagnitude <= ATTACK_RANGE_RADIUS * ATTACK_RANGE_RADIUS)
                 {
-                    Debug.Log("ATTACK");
+                    server.AddDamage(damage);
                 }
                 attackTimer = 0;
                 state = State.StateDecide;

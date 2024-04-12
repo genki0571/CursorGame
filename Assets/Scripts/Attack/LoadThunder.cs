@@ -7,6 +7,7 @@ public class LoadThunder : MonoBehaviour
     float attackDamage;
 
     const float ATTACK_INTERVAL = 1f;
+    float attackInterval = 0;
     float attackTimer = 0;
 
     public bool isSleep;
@@ -30,12 +31,12 @@ public class LoadThunder : MonoBehaviour
     {
         if (!isSleep)
         {
-            if (attackTimer <= ATTACK_INTERVAL)
+            if (attackTimer <= attackInterval)
             {
                 attackTimer += Time.deltaTime;
             }
 
-            if (attackTimer >= ATTACK_INTERVAL)
+            if (attackTimer >= attackInterval)
             {
                 Attack();
                 Reset();
@@ -75,12 +76,22 @@ public class LoadThunder : MonoBehaviour
     {
         renderer.enabled = false;
         isSleep = true;
+        attackInterval = ATTACK_INTERVAL;
     }
 
-    public void Initialize(float damage, Vector3 pos)
+    /// <summary>
+    /// Thunderを発生する
+    /// </summary>
+    /// <param name="damage">ダメージ</param>
+    /// <param name="radius">判定の半径</param>
+    /// <param name="delay">発生の遅れ時間</param>
+    /// <param name="pos">発生場所</param>
+    public void Initialize(float damage, float radius ,float delay ,Vector3 pos)
     {
         this.transform.position = pos;
         renderer.enabled = true;
+        transform.localScale = new Vector3(radius,radius,radius);
+        attackInterval = ATTACK_INTERVAL + delay;
         attackDamage = damage;
         isSleep = false;
         attackTimer = 0;

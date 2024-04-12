@@ -6,6 +6,8 @@ public class PCFieldController : MonoBehaviour
 {
     public static PCFieldController instance;
 
+    PlayerSkill playerSkill => PlayerSkill.instance;
+
     public Server server;
 
     //Prefabs
@@ -24,6 +26,7 @@ public class PCFieldController : MonoBehaviour
 
     [SerializeField] public GameObject selectTargetPool;
     [SerializeField] public GameObject targetPool;
+    [SerializeField] public GameObject enemyAttackPool;
 
     //Pool
     public List<FallText> fallTexts = new List<FallText>();
@@ -34,9 +37,9 @@ public class PCFieldController : MonoBehaviour
     public List<FireWallPost> fireWallPosts = new List<FireWallPost>();
     public List<FireWall> fireWalls = new List<FireWall>();
     public List<ZipFile> zipFiles = new List<ZipFile>();
-    public List<Transform> targetObjs = new List<Transform>();
-
+    public List<WeekPoint> weekPoints = new List<WeekPoint>();
     public List<Transform> selectTargets;
+    public List<EnemyAttack> enemyAttacks = new List<EnemyAttack>();
 
     [SerializeField] Camera camera;
     Vector3 cameraLeftUpperPos;
@@ -61,81 +64,104 @@ public class PCFieldController : MonoBehaviour
         instance = this;
 
         //設置系のものを生成しておく
+        if (playerSkill.rightLevel >= 0)
+        {
+            //FallText
+            GameObject fallTextPool = new GameObject("FallTextPool");
+            fallTextPool.transform.parent = this.transform;
+            fallTextPool.transform.localPosition = Vector3.zero;
+            for (int i = 0; i < 3; i++)
+            {
+                FallText text = Instantiate(fallText, transform.position, Quaternion.identity);
+                text.transform.parent = fallTextPool.transform;
+                fallTexts.Add(text);
+            }
+        }
+        if (playerSkill.rightLevel >= 1 && playerSkill.rightSkill == RightSkill.Installation)
+        {
+            //TXTタレット
+            GameObject txtTalletPool = new GameObject("TxtTalletPool");
+            txtTalletPool.transform.parent = this.transform;
+            for (int i = 0; i < 5; i++)
+            {
+                TxtTallet tallet = Instantiate(txtTallet, transform.position, Quaternion.identity);
+                tallet.transform.parent = txtTalletPool.transform;
+                txtTallets.Add(tallet);
+            }
+        }
+        if (playerSkill.rightLevel >= 2 && playerSkill.rightSkill == RightSkill.Installation)
+        {
+            //PNGバスター
+            GameObject pngBusterPool = new GameObject("PngBusterPool");
+            pngBusterPool.transform.parent = this.transform;
+            for (int i = 0; i < 5; i++)
+            {
+                PngBuster buster = Instantiate(pngBuster, transform.position, Quaternion.identity);
+                buster.transform.parent = pngBusterPool.transform;
+                pngBusters.Add(buster);
+            }
+        }
+        if (playerSkill.rightLevel >= 3 && playerSkill.rightSkill == RightSkill.Installation)
+        {
+            //ZIPファイル
+            GameObject zipFilePool = new GameObject("ZipFilePostPool");
+            zipFilePool.transform.parent = this.transform;
+            for (int i = 0; i < 3; i++)
+            {
+                ZipFile zip = Instantiate(zipFile, transform.position, Quaternion.identity);
+                zip.transform.parent = zipFilePool.transform;
+                zipFiles.Add(zip);
+            }
+        }
+        if (playerSkill.rightSkill == RightSkill.FireWall) 
+        {
+            //ファイアウォール
+            GameObject fireWallPostPool = new GameObject("FireWallPostPool");
+            fireWallPostPool.transform.parent = this.transform;
+            for (int i = 0; i < 3; i++)
+            {
+                FireWallPost post = Instantiate(fireWallPost, transform.position, Quaternion.identity);
+                post.transform.parent = fireWallPostPool.transform;
+                fireWallPosts.Add(post);
 
-        //FallText
-        GameObject fallTextPool = new GameObject("FallTextPool");
-        fallTextPool.transform.parent = this.transform;
-        fallTextPool.transform.localPosition = Vector3.zero;
-        for (int i = 0; i < 3; i++)
-        {
-            FallText text = Instantiate(fallText, transform.position, Quaternion.identity);
-            text.transform.parent = fallTextPool.transform;
-            fallTexts.Add(text);
+                FireWall fire = Instantiate(fireWall, transform.position, Quaternion.identity);
+                fire.transform.parent = fireWallPostPool.transform;
+                fireWalls.Add(fire);
+            }
         }
-        //TXTタレット
-        GameObject txtTalletPool = new GameObject("TxtTalletPool");
-        txtTalletPool.transform.parent = this.transform;
-        for (int i = 0; i < 5; i++)
-        {
-            TxtTallet tallet = Instantiate(txtTallet, transform.position, Quaternion.identity);
-            tallet.transform.parent = txtTalletPool.transform;
-            txtTallets.Add(tallet);
-        }
-        //PNGバスター
-        GameObject pngBusterPool = new GameObject("PngBusterPool");
-        pngBusterPool.transform.parent = this.transform;
-        for (int i = 0; i < 5; i++)
-        {
-            PngBuster buster = Instantiate(pngBuster,transform.position,Quaternion.identity);
-            buster.transform.parent = pngBusterPool.transform;
-            pngBusters.Add(buster);
-        }
-        //ハンマー
-        GameObject hammerPool = new GameObject("HammerPool");
-        hammerPool.transform.parent = this.transform;
-        for (int i = 0; i < 10; i++)
-        {
-            Hammer hammer = Instantiate(hammerAttack, transform.position, Quaternion.identity);
-            hammer.transform.parent = hammerPool.transform;
-            hammers.Add(hammer);
-        }
-        //ロードサンダー
-        GameObject loadThunderPool = new GameObject("LoadThunderPool");
-        loadThunderPool.transform.parent = this.transform;
-        for (int i = 0; i < 10; i++)
-        {
-            LoadThunder loadThunder = Instantiate(loadThunderAttack, transform.position, Quaternion.identity);
-            loadThunder.transform.parent = loadThunderPool.transform;
-            loadThunders.Add(loadThunder);
-        }
-        //ファイアウォール
-        GameObject fireWallPostPool = new GameObject("FireWallPostPool");
-        fireWallPostPool.transform.parent = this.transform;
-        for (int i = 0; i < 3; i++)
-        {
-            FireWallPost post = Instantiate(fireWallPost, transform.position, Quaternion.identity);
-            post.transform.parent = fireWallPostPool.transform;
-            fireWallPosts.Add(post);
 
-            FireWall fire = Instantiate(fireWall, transform.position, Quaternion.identity);
-            fire.transform.parent = fireWallPostPool.transform;
-            fireWalls.Add(fire);
-        }
-        //ZIPファイル
-        GameObject zipFilePool = new GameObject("ZipFilePostPool");
-        zipFilePool.transform.parent = this.transform;
-        for (int i = 0; i < 3; i++)
+        //LeftClick
+        if (playerSkill.leftSkill == LeftSkill.Hammer)
         {
-            ZipFile zip = Instantiate(zipFile, transform.position, Quaternion.identity);
-            zip.transform.parent = zipFilePool.transform;
-            zipFiles.Add(zip);
+            //ハンマー
+            GameObject hammerPool = new GameObject("HammerPool");
+            hammerPool.transform.parent = this.transform;
+            for (int i = 0; i < 10; i++)
+            {
+                Hammer hammer = Instantiate(hammerAttack, transform.position, Quaternion.identity);
+                hammer.transform.parent = hammerPool.transform;
+                hammers.Add(hammer);
+            }
         }
+        if (playerSkill.leftSkill == LeftSkill.LoadThunder)
+        {
+            //ロードサンダー
+            GameObject loadThunderPool = new GameObject("LoadThunderPool");
+            loadThunderPool.transform.parent = this.transform;
+            for (int i = 0; i < 15; i++)
+            {
+                LoadThunder loadThunder = Instantiate(loadThunderAttack, transform.position, Quaternion.identity);
+                loadThunder.transform.parent = loadThunderPool.transform;
+                loadThunders.Add(loadThunder);
+            }
+        }
+        
 
         //WeekPoint
-        Transform[] tarObjs = targetPool.GetComponentsInChildren<Transform>();
-        for (int i = 0; i < tarObjs.Length; i++)
+        WeekPoint[] points = targetPool.GetComponentsInChildren<WeekPoint>();
+        for (int i = 0; i < points.Length; i++)
         {
-            targetObjs.Add(tarObjs[i]);
+            weekPoints.Add(points[i]);
         }
 
         //SelectTarget
@@ -145,6 +171,13 @@ public class PCFieldController : MonoBehaviour
             selectTargets.Add(targets[i]);
         }
         selectTargets.Remove(selectTargetPool.transform);
+
+        //EnemyAttack
+        EnemyAttack[] attacks = enemyAttackPool.GetComponentsInChildren<EnemyAttack>();
+        for (int i = 0; i < attacks.Length; i++)
+        {
+            enemyAttacks.Add(attacks[i]);
+        }
 
         cameraLeftUpperPos = camera.ScreenToWorldPoint(new Vector2(0, Screen.height));
         cameraLeftUpperPos.z = 0;

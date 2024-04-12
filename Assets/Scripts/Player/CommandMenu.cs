@@ -1,10 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CommandMenu : MonoBehaviour
 {
-    [SerializeField] PlayerAttack playerAttack;
+    PlayerState playerState => PlayerState.instance;
+    PlayerAttack playerAttack => PlayerAttack.instance;
     List<Command> commands = new List<Command>();
 
     [SerializeField] GameObject openCommandBlock;
@@ -20,6 +22,13 @@ public class CommandMenu : MonoBehaviour
     const float COMMAND_BLOCK_LOCAL_WIDTH = 30;
     const float COMMNAD_BLOCK_LOCAL_HEIGHT = 3;
 
+    Text[] texts;
+    string[] textStr;
+    [SerializeField] TextAsset bugTextAsset;
+    string bugStr;
+    float fontbugTimer = 0;
+    const float FONT_BUG_INTERVAL = 0.1f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -27,11 +36,49 @@ public class CommandMenu : MonoBehaviour
         {
             commands.Add(playerAttack.rightAttackers[i].GetCommandKind());
         }
+
+        texts = GetComponentsInChildren<Text>();
+        textStr = new string[texts.Length];
+        for (int i = 0; i < texts.Length; i++)
+        {
+            textStr[i] = texts[i].text;
+        }
+        bugStr = bugTextAsset.text;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (playerState.IsVirus(Virus.FontBug)) 
+        {
+            fontbugTimer += Time.deltaTime;
+            if (fontbugTimer >= FONT_BUG_INTERVAL) 
+            {
+                for (int i = 0; i < texts.Length; i++)
+                {
+                    texts[i].text = "";
+                    int randStrNum = Random.Range(3, 8);
+                    for (int j = 0; j < randStrNum; j++)
+                    {
+                        int rand = Random.Range(0, bugStr.Length);
+                        texts[i].text += bugStr.Substring(rand);
+                    }
+                }
+                fontbugTimer = 0;
+            }
+        }
+        else 
+        {
+            if (texts[0].text != textStr[0]) 
+            {
+                for (int i = 0; i < texts.Length; i++)
+                {
+                    texts[i].text = textStr[i];
+                }
+                fontbugTimer = 0;
+            }
+        }
+
         openCommandBlock.SetActive(false);
         fallTextCommandBlock.SetActive(false);
         fireWallCommandBlock.SetActive(false);

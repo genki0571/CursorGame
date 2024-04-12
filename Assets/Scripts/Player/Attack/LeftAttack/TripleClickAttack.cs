@@ -14,10 +14,14 @@ public class TripleClickAttack : MonoBehaviour,ILeftAttacker
     const int CLICK_INTERVAL = 30;
     int clickTimer = 0;
 
+    PCFieldController pcFieldController => PCFieldController.instance;
+    List<WeekPoint> weekPoints;
+    const float SHOW_POINT_INTERVAL = 0.2f;
+
     // Start is called before the first frame update
     void Start()
     {
-
+        weekPoints = pcFieldController.weekPoints;
     }
 
     // Update is called once per frame
@@ -67,6 +71,14 @@ public class TripleClickAttack : MonoBehaviour,ILeftAttacker
                 {
                     haveWeakPoint.AddWeakDamage(damage);
                     damaged = true;
+                }
+
+                for (int i = 0; i < weekPoints.Count; i++)
+                {
+                    if (weekPoints[i].isSleep)
+                    {
+                        weekPoints[i].ShowPoint(haveWeakPoint, SHOW_POINT_INTERVAL);
+                    }
                 }
             }
 

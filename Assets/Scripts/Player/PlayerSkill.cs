@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-enum RightSkill 
+public enum RightSkill 
 {
     Yet,
     FireWall,
@@ -10,15 +10,15 @@ enum RightSkill
     Installation
 }
 
-enum LeftSkill 
+public enum LeftSkill 
 {
     Yet,
     Hammer,
     ContinuousClick,
-    LoadingThunder
+    LoadThunder
 }
 
-enum LongPressSkill 
+public enum LongPressSkill 
 {
     Yet,
     ThunderAndWind,
@@ -29,21 +29,20 @@ enum LongPressSkill
 
 public class PlayerSkill : MonoBehaviour
 {
-    struct Skills 
-    {
-        public int rightLevel;
-        public int leftLevel;
-        public int longPressLevel;
-        public RightSkill rightSkill;
-        public LeftSkill leftSkill;
-        public LongPressSkill longPressSkill;
-    }
+    static public PlayerSkill instance;
 
-    Skills skills;
+    public int rightLevel;
+    public int leftLevel;
+    public int longPressLevel;
+    public RightSkill rightSkill;
+    public LeftSkill leftSkill;
+    public LongPressSkill longPressSkill;
 
     // Start is called before the first frame update
     void Awake()
     {
+        instance = this;
+
         SetSkills();
         AddSkills();
     }
@@ -56,95 +55,75 @@ public class PlayerSkill : MonoBehaviour
 
     void SetSkills() 
     {
-        //テスト用
-        skills.rightLevel = 0;
-        skills.leftLevel = 0;
-        skills.longPressLevel = 0;
-        skills.rightSkill = RightSkill.Yet;
-        skills.leftSkill = LeftSkill.Yet;
-        skills.longPressSkill = LongPressSkill.Yet;
+
     }
 
     void AddSkills() 
     {
-        switch (skills.rightSkill) 
+
+        gameObject.AddComponent<OpenAttack>();
+        gameObject.AddComponent<FallTextAttack>();
+        switch (rightSkill) 
         {
             case RightSkill.Yet:
-                if (skills.rightLevel == 0)
-                {
-
-                }
-                else 
-                {
-                    Debug.Log("Error");
-                }
                 break;
             case RightSkill.FireWall:
-                if (skills.rightLevel == 1)
+                if (rightLevel >= 1)
                 {
-
+                    var rightAttack = gameObject.AddComponent<FireWallAttack>();
+                    rightAttack.level = 0;
                 }
-                else if (skills.rightLevel == 2)
+                if (rightLevel >= 2)
                 {
-
+                    var rightAttack = gameObject.AddComponent<FireWallAttack>();
+                    rightAttack.level = 1;
                 }
-                else if (skills.rightLevel == 3)
+                if (rightLevel >= 3)
                 {
-
-                }
-                else
-                {
-                    Debug.Log("Error");
+                    var rightAttack = gameObject.AddComponent<FireWallAttack>();
+                    rightAttack.level = 2;
                 }
                 break;
             case RightSkill.Command:
-                if (skills.rightLevel == 1)
+                if (rightLevel >= 1)
+                {
+                    var rightAttack = gameObject.AddComponent<ScanWeakPoint>();
+                }
+                if (rightLevel >= 2)
+                {
+                    var rightAttack = gameObject.AddComponent<DeleteAttack>();
+                }
+                if (rightLevel >= 3)
                 {
 
-                }
-                else if (skills.rightLevel == 2)
-                {
-
-                }
-                else if (skills.rightLevel == 3)
-                {
-
-                }
-                else
-                {
-                    Debug.Log("Error");
                 }
                 break;
             case RightSkill.Installation:
-                if (skills.rightLevel == 1)
+                if (rightLevel >= 1)
                 {
-
+                    var rightAttack = gameObject.AddComponent<InstallTxtTallet>();
                 }
-                else if (skills.rightLevel == 2)
+                if (rightLevel >= 2)
                 {
-
+                    var rightAttack = gameObject.AddComponent<InstallPngBuster>();
                 }
-                else if (skills.rightLevel == 3)
+                if (rightLevel >= 3)
                 {
-
-                }
-                else
-                {
-                    Debug.Log("Error");
+                    var rightAttack = gameObject.AddComponent<InstallZipFile>();
                 }
                 break;
         }
 
-        switch (skills.leftSkill)
+        switch (leftSkill)
         {
             case LeftSkill.Yet:
-                if (skills.leftLevel == 0)
+                if (leftLevel == 0)
                 {
-
+                    var leftAttacker = gameObject.AddComponent<SingleClickAttack>();
                 }
-                else if (skills.leftLevel == 1) 
+                else if (leftLevel == 1)
                 {
-                
+                    var leftAttacker = gameObject.AddComponent<DoubleClickAttack>();
                 }
                 else
                 {
@@ -152,13 +131,13 @@ public class PlayerSkill : MonoBehaviour
                 }
                 break;
             case LeftSkill.Hammer:
-                if (skills.leftLevel == 2)
+                if (leftLevel == 2)
                 {
-
+                    var leftAttacker = gameObject.AddComponent<HammerFirstAttack>();
                 }
-                else if (skills.leftLevel == 3)
+                else if (leftLevel == 3)
                 {
-
+                    var leftAttacker = gameObject.AddComponent<HammerFirstAttack>();
                 }
                 else
                 {
@@ -166,27 +145,27 @@ public class PlayerSkill : MonoBehaviour
                 }
                 break;
             case LeftSkill.ContinuousClick:
-                if (skills.leftLevel == 2)
+                if (leftLevel == 2)
                 {
-
+                    var leftAttacker = gameObject.AddComponent<TripleClickAttack>();
                 }
-                else if (skills.leftLevel == 3)
+                else if (leftLevel == 3)
                 {
-
+                    var leftAttacker = gameObject.AddComponent<TripleClickAttack>();
                 }
                 else
                 {
                     Debug.Log("Error");
                 }
                 break;
-            case LeftSkill.LoadingThunder:
-                if (skills.leftLevel == 2)
+            case LeftSkill.LoadThunder:
+                if (leftLevel == 2)
                 {
-
+                    var leftAttacker = gameObject.AddComponent<LoadThunderFirstAttack>();
                 }
-                else if (skills.leftLevel == 3)
+                else if (leftLevel == 3)
                 {
-
+                    var leftAttacker = gameObject.AddComponent<LoadThunderSecondAttack>();
                 }
                 else
                 {
@@ -195,12 +174,12 @@ public class PlayerSkill : MonoBehaviour
                 break;
         }
 
-        switch (skills.longPressSkill)
+        switch (longPressSkill)
         {
             case LongPressSkill.Yet:
-                if (skills.longPressLevel == 0)
+                if (longPressLevel == 0)
                 {
-
+                    var holdAttacker = gameObject.AddComponent<NormalRangeAttack>();
                 }
                 else
                 {
@@ -208,17 +187,17 @@ public class PlayerSkill : MonoBehaviour
                 }
                 break;
             case LongPressSkill.ThunderAndWind:
-                if (skills.longPressLevel == 1)
+                if (longPressLevel == 1)
                 {
-
+                    var holdAttacker = gameObject.AddComponent<ThunderRangeAttack>();
                 }
-                else if (skills.longPressLevel == 2)
+                else if (longPressLevel == 2)
                 {
-
+                    var holdAttacker = gameObject.AddComponent<ThunderAndWindRangeAttack>();
                 }
-                else if (skills.longPressLevel == 3)
+                else if (longPressLevel == 3)
                 {
-
+                    var holdAttacker = gameObject.AddComponent<ThunderAndWindMixRangeAttack>();
                 }
                 else
                 {
@@ -226,17 +205,17 @@ public class PlayerSkill : MonoBehaviour
                 }
                 break;
             case LongPressSkill.FireAndIce:
-                if (skills.longPressLevel == 1)
+                if (longPressLevel == 1)
                 {
-
+                    var holdAttacker = gameObject.AddComponent<FireRangeAttack>();
                 }
-                else if (skills.longPressLevel == 2)
+                else if (longPressLevel == 2)
                 {
-
+                    var holdAttacker = gameObject.AddComponent<FireAndIceRangeAttack>();
                 }
-                else if (skills.longPressLevel == 3)
+                else if (longPressLevel == 3)
                 {
-
+                    var holdAttacker = gameObject.AddComponent<FireAndIceMixRangeAttack>();
                 }
                 else
                 {
@@ -244,15 +223,15 @@ public class PlayerSkill : MonoBehaviour
                 }
                 break;
             case LongPressSkill.RangeSelect:
-                if (skills.longPressLevel == 1)
+                if (longPressLevel == 1)
+                {
+                    var holdAttacker = gameObject.AddComponent<RangeSelect>();
+                }
+                else if (longPressLevel == 2)
                 {
 
                 }
-                else if (skills.longPressLevel == 2)
-                {
-
-                }
-                else if (skills.longPressLevel == 3)
+                else if (longPressLevel == 3)
                 {
 
                 }

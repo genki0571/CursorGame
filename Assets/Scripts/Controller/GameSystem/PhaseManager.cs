@@ -18,6 +18,11 @@ public class PhaseManager : MonoBehaviour
 
     GameObject phaseObjPool;
 
+    public bool canSponeUpper;
+    public bool canSponeLower;
+    public bool canUpperLeft;
+    public bool canUpperRight;
+
     private void Awake()
     {
         phaseEnemies = new GameObject[phaseEnemyPrefabs.Length];
