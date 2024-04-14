@@ -10,13 +10,25 @@ public class FireAndIceRangeAttack : MonoBehaviour,IHoldAttacker
     const float MAX_LENGTH = 5;
 
     GameObject holdDisplay;
+    PCFieldController pcFieldController => PCFieldController.instance;
+    GameObject fireAreaObj;
+    List<FireArea> fireAreas = new List<FireArea>();
 
     // Start is called before the first frame update
     void Start()
     {
         holdDisplay = GetComponent<PlayerAttack>().holdDisplay;
-    }
 
+        fireAreaObj = pcFieldController.fireArea;
+        GameObject fireAreaPool = new GameObject("FireAreaPool");
+        for (int i = 0; i < 3; i++)
+        {
+            GameObject area = Instantiate(fireAreaObj, new Vector3(0, 95, 0), Quaternion.identity);
+            FireArea fireArea = area.GetComponent<FireArea>();
+            fireAreas.Add(fireArea);
+            area.transform.parent = fireAreaPool.transform;
+        }
+    }
     // Update is called once per frame
     void Update()
     {
@@ -25,22 +37,32 @@ public class FireAndIceRangeAttack : MonoBehaviour,IHoldAttacker
 
     public void Attack(GameObject selectEnemy, Range range)
     {
+        Element element = GetElementKind(range);
         IDamagable damagable = selectEnemy.GetComponent<IDamagable>();
-        if (damagable != null)
+        if (element == Element.Fire)
         {
-            Element element = GetElementKind(range);
-            damagable.AddElement(element, holdDisplay.transform.position);
+            if (damagable != null)
+            {
+                damagable.AddDamage(FIRE_DAMAGE);
+                damagable.AddElement(Element.Fire, holdDisplay.transform.position);
+            }
 
-            float damage = 0;
-            if (element == Element.Fire)
+            for (int i = 0; i < fireAreas.Count; i++)
             {
-                damage = FIRE_DAMAGE;
+                if (fireAreas[i].isSleep)
+                {
+                    fireAreas[i].Initialize(holdDisplay.transform);
+                    break;
+                }
             }
-            else if (element == Element.Ice)
+        }
+        else if (element == Element.Ice)
+        {
+            if (damagable != null)
             {
-                damage = ICE_DAMAGE;
+                damagable.AddDamage(ICE_DAMAGE);
+                damagable.AddElement(Element.Ice, holdDisplay.transform.position);
             }
-            damagable.AddDamage(damage);
         }
         
     }

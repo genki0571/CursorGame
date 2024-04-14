@@ -131,8 +131,61 @@ public class EnemyGenerator : MonoBehaviour
     private Vector3 GetPopPos()
     {
         Vector3 popPos = Vector3.zero;
-        int rand = Random.Range(0,4);
-        switch (rand)
+        int maxNum = 0;
+        if (phaseManagers[phaseNum].canSponeUpper)
+        {
+            maxNum += 1;
+        }
+        if (phaseManagers[phaseNum].canUpperRight)
+        {
+            maxNum += 1;
+        }
+        if (phaseManagers[phaseNum].canSponeLower)
+        {
+            maxNum += 1;
+        }
+        if (phaseManagers[phaseNum].canUpperLeft)
+        {
+            maxNum += 1;
+        }
+        int rand = Random.Range(0,maxNum);
+        int num = 0;
+
+        int sponePointNum = 0;
+        if (phaseManagers[phaseNum].canSponeUpper)
+        {
+            num++;
+            if (num <= maxNum && rand == num - 1) 
+            {
+                sponePointNum = 0;
+            }
+        }
+        if (phaseManagers[phaseNum].canUpperRight)
+        {
+            num++;
+            if (num <= maxNum && rand == num - 1)
+            {
+                sponePointNum = 1;
+            }
+        }
+        if (phaseManagers[phaseNum].canSponeLower)
+        {
+            num++;
+            if (num <= maxNum && rand == num - 1)
+            {
+                sponePointNum = 2;
+            }
+        }
+        if (phaseManagers[phaseNum].canUpperLeft)
+        {
+            num++;
+            if (num <= maxNum && rand == num - 1)
+            {
+                sponePointNum = 3;
+            }
+        }
+
+        switch (sponePointNum)
         {
             case 0://上から
                 if (phaseManagers[phaseNum].canSponeUpper)
@@ -164,10 +217,6 @@ public class EnemyGenerator : MonoBehaviour
                 break;
         }
 
-        if (popPos == Vector3.zero) 
-        {
-            popPos = GetPopPos();
-        }
         return popPos;
     }
 

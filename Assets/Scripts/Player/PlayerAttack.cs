@@ -471,6 +471,7 @@ public class PlayerAttack : MonoBehaviour
                     }
 
                     rightAttackers[i].Command(commandMenu.transform.position, selectables);
+                    break;
                 }
             }
         }

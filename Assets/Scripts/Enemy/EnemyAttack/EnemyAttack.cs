@@ -67,6 +67,7 @@ public class EnemyAttack : MonoBehaviour
             if (collision.transform.tag == "Player") 
             {
                 playerState.AddDamage(DAMAGE);
+                playerState.GetStan(1f);
                 Reset();
             }
         }

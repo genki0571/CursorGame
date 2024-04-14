@@ -5,7 +5,9 @@ using UnityEngine;
 public class FireAndIceMixRangeAttack : MonoBehaviour,IHoldAttacker
 {
     PCFieldController pcFieldController => PCFieldController.instance;
-    List<Explotion> explotions = new List<Explotion>(); 
+    List<Explotion> explotions = new List<Explotion>();
+    GameObject fireAreaObj;
+    List<FireArea> fireAreas = new List<FireArea>();
 
     const float FIRE_DAMAGE = 10;
     const float ICE_DAMAGE = 5;
@@ -18,6 +20,16 @@ public class FireAndIceMixRangeAttack : MonoBehaviour,IHoldAttacker
     void Start()
     {
         holdDisplay = GetComponent<PlayerAttack>().holdDisplay;
+
+        fireAreaObj = pcFieldController.fireArea;
+        GameObject fireAreaPool = new GameObject("FireAreaPool");
+        for (int i = 0; i < 3; i++)
+        {
+            GameObject area = Instantiate(fireAreaObj, new Vector3(0, 95, 0), Quaternion.identity);
+            FireArea fireArea = area.GetComponent<FireArea>();
+            fireAreas.Add(fireArea);
+            area.transform.parent = fireAreaPool.transform;
+        }
 
         GameObject explotionPool = new GameObject("ExplotionPool");
         for (int i = 0; i < 5; i++)
@@ -38,26 +50,35 @@ public class FireAndIceMixRangeAttack : MonoBehaviour,IHoldAttacker
     public void Attack(GameObject selectEnemy, Range range)
     {
         Element element = GetElementKind(range);
-        float damage = 0;
+        IDamagable damagable = null;
+        if (selectEnemy != null)
+        {
+            damagable = selectEnemy.GetComponent<IDamagable>();
+        }
         if (element == Element.Fire)
         {
-            IDamagable damagable = selectEnemy.GetComponent<IDamagable>();
             if (damagable != null)
             {
-                damagable.AddElement(element, holdDisplay.transform.position);
+                damagable.AddDamage(FIRE_DAMAGE);
+                damagable.AddElement(Element.Fire, holdDisplay.transform.position);
             }
-            damage = FIRE_DAMAGE;
-            damagable.AddDamage(damage);
+
+            for (int i = 0; i < fireAreas.Count; i++)
+            {
+                if (fireAreas[i].isSleep)
+                {
+                    fireAreas[i].Initialize(holdDisplay.transform);
+                    break;
+                }
+            }
         }
         else if (element == Element.Ice)
         {
-            IDamagable damagable = selectEnemy.GetComponent<IDamagable>();
             if (damagable != null)
             {
-                damagable.AddElement(element, holdDisplay.transform.position);
+                damagable.AddDamage(ICE_DAMAGE);
+                damagable.AddElement(Element.Ice, holdDisplay.transform.position);
             }
-            damage = ICE_DAMAGE;
-            damagable.AddDamage(damage);
         }
         else if (element == Element.FireAndIce)
         {

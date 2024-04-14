@@ -22,6 +22,7 @@ public class PCFieldController : MonoBehaviour
     [SerializeField] public GameObject windArea;
     [SerializeField] public GameObject electricShock;
     [SerializeField] public GameObject storm;
+    [SerializeField] public GameObject fireArea;
     [SerializeField] public GameObject explotion;
 
     [SerializeField] public GameObject selectTargetPool;

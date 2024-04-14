@@ -101,6 +101,15 @@ public class Storm : MonoBehaviour
             }
             if (timer >= INTERVAL)
             {
+                for (int i = 0; i < withinEnemies.Count; i++)
+                {
+                    IDamagable damagable = withinEnemies[i].GetComponent<IDamagable>();
+                    if (damagable != null)
+                    {
+                        damagable.AddElement(Element.Wind,stormTrans.position);
+                    }
+                }
+
                 Reset();
             }
         }

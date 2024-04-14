@@ -10,11 +10,24 @@ public class FireRangeAttack : MonoBehaviour,IHoldAttacker
     const float MAX_LENGTH = 5;
 
     GameObject holdDisplay;
+    PCFieldController pcFieldController => PCFieldController.instance;
+    GameObject fireAreaObj;
+    List<FireArea> fireAreas = new List<FireArea>();
 
     // Start is called before the first frame update
     void Start()
     {
         holdDisplay = GetComponent<PlayerAttack>().holdDisplay;
+
+        fireAreaObj = pcFieldController.fireArea;
+        GameObject fireAreaPool = new GameObject("FireAreaPool");
+        for (int i = 0; i < 3; i++)
+        {
+            GameObject area = Instantiate(fireAreaObj, new Vector3(0, 95, 0), Quaternion.identity);
+            FireArea fireArea = area.GetComponent<FireArea>();
+            fireAreas.Add(fireArea);
+            area.transform.parent = fireAreaPool.transform;
+        }
     }
 
     // Update is called once per frame
@@ -30,6 +43,15 @@ public class FireRangeAttack : MonoBehaviour,IHoldAttacker
         {
             damagable.AddDamage(FIRE_DAMAGE);
             damagable.AddElement(GetElementKind(range), holdDisplay.transform.position);
+        }
+
+        for (int i = 0; i < fireAreas.Count; i++)
+        {
+            if (fireAreas[i].isSleep) 
+            {
+                fireAreas[i].Initialize(holdDisplay.transform);
+                break;
+            }
         }
     }
 

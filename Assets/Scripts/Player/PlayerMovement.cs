@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    PlayerState playerState => PlayerState.instance;
+    static public PlayerMovement instance;
 
-    const float CURSOR_SPEED = 0.5f;
+    public float cursorNormalSpeed = 0.5f;
+    public float speed;
 
     //カーソル位置
     Transform cursorTrans;
@@ -21,36 +22,14 @@ public class PlayerMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        instance = this;
         cursorTrans = this.transform;
+        speed = cursorNormalSpeed;
     }
 
     // Update is called once per frame
     void Update()
     {
-        float speed = CURSOR_SPEED;
-        if (playerState.isStan)
-        {
-            speed = 0;
-        }
-        else if (playerState.IsVirus(Virus.SpeedUp)) 
-        {
-            speed *= 8;   
-        }
-        else if (playerState.IsVirus(Virus.SpeedDown))
-        {
-            speed /= 10;
-        }
-
-        if (playerState.IsVirus(Virus.MoveInvert)) 
-        {
-            speed *= -1;
-        }
-
-        if (playerState.isDead) 
-        {
-            speed = CURSOR_SPEED / 30;
-        }
-
         cameraLeftLowPos = camera.ScreenToWorldPoint(new Vector2(0,0));
         cameraRightUpperPos = camera.ScreenToWorldPoint(new Vector2(Screen.width, Screen.height));
 

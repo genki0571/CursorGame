@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class RangeSelect : MonoBehaviour,IHoldAttacker
 {
-    const float MAX_LENGTH = 5;
+    const float MAX_LENGTH = 7;
 
     PlayerAttack playerAttack;
 

@@ -42,6 +42,7 @@ public class PlayerState : MonoBehaviour
     public int[] codeNums = new int[6];
 
     Server server => Server.instance;
+    PlayerMovement playerMovement => PlayerMovement.instance;
 
     void Awake()
     {
@@ -58,6 +59,8 @@ public class PlayerState : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        SetCursorSpeed();
+
         if (isStan) 
         {
             stanTimer += Time.deltaTime;
@@ -180,6 +183,33 @@ public class PlayerState : MonoBehaviour
             {
                 cursorHp = maxCursorHp;
             }
+        }
+    }
+
+    private void SetCursorSpeed ()
+    {
+        playerMovement.speed = playerMovement.cursorNormalSpeed;
+        if (isStan)
+        {
+            playerMovement.speed = 0;
+        }
+        else if (IsVirus(Virus.SpeedUp))
+        {
+            playerMovement.speed *= 8;
+        }
+        else if (IsVirus(Virus.SpeedDown))
+        {
+            playerMovement.speed /= 10;
+        }
+
+        if (IsVirus(Virus.MoveInvert))
+        {
+            playerMovement.speed *= -1;
+        }
+
+        if (isDead)
+        {
+            playerMovement.speed = playerMovement.cursorNormalSpeed / 30;
         }
     }
 }

@@ -24,11 +24,11 @@ public class FallTextAttack : MonoBehaviour,IRightAttacker
 
     public void Command(Vector3 pos, List<ISelectable> selectDamagables) 
     {
-        for (int i = 0; i < fallTexts.Count; i++)
+        for (int j = 0; j < fallTexts.Count; j++)
         {
-            if (fallTexts[i].isSleep) 
+            if (fallTexts[j].isSleep)
             {
-                fallTexts[i].Initialize(pos);
+                fallTexts[j].Initialize(pos);
                 break;
             }
         }
