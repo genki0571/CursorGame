@@ -450,6 +450,19 @@ public class PlayerAttack : MonoBehaviour
             }
 
         }
+        else//死んでたら 
+        {
+            holdDisplay.SetActive(false);
+            isRange = false;
+            beforeHold = false;
+
+
+            //選択を解除
+            selectingEnemies.Clear();
+
+            commandMenu.transform.position = cursorPos;
+            commandMenu.SetActive(true);
+        }
     }
 
     void ActionCommand(Command command) 

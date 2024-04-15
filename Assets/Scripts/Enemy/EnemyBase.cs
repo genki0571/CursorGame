@@ -32,6 +32,7 @@ public class EnemyBase : MonoBehaviour
     public Element haveElement;
 
 
+    public ComboController comboController => ComboController.instance;
     public PCFieldController pcFieldController => PCFieldController.instance;
     public Server server;
     [System.NonSerialized] public Transform serverTrans;

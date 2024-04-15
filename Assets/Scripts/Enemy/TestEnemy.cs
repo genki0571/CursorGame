@@ -117,10 +117,13 @@ public class TestEnemy : EnemyBase,IDamagable,ISelectable,IGrabbable,IHaveWeakPo
         }
     }
 
+
     public void AddDamage(float damage) 
     {
         DamageDisplay(enemyTrans.position + new Vector3(0,0.5f,0),damage);
         hp -= damage;
+
+        comboController.AddCombo();
     }
 
     public void AddElement(Element element,Vector3 centerPos) 
@@ -138,6 +141,8 @@ public class TestEnemy : EnemyBase,IDamagable,ISelectable,IGrabbable,IHaveWeakPo
     {
         DamageDisplay(enemyTrans.position + new Vector3(0, 0.5f, 0), damage * 2);
         hp -= damage * 2;
+
+        comboController.AddCombo();
     }
 
 
