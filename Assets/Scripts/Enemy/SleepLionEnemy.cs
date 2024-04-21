@@ -39,13 +39,13 @@ public class SleepLionEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IH
     {
         base.Update();
 
-        if(pcFieldController.volumeNum >= 5)
+        if (pcFieldController.volumeNum < 50)
+        {
+            state = State.None;
+        }
+        else if(pcFieldController.volumeNum >= 50 && state == State.None)
         {
             state = State.StateDecide;
-        }
-        else
-        {
-            state = State.Sleep;
         }
 
         CheckElement();
