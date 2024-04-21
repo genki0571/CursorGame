@@ -3,26 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class HorseEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWeakPoint
+public class SleepLionEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWeakPoint
 {
-    PCFieldController pcFieldController => PCFieldController.instance;
-    Server server;
-    Transform serverTrans;
-
-    Transform enemyTrans;
-    Rigidbody2D rb;
-
-    Vector3 enemyVelocity;
 
     Vector3 diffPlayerVec = Vector2.zero;
 
     Vector3 diffWeekPointVec;
-
-    const float ENEMY_SPEED = 2;
-
-    const float ATTACK_RANGE_RADIUS = 2;
-    const float ATTACK_INTERVAL = 0.5f;
-    float attackTimer = 0;
 
     const float WEEK_POINT_RADIUS = 0.5f;
     const float WEEK_POINT_POS_MAX_X = 0.5f;
@@ -39,95 +25,36 @@ public class HorseEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveW
     float fireDamageTimer = 0;
     float elementTimer = 0;
 
-    bool haveArmer;
-    int weekCount = 0;
     // Start is called before the first frame update
-    void Start()
+    public override void Start()
     {
-        renderer = GetComponent<SpriteRenderer>();
-
-        Image[] images = GetComponentsInChildren<Image>();
-        for (int i = 0; i < images.Length; i++)
-        {
-            if (images[i].type == Image.Type.Filled)
-            {
-                hpImage = images[i];
-                break;
-            }
-        }
-
-        server = pcFieldController.server;
-        serverTrans = server.transform;
-        enemyTrans = this.GetComponent<Transform>();
-        rb = GetComponent<Rigidbody2D>();
-
+        base.Start();
+        
         diffWeekPointVec = new Vector3(Random.Range(-WEEK_POINT_POS_MAX_X, WEEK_POINT_POS_MAX_X),
             Random.Range(-WEEK_POINT_POS_MAX_Y, WEEK_POINT_POS_MAX_Y), 0);
-
-        haveArmer = true;
     }
 
     // Update is called once per frame
-    void Update()
+    public override void Update()
     {
-        HpDisplay();
+        base.Update();
 
-        enemyVelocity = Vector3.zero;
-        Vector2 serverVec = (serverTrans.position - enemyTrans.position);
-        Vector2 severDir = serverVec.normalized;
-
-        if (state == State.None)
+        if(pcFieldController.volumeNum >= 5)
         {
-
+            state = State.StateDecide;
         }
-        else if (state == State.StateDecide)
+        else
         {
-            //仮
-            state = State.GoServer;
-            attackTimer = 0;
-        }
-        else if (state == State.Sleep)
-        {
-
-        }
-        else if (state == State.Grabed)
-        {
-
-        }
-        else if (state == State.GoServer)
-        {
-            enemyVelocity = severDir * ENEMY_SPEED;
-            if (serverVec.sqrMagnitude <= ATTACK_RANGE_RADIUS * ATTACK_RANGE_RADIUS)
-            {
-                state = State.Attack;
-            }
-        }
-        else if (state == State.Attack)
-        {
-            if (attackTimer <= ATTACK_INTERVAL)
-            {
-                attackTimer += Time.deltaTime;
-            }
-            if (attackTimer >= ATTACK_INTERVAL)
-            {
-                if (serverVec.sqrMagnitude >= ATTACK_RANGE_RADIUS * ATTACK_RANGE_RADIUS)
-                {
-                    Debug.Log("ATTACK");
-                }
-                attackTimer = 0;
-                state = State.StateDecide;
-            }
-        }
-        else if (state == State.Stop)
-        {
-
+            state = State.Sleep;
         }
 
-        if (hp <= 0)
-        {
-            Reset();
-        }
+        CheckElement();
 
+        rb.velocity = enemyVelocity;
+    }
+
+    private void CheckElement()
+    {
         //Element効果を付与されているとき
         if (haveElement != Element.Empty)
         {
@@ -196,22 +123,16 @@ public class HorseEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveW
 
                 haveElement = Element.Empty;
             }
-
         }
-
-        rb.velocity = enemyVelocity;
     }
+
 
     public void AddDamage(float damage)
     {
-        if (haveArmer)
-        {
-            Debug.Log("block");
-            damage = 1;
-        }
         DamageDisplay(enemyTrans.position + new Vector3(0, 0.5f, 0), damage);
         hp -= damage;
-        Debug.Log(this.name + ":" + damage);
+
+        comboController.AddCombo();
     }
 
     public void AddElement(Element element, Vector3 centerPos)
@@ -227,19 +148,10 @@ public class HorseEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveW
 
     public void AddWeakDamage(float damage)
     {
-        if (haveArmer)
-        {
-            weekCount--;
-            damage *= 0.5f;
-            if (weekCount <= 0)
-            {
-                haveArmer = false;
-                Debug.Log("armer break");
-            }
-        }
         DamageDisplay(enemyTrans.position + new Vector3(0, 0.5f, 0), damage * 2);
         hp -= damage * 2;
-        Debug.Log(this.name + ": 弱点 :" + damage * 2);
+
+        comboController.AddCombo();
     }
 
 
@@ -272,6 +184,7 @@ public class HorseEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveW
 
     public void Delete()
     {
+        //仮
         DamageDisplay(enemyTrans.position + new Vector3(0, 0.5f, 0), 1000);
         hp -= 1000;
         Debug.Log("Delete");

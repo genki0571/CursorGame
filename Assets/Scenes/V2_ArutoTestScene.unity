@@ -4711,6 +4711,8 @@ MonoBehaviour:
   damageDisplays: []
   state: 0
   haveElement: 0
+  server: {fileID: 0}
+  enemySpeed: 1
 --- !u!212 &432446865
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -5510,6 +5512,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxServerHp: 100
   serverHp: 0
+  recoveryRadius: 0
+  isConnection: 0
 --- !u!61 &521281202
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -6502,9 +6506,11 @@ MonoBehaviour:
   windArea: {fileID: 2038066950}
   electricShock: {fileID: 1011266081}
   storm: {fileID: 888939309}
+  fireArea: {fileID: 0}
   explotion: {fileID: 360308721}
   selectTargetPool: {fileID: 659965192}
   targetPool: {fileID: 1137708128}
+  enemyAttackPool: {fileID: 0}
   fallTexts: []
   txtTallets: []
   pngBusters: []
@@ -6513,8 +6519,9 @@ MonoBehaviour:
   fireWallPosts: []
   fireWalls: []
   zipFiles: []
-  targetObjs: []
+  weekPoints: []
   selectTargets: []
+  enemyAttacks: []
   camera: {fileID: 1960275083}
   volumeNum: 0
   powerMode: 0
@@ -7168,6 +7175,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cc544036511061428f2a2179c334394, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cursorNormalSpeed: 0.5
+  speed: 0
   camera: {fileID: 1960275083}
 --- !u!114 &766683541
 MonoBehaviour:
@@ -14502,6 +14511,10 @@ MonoBehaviour:
   maxPopInterval: 2
   sponers: []
   sponerPos: []
+  canSponeUpper: 0
+  canSponeLower: 0
+  canUpperLeft: 0
+  canUpperRight: 0
 --- !u!114 &1430706669
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14530,6 +14543,10 @@ MonoBehaviour:
   maxPopInterval: 2
   sponers: []
   sponerPos: []
+  canSponeUpper: 0
+  canSponeLower: 0
+  canUpperLeft: 0
+  canUpperRight: 0
 --- !u!114 &1430706670
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14544,6 +14561,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   phaseNum: 0
   phaseEnemyNum: 0
+  SponeDirObjUpper: {fileID: 0}
+  SponeDirObjLower: {fileID: 0}
+  SponeDirObjLeft: {fileID: 0}
+  SponeDirObjRight: {fileID: 0}
 --- !u!4 &1430706671
 Transform:
   m_ObjectHideFlags: 0
@@ -16180,6 +16201,8 @@ MonoBehaviour:
   damageDisplays: []
   state: 1
   haveElement: 0
+  server: {fileID: 0}
+  enemySpeed: 1
 --- !u!212 &1507968030
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -18429,6 +18452,8 @@ MonoBehaviour:
   damageDisplays: []
   state: 0
   haveElement: 0
+  server: {fileID: 0}
+  enemySpeed: 1
 --- !u!212 &1630884524
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -21123,6 +21148,8 @@ MonoBehaviour:
   damageDisplays: []
   state: 0
   haveElement: 0
+  server: {fileID: 0}
+  enemySpeed: 1
   child:
   - {fileID: 9129244238308109836, guid: ebc9941c08e08b143b5fdefcc546309d, type: 3}
   - {fileID: 9129244238308109836, guid: ebc9941c08e08b143b5fdefcc546309d, type: 3}
@@ -21634,7 +21661,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b70ffc220f0b13438edf3915c0d210f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerAttack: {fileID: 766683537}
   openCommandBlock: {fileID: 341478208}
   fallTextCommandBlock: {fileID: 1476886784}
   fireWallCommandBlock: {fileID: 1543292813}
@@ -21644,6 +21670,7 @@ MonoBehaviour:
   installTxtCommandBlock: {fileID: 1792731576}
   installPngCommandBlock: {fileID: 1859155253}
   installZipCommandBlock: {fileID: 515109122}
+  bugTextAsset: {fileID: 0}
 --- !u!212 &1824874522
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -23235,6 +23262,7 @@ GameObject:
   - component: {fileID: 1960275085}
   - component: {fileID: 1960275083}
   - component: {fileID: 1960275084}
+  - component: {fileID: 1960275086}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -23308,6 +23336,39 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1960275086
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1960275082}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_Version: 2
 --- !u!1 &1961762987
 GameObject:
   m_ObjectHideFlags: 0
@@ -23508,6 +23569,8 @@ MonoBehaviour:
   damageDisplays: []
   state: 2
   haveElement: 0
+  server: {fileID: 0}
+  enemySpeed: 1
 --- !u!50 &1977198797
 Rigidbody2D:
   serializedVersion: 4
@@ -24857,6 +24920,8 @@ MonoBehaviour:
   damageDisplays: []
   state: 2
   haveElement: 0
+  server: {fileID: 0}
+  enemySpeed: 1
 --- !u!50 &2102114414
 Rigidbody2D:
   serializedVersion: 4
