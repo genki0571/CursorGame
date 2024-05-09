@@ -4,7 +4,7 @@ using UnityEngine;
 
 public interface IHoldAttacker
 {
-    void Attack(GameObject selectEnemy,Range range) { }
+    void Attack(List<GameObject> selectEnemy,Range range) { }
 
     Element GetElementKind(Range range) 
     {

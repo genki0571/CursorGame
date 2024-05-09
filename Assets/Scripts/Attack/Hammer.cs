@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Hammer : MonoBehaviour
 {
+    EffectController effectController => EffectController.instance;
+
     float attackDamage;
 
     const float ATTACK_INTERVAL = 0.1f;
@@ -69,6 +71,8 @@ public class Hammer : MonoBehaviour
                 }
             }
         }
+
+        effectController.PlayEffect(effectController.hammerEffects,this.transform.position);
     }
 
     void Reset()

@@ -18,13 +18,13 @@ public class HorseEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveW
 
     Vector3 diffWeekPointVec;
 
-    const float ENEMY_SPEED = 2;
+    const float ENEMY_SPEED = 0.5f;
 
     const float ATTACK_RANGE_RADIUS = 2;
     const float ATTACK_INTERVAL = 0.5f;
     float attackTimer = 0;
 
-    const float WEEK_POINT_RADIUS = 0.5f;
+    const float WEEK_POINT_RADIUS = 0.3f;
     const float WEEK_POINT_POS_MAX_X = 0.5f;
     const float WEEK_POINT_POS_MAX_Y = 0.5f;
 
@@ -40,7 +40,8 @@ public class HorseEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveW
     float elementTimer = 0;
 
     bool haveArmer;
-    int weekCount = 0;
+    float armerTimer = 0;
+    const float BREAK_ARMER_INTERVAL = 2;
     // Start is called before the first frame update
     void Start()
     {
@@ -120,7 +121,13 @@ public class HorseEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveW
         }
         else if (state == State.Stop)
         {
-
+            animator.SetInteger("stateNum", 1);
+            armerTimer += Time.deltaTime;
+            enemyVelocity = Vector3.zero;
+            if (armerTimer >= BREAK_ARMER_INTERVAL) 
+            {
+                state = State.StateDecide;
+            }
         }
 
         if (hp <= 0)
@@ -199,6 +206,54 @@ public class HorseEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveW
 
         }
 
+
+        int num = 1;
+        if (enemyTrans.position.x >= serverTrans.position.x)
+        {
+            num = -1;
+        }
+        else
+        {
+            num = 1;
+        }
+        enemyTrans.localScale = new Vector3(num * Mathf.Abs(enemyTrans.localScale.x), enemyTrans.localScale.y, enemyTrans.localScale.z);
+        if (haveArmer) 
+        {
+            animator.SetInteger("stateNum",0);
+            if (state == State.Attack)
+            {
+                animator.SetInteger("animNum",1);   
+            }
+            else 
+            {
+                animator.SetInteger("animNum",0);
+            }
+        }
+        else
+        {
+            if (state == State.Stop) 
+            {
+                animator.SetInteger("stateNum", 1);
+            }
+            else
+            {
+                animator.SetInteger("stateNum", 2);
+            }
+
+            if (state == State.Death) 
+            {
+                animator.SetInteger("animNum",2);
+            }
+            else if (state == State.Attack)
+            {
+                animator.SetInteger("animNum", 1);
+            }
+            else
+            {
+                animator.SetInteger("animNum", 0);
+            }
+        }
+        
         rb.velocity = enemyVelocity;
     }
 
@@ -229,16 +284,21 @@ public class HorseEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveW
     {
         if (haveArmer)
         {
-            weekCount--;
-            damage *= 0.5f;
-            if (weekCount <= 0)
+            hp -= 20f;
+            if (hp <= 0)
             {
                 haveArmer = false;
                 Debug.Log("armer break");
+                state = State.Stop;
+                hp = maxHp;
             }
+            DamageDisplay(enemyTrans.position + new Vector3(0, 0.5f, 0), damage);
         }
-        DamageDisplay(enemyTrans.position + new Vector3(0, 0.5f, 0), damage * 2);
-        hp -= damage * 2;
+        else
+        {
+            hp -= damage * 2;
+            DamageDisplay(enemyTrans.position + new Vector3(0, 0.5f, 0), damage * 2);
+        }
         Debug.Log(this.name + ": 弱点 :" + damage * 2);
     }
 

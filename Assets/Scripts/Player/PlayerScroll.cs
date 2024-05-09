@@ -4,9 +4,17 @@ using UnityEngine;
 
 public class PlayerScroll : MonoBehaviour
 {
-    const float CHANGE_SCROLL_AMOUNT = 15;
+    static public PlayerScroll instace;
+
+    const float MAX_SCROLL_AMOUNT = 360;
+    const float SCROLL_AMOUNT_SPEED = 5;
     public int scrollLevel;
-    public float scrollAmount;
+    public float scrollAmount = 0;
+
+    private void Awake()
+    {
+        instace = this;
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -17,25 +25,14 @@ public class PlayerScroll : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        scrollAmount += Input.mouseScrollDelta.y;
-        if (scrollAmount >= CHANGE_SCROLL_AMOUNT) 
+        scrollAmount += Input.mouseScrollDelta.y * SCROLL_AMOUNT_SPEED;
+        if (scrollAmount >= MAX_SCROLL_AMOUNT) 
         {
-            scrollLevel += 1;
             scrollAmount = 0;
         }
-        else if(scrollAmount <= -CHANGE_SCROLL_AMOUNT)
+        else if(scrollAmount < 0)
         {
-            scrollLevel -= 1;
-            scrollAmount = 0;
-        }
-
-        if (scrollLevel >= 4) 
-        {
-            scrollLevel = 0;
-        }
-        else if (scrollLevel <= -1) 
-        {
-            scrollLevel = 3;
+            scrollAmount = MAX_SCROLL_AMOUNT + scrollAmount;
         }
     }
 }

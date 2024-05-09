@@ -6,7 +6,7 @@ public class PlayerInput : MonoBehaviour
 {
     public static PlayerInput instance;
 
-    const int HOLD_INTERVAL_FRAME = 40;
+    const int HOLD_INTERVAL_FRAME = 30;
     int holdCnt;
 
     [SerializeField] bool isLeftClick;
@@ -15,6 +15,10 @@ public class PlayerInput : MonoBehaviour
     [SerializeField] bool isHold;
     [SerializeField] bool isHoldEnd;
 
+    const float HOLD_JUDGE_RUDIUS_SQR = 0.09f;
+    Transform playerTrans;
+    Vector3 leftClickPos;
+
     private void Awake()
     {
         instance = this;
@@ -22,7 +26,7 @@ public class PlayerInput : MonoBehaviour
 
     private void Start()
     {
-
+        playerTrans = this.transform;
     }
 
     // Update is called once per frame
@@ -46,6 +50,7 @@ public class PlayerInput : MonoBehaviour
             isHold = false;
             isHoldStart = true;
             isHoldEnd = false;
+            leftClickPos = playerTrans.position;
         }
         else if (Input.GetMouseButton(0))
         {
@@ -60,6 +65,12 @@ public class PlayerInput : MonoBehaviour
             {
                 isHold = true;
                 //Debug.Log("Hold");
+            }
+            //左クリックから一定以上移動したら
+            float disSqr = (playerTrans.position - leftClickPos).sqrMagnitude;
+            if (disSqr >= HOLD_JUDGE_RUDIUS_SQR) 
+            {
+                isHold = true;
             }
         }
         else if (Input.GetMouseButtonUp(0))

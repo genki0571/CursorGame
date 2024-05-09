@@ -5,24 +5,11 @@ using UnityEngine.UI;
 
 public class BombEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWeakPoint
 {
-    PCFieldController pcFieldController => PCFieldController.instance;
-    Server server;
-    Transform serverTrans;
-
-    Transform enemyTrans;
-    Rigidbody2D rb;
-
-    Vector3 enemyVelocity;
-
     Vector3 diffPlayerVec = Vector2.zero;
 
     Vector3 diffWeekPointVec;
 
     const float ENEMY_SPEED = 4;
-
-    const float ATTACK_RANGE_RADIUS = 2;
-    const float ATTACK_INTERVAL = 0.5f;
-    float attackTimer = 0;
 
     const float WEEK_POINT_RADIUS = 0.5f;
     const float WEEK_POINT_POS_MAX_X = 0.5f;
@@ -38,36 +25,27 @@ public class BombEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWe
 
     float fireDamageTimer = 0;
     float elementTimer = 0;
-    float bombTimer = 0;
-    float hpCheck = 0;
+    const float BOMB_INTERVAL = 6;
 
-    int count = 3;
+    const float BOMB_RADIUS_S = 1;
+    const float BOMB_STAN_INTERVAL_S = 2;
+
+    bool stoped;
+
+    List<BombExplotion> bombExplotions => pcFieldController.bombExplotions;
+
 
     // Start is called before the first frame update
     void Start()
     {
-        renderer = GetComponent<SpriteRenderer>();
-
-        Image[] images = GetComponentsInChildren<Image>();
-        for (int i = 0; i < images.Length; i++)
-        {
-            if (images[i].type == Image.Type.Filled)
-            {
-                hpImage = images[i];
-                break;
-            }
-        }
-
-        server = pcFieldController.server;
-        serverTrans = server.transform;
-        enemyTrans = this.GetComponent<Transform>();
-        rb = GetComponent<Rigidbody2D>();
+        base.Start();
 
         diffWeekPointVec = new Vector3(Random.Range(-WEEK_POINT_POS_MAX_X, WEEK_POINT_POS_MAX_X),
             Random.Range(-WEEK_POINT_POS_MAX_Y, WEEK_POINT_POS_MAX_Y), 0);
 
-        hpCheck = hp;
-        Reset();
+        maxHp = BOMB_INTERVAL;
+
+        enemySpeed = ENEMY_SPEED;
     }
 
     // Update is called once per frame
@@ -85,9 +63,16 @@ public class BombEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWe
         }
         else if (state == State.StateDecide)
         {
-            //仮
-            state = State.GoServer;
-            attackTimer = 0;
+            if (stoped)
+            {
+                state = State.Stop;
+            }
+            else
+            {
+                //仮
+                state = State.GoServer;
+                attackTimer = 0;
+            }
         }
         else if (state == State.Sleep)
         {
@@ -102,33 +87,29 @@ public class BombEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWe
             enemyVelocity = severDir * ENEMY_SPEED;
             if (serverVec.sqrMagnitude <= ATTACK_RANGE_RADIUS * ATTACK_RANGE_RADIUS)
             {
-                state = State.Attack;
+                state = State.Stop;
             }
         }
         else if (state == State.Attack)
         {
-            if (attackTimer <= ATTACK_INTERVAL)
-            {
-                attackTimer += Time.deltaTime;
-            }
-            if (attackTimer >= ATTACK_INTERVAL)
-            {
-                if (serverVec.sqrMagnitude >= ATTACK_RANGE_RADIUS * ATTACK_RANGE_RADIUS)
-                {
-                    Debug.Log("ATTACK");
-                }
-                attackTimer = 0;
-                state = State.StateDecide;
-            }
+
         }
         else if (state == State.Stop)
         {
-            bombTimer += Time.deltaTime;
-            if (bombTimer >= 3)
+            enemyVelocity = Vector3.zero;
+
+            if (hp <= 2f)
             {
-                Debug.Log("Bomb!");
-                //Instantiate(爆発,enemyTrans,Quaternion.identity);
-                Reset();
+                stoped = true;
+                state = State.Stop;
+            }
+            else 
+            {
+                stoped = false;
+                if (serverVec.sqrMagnitude >= ATTACK_RANGE_RADIUS * ATTACK_RANGE_RADIUS)
+                {
+                    state = State.GoServer;
+                }
             }
         }
         else if (state == State.Death)
@@ -136,10 +117,59 @@ public class BombEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWe
             
         }
 
-        if (hp <= 0)
+        CheckElement();
+
+        if (state != State.Sleep)
         {
+            hp -= Time.deltaTime;
+
+            if (hp <= 3f && state != State.Grabed)
+            {
+                stoped = true;
+                state = State.Stop;
+            }
+        }
+
+        if (hp <= 0 && state != State.Sleep)
+        {
+            Debug.Log("Bomb!");
+            for (int i = 0; i < bombExplotions.Count; i++)
+            {
+                if (bombExplotions[i].isSleep)
+                {
+                    bombExplotions[i].Initialize(enemyTrans.position,BOMB_RADIUS_S, BOMB_STAN_INTERVAL_S);
+                    break;
+                }
+            }
+
             Reset();
         }
+
+
+        int num = 1;
+        if (enemyTrans.position.x >= serverTrans.position.x)
+        {
+            num = -1;
+        }
+        else
+        {
+            num = 1;
+        }
+        enemyTrans.localScale = new Vector3(num * Mathf.Abs(enemyTrans.localScale.x), enemyTrans.localScale.y, enemyTrans.localScale.z);
+        if (state == State.Stop)
+        {
+            animator.SetInteger("animNum", 1);
+        }
+        else 
+        {
+            animator.SetInteger("animNum",0);
+        }
+
+        rb.velocity = enemyVelocity;
+    }
+
+    private void CheckElement() 
+    {
 
         //Element効果を付与されているとき
         if (haveElement != Element.Empty)
@@ -211,13 +241,6 @@ public class BombEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWe
             }
 
         }
-
-        rb.velocity = enemyVelocity;
-        if (hp < hpCheck)
-        {
-            state = State.Stop;
-        }
-        hpCheck = hp;
     }
 
     public void AddDamage(float damage)

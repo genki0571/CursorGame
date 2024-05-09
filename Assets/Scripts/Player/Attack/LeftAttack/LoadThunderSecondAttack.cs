@@ -4,74 +4,138 @@ using UnityEngine;
 
 public class LoadThunderSecondAttack : MonoBehaviour,ILeftAttacker
 {
-    const float ATTACK_DAMAGE = 30;
-    const float ATTACK_DAMAGE_S = 10;
+    const float clickDamagaSingle = 10;
+    const float clickDamageDouble = 30;
 
-    const float ATTACK_INTERVAL = 0.1f;
+    int clickCnt = 0;
+    bool isWaitClick;
+
+    const int CLICK_INTERVAL = 30;
+    int clickTimer = 0;
+
+    const float ATTACK_DAMAGE = 40;
+    const float ATTACK_DAMAGE_S = 20;
 
     const float THUNDER_RADIUS = 2f;
     const float THUNDER_RADIUS_S = 0.8f;
     const int THUNDER_MAX_NUM = 6;
-    float attackTimer = 0;
 
-    bool isReady;
     List<LoadThunder> LoadThunders = new List<LoadThunder>();
 
     PCFieldController pcFieldController => PCFieldController.instance;
+
+    List<WeekPoint> weekPoints;
+    const float SHOW_POINT_INTERVAL = 0.2f;
 
     // Start is called before the first frame update
     void Start()
     {
         LoadThunders = pcFieldController.loadThunders;
+        weekPoints = pcFieldController.weekPoints;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (attackTimer <= ATTACK_INTERVAL)
+        if (isWaitClick)
         {
-            attackTimer += Time.deltaTime;
-        }
-
-        if (attackTimer >= ATTACK_INTERVAL)
-        {
-            isReady = true;
+            clickTimer += 1;
+            if (clickTimer >= CLICK_INTERVAL)
+            {
+                isWaitClick = false;
+                clickCnt = 0;
+            }
         }
         else
         {
-            isReady = false;
+            clickTimer = 0;
         }
     }
 
     public void Attack(Transform cursorTrans, Transform hitEnemy)
     {
-        if (isReady)
+        if (clickCnt == 2) //連三回目の攻撃
         {
-            int num = 0;
-            for (int i = 0; i < LoadThunders.Count; i++)
+            ComboAttack(cursorTrans,hitEnemy);
+
+            clickCnt = 0;
+            isWaitClick = false;
+        }
+        else
+        {
+            if (hitEnemy)
             {
-                if (LoadThunders[i].isSleep)
+                float damage = 0;
+                if (clickCnt == 0)
                 {
-                    if (num == 0)
-                    {
-                        LoadThunders[i].Initialize(ATTACK_DAMAGE, THUNDER_RADIUS,0,cursorTrans.position);
-                        num++;
-                    }
-                    else
-                    {
-                        LoadThunders[i].Initialize(ATTACK_DAMAGE_S, THUNDER_RADIUS_S,Random.Range(0.3f,0.6f) 
-                            ,cursorTrans.position + new Vector3(Random.Range(-1.5f,1.5f), Random.Range(-1.5f, 1.5f), 0));
-                        num++;
-                    }
-                    
+                    damage = clickDamagaSingle;
+                    clickCnt = 1;
+                }
+                else if (clickCnt == 1)
+                {
+                    damage = clickDamageDouble;
+                    clickCnt = 2;
                 }
 
-                if (num >= THUNDER_MAX_NUM) 
+                bool damaged = false;
+
+                IHaveWeakPoint haveWeakPoint = hitEnemy.GetComponent<IHaveWeakPoint>();
+                if (haveWeakPoint != null)
                 {
-                    break;
+                    if (haveWeakPoint.IsAttackWeekPoint(this.transform.position))
+                    {
+                        haveWeakPoint.AddWeakDamage(damage);
+                        damaged = true;
+                    }
+
+                    for (int i = 0; i < weekPoints.Count; i++)
+                    {
+                        if (weekPoints[i].isSleep)
+                        {
+                            weekPoints[i].ShowPoint(haveWeakPoint, SHOW_POINT_INTERVAL);
+                        }
+                    }
+                }
+
+                if (!damaged)
+                {
+                    IDamagable damageTarget = hitEnemy.GetComponent<IDamagable>();
+                    if (damageTarget != null)
+                    {
+                        damageTarget.AddDamage(damage);
+                    }
                 }
             }
-            attackTimer = 0;
+        }
+
+        isWaitClick = true;
+    }
+
+    private void ComboAttack(Transform cursorTrans, Transform hitEnemy)
+    {
+        int num = 0;
+        for (int i = 0; i < LoadThunders.Count; i++)
+        {
+            if (LoadThunders[i].isSleep)
+            {
+                if (num == 0)
+                {
+                    LoadThunders[i].Initialize(ATTACK_DAMAGE, THUNDER_RADIUS, 0, cursorTrans.position);
+                    num++;
+                }
+                else
+                {
+                    LoadThunders[i].Initialize(ATTACK_DAMAGE_S, THUNDER_RADIUS_S, Random.Range(0.3f, 0.6f)
+                        , cursorTrans.position + new Vector3(Random.Range(-1.5f, 1.5f), Random.Range(-1.5f, 1.5f), 0));
+                    num++;
+                }
+
+            }
+
+            if (num >= THUNDER_MAX_NUM)
+            {
+                break;
+            }
         }
     }
 }

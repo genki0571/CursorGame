@@ -267,6 +267,7 @@ GameObject:
   - component: {fileID: 5950649841423371286}
   - component: {fileID: -6545356928101881398}
   - component: {fileID: 4342911763757602991}
+  - component: {fileID: 458046118254834680}
   m_Layer: 7
   m_Name: Test_Warm_small
   m_TagString: Untagged
@@ -332,7 +333,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 75f5f34dc1b5347e0b8351032682f224, type: 3}
-  m_Color: {r: 0, g: 0, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -376,9 +377,9 @@ CircleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.21133333}
+  m_Offset: {x: 0, y: -0.07225585}
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 0.58289504
 --- !u!114 &4342911763757602991
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -393,10 +394,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHp: 10
   damageDisplays: []
+  animator: {fileID: 458046118254834680}
   state: 1
   haveElement: 0
   server: {fileID: 0}
-  serverTrans: {fileID: 0}
-  enemyTrans: {fileID: 0}
-  rb: {fileID: 0}
-  enemyVelocity: {x: 0, y: 0, z: 0}
+  enemySpeed: 1
+  attackTimer: 0
+  haveFile: 0
+--- !u!95 &458046118254834680
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8352344372808513541}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 32132e94e477a8f4ab2d12d3e9af48b7, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

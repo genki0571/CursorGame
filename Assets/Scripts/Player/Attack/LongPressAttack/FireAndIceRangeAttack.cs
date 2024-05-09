@@ -35,16 +35,21 @@ public class FireAndIceRangeAttack : MonoBehaviour,IHoldAttacker
         
     }
 
-    public void Attack(GameObject selectEnemy, Range range)
+    public void Attack(List<GameObject> selectEnemies, Range range)
     {
+        
         Element element = GetElementKind(range);
-        IDamagable damagable = selectEnemy.GetComponent<IDamagable>();
         if (element == Element.Fire)
         {
-            if (damagable != null)
+            for (int i = 0; i < selectEnemies.Count; i++)
             {
-                damagable.AddDamage(FIRE_DAMAGE);
-                damagable.AddElement(Element.Fire, holdDisplay.transform.position);
+                IDamagable damagable = selectEnemies[i].GetComponent<IDamagable>();
+
+                if (damagable != null)
+                {
+                    damagable.AddDamage(FIRE_DAMAGE);
+                    damagable.AddElement(Element.Fire, holdDisplay.transform.position);
+                }
             }
 
             for (int i = 0; i < fireAreas.Count; i++)
@@ -58,11 +63,17 @@ public class FireAndIceRangeAttack : MonoBehaviour,IHoldAttacker
         }
         else if (element == Element.Ice)
         {
-            if (damagable != null)
+            for (int i = 0; i < selectEnemies.Count; i++)
             {
-                damagable.AddDamage(ICE_DAMAGE);
-                damagable.AddElement(Element.Ice, holdDisplay.transform.position);
+                IDamagable damagable = selectEnemies[i].GetComponent<IDamagable>();
+
+                if (damagable != null)
+                {
+                    damagable.AddDamage(ICE_DAMAGE);
+                    damagable.AddElement(Element.Ice, holdDisplay.transform.position);
+                }
             }
+            
         }
         
     }

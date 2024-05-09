@@ -35,9 +35,9 @@ public class SleepLionEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IH
     }
 
     // Update is called once per frame
-    public override void Update()
+    void Update()
     {
-        base.Update();
+        UpdateAction();
 
         if (pcFieldController.volumeNum < 50)
         {

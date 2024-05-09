@@ -37,27 +37,29 @@ public class ThunderRangeAttack : MonoBehaviour,IHoldAttacker
 
     }
 
-    public void Attack(GameObject selectEnemy, Range range)
+    public void Attack(List<GameObject> selectEnemy, Range range)
     {
-        IDamagable damagable = selectEnemy.GetComponent<IDamagable>();
-        if (damagable != null)
+        for (int i = 0; i < selectEnemy.Count; i++)
         {
-            Element element = GetElementKind(range);
-            damagable.AddElement(element, holdDisplay.transform.position);
-
-            if (element == Element.Thunder)
+            IDamagable damagable = selectEnemy[i].GetComponent<IDamagable>();
+            if (damagable != null)
             {
-                for (int i = 0; i < electricShocks.Count; i++)
+                Element element = GetElementKind(range);
+                damagable.AddElement(element, holdDisplay.transform.position);
+
+                if (element == Element.Thunder)
                 {
-                    if (electricShocks[i].isSleep) 
+                    for (int j = 0; i < electricShocks.Count; i++)
                     {
-                        electricShocks[i].Initialize(selectEnemy);
-                        break;
+                        if (electricShocks[j].isSleep)
+                        {
+                            electricShocks[j].Initialize(selectEnemy[i]);
+                            break;
+                        }
                     }
                 }
             }
         }
-
     }
 
     public Element GetElementKind(Range range)

@@ -61,29 +61,30 @@ public class ThunderAndWindMixRangeAttack : MonoBehaviour,IHoldAttacker
 
     }
 
-    public void Attack(GameObject selectEnemy, Range range)
+    public void Attack(List<GameObject> selectEnemy, Range range)
     {
         IDamagable damagable = null ;
         Element element = GetElementKind(range);
-        if (selectEnemy != null)
-        {
-            damagable = selectEnemy.GetComponent<IDamagable>();
-        }
 
 
         if (element == Element.Thunder)
         {
-            if (damagable != null)
+            for (int i = 0; i < selectEnemy.Count; i++)
             {
-                for (int i = 0; i < electricShocks.Count; i++)
+                damagable = selectEnemy[i].GetComponent<IDamagable>();
+                if (damagable != null)
                 {
-                    if (electricShocks[i].isSleep)
+                    for (int j = 0; j < electricShocks.Count; j++)
                     {
-                        electricShocks[i].Initialize(selectEnemy);
-                        break;
+                        if (electricShocks[j].isSleep)
+                        {
+                            electricShocks[j].Initialize(selectEnemy[i]);
+                            break;
+                        }
                     }
                 }
             }
+            
         }
         else if (element == Element.Wind)
         {

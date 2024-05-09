@@ -8,13 +8,18 @@ public class EnemyBase : MonoBehaviour
     [System.NonSerialized]public float hp;
     public float maxHp;
 
-   float damage = 5;
+    float damage = 5;
+
+    float deathTimer = 0; 
+    const float DEATH_INTERVAL = 0.5f;
 
     [System.NonSerialized] public SpriteRenderer renderer;
 
     EnemyUIGenerator uiGenerator => EnemyUIGenerator.instance;
     [SerializeField] List<DamageDisplay> damageDisplays;
     [System.NonSerialized] public Image hpImage;
+
+    public Animator animator;
 
     public enum State
     {
@@ -34,6 +39,7 @@ public class EnemyBase : MonoBehaviour
 
     public ComboController comboController => ComboController.instance;
     public PCFieldController pcFieldController => PCFieldController.instance;
+    public ExpController expController => ExpController.instance;
     public Server server;
     [System.NonSerialized] public Transform serverTrans;
 
@@ -44,9 +50,11 @@ public class EnemyBase : MonoBehaviour
 
     public float enemySpeed = 1;
 
-    const float ATTACK_RANGE_RADIUS = 2;
-    const float ATTACK_INTERVAL = 2f;
-    float attackTimer = 0;
+    public const float ATTACK_RANGE_RADIUS = 2;
+    public const float ATTACK_INTERVAL = 2f;
+    public float attackTimer = 0;
+
+    [SerializeField] bool haveFile;
 
     // Start is called before the first frame update
     public virtual void Start()
@@ -68,12 +76,11 @@ public class EnemyBase : MonoBehaviour
         enemyTrans = this.GetComponent<Transform>();
         rb = GetComponent<Rigidbody2D>();
 
-
         Reset();
     }
 
     // Update is called once per frame
-    public virtual void Update()
+    public void UpdateAction()
     {
         HpDisplay();
 
@@ -127,10 +134,21 @@ public class EnemyBase : MonoBehaviour
         {
 
         }
-
-        if (hp <= 0)
+        else if (state == State.Death) 
         {
-            Reset();
+            enemyVelocity = Vector2.zero;
+            deathTimer += Time.deltaTime;
+            if (deathTimer >= DEATH_INTERVAL)
+            {
+                Died();
+                Reset();
+                deathTimer = 0;
+            }
+        }
+
+        if (hp <= 0 && state != State.Sleep)
+        {
+            state = State.Death;
         }
 
     }
@@ -154,6 +172,31 @@ public class EnemyBase : MonoBehaviour
         canvas.SetActive(false);
 
         transform.position = new Vector3(0,50,0);
+    }
+
+    public void Died() 
+    {
+        //仮
+        if (haveFile) 
+        {
+            List<TreasureFile> files = pcFieldController.treasureFiles;
+            for (int i = 0; i < files.Count; i++)
+            {
+                if (files[i].isSleep)
+                {
+                    files[i].Initialize(enemyTrans.position);
+                    break;
+                }
+            }
+        }
+        else 
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                expController.InitializeExpS(enemyTrans.position + new Vector3(Random.Range(-2f, 2f), Random.Range(-2f, 2f), 0));
+            }
+        }
+        
     }
 
     /// <summary>
@@ -181,5 +224,31 @@ public class EnemyBase : MonoBehaviour
     public void HpDisplay() 
     {
         hpImage.fillAmount = (hp/maxHp);
+    }
+
+    public void EnemyAnimation() 
+    {
+        int num = 1;
+        if (enemyTrans.position.x >= serverTrans.position.x) 
+        {
+            num = -1;
+        }
+        else
+        {
+            num = 1;
+        }
+        enemyTrans.localScale = new Vector3(num * Mathf.Abs(enemyTrans.localScale.x), enemyTrans.localScale.y, enemyTrans.localScale.z);
+        if (state == State.Death) 
+        {
+            animator.SetInteger("animNum",2);
+        }
+        else if (state == State.Attack)
+        {
+            animator.SetInteger("animNum", 1);
+        }
+        else
+        {
+            animator.SetInteger("animNum", 0);
+        }
     }
 }

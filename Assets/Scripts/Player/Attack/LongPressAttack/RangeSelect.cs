@@ -23,25 +23,29 @@ public class RangeSelect : MonoBehaviour,IHoldAttacker
         
     }
 
-    public void Attack(GameObject selectEnemy, Range range)
+    public void Attack(List<GameObject> selectEnemies, Range range)
     {
-        ISelectable selectable = selectEnemy.GetComponent<ISelectable>();
-        if (selectable != null) 
+        for (int i = 0; i < selectEnemies.Count; i++)
         {
-            bool already = false;
-            for (int i = 0; i < playerAttack.selectingEnemies.Count; i++)
+            ISelectable selectable = selectEnemies[i].GetComponent<ISelectable>();
+            if (selectable != null)
             {
-                if (selectEnemy == playerAttack.selectingEnemies[i]) 
+                bool already = false;
+                for (int j = 0; j < playerAttack.selectingEnemies.Count; j++)
                 {
-                    already = true;
+                    if (selectEnemies[i] == playerAttack.selectingEnemies[j])
+                    {
+                        already = true;
+                    }
+                }
+
+                if (!already)
+                {
+                    playerAttack.selectingEnemies.Add(selectEnemies[i]);
                 }
             }
-
-            if (!already)
-            {
-                playerAttack.selectingEnemies.Add(selectEnemy);
-            }
         }
+        
     }
 
     public Element GetElementKind(Range range)

@@ -21,7 +21,7 @@ public class SpyEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWea
 
     Vector3 diffWeekPointVec;
 
-    const float ENEMY_SPEED = 4;
+    const float ENEMY_SPEED = 2;
 
     const float ATTACK_RANGE_RADIUS = 2;
     const float ATTACK_INTERVAL = 0.5f;
@@ -46,8 +46,11 @@ public class SpyEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWea
 
     float cursorDisSqr;
 
-    bool isHide;
+    [SerializeField]bool isHide;
     bool isDiscovered;
+    float hideAgainTimer = 0;
+    const float HIDE_AGAIN_INTERVAL = 3;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -86,10 +89,28 @@ public class SpyEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWea
         cursorDisSqr = (cursorTrans.position - enemyTrans.position).sqrMagnitude;
         if (cursorDisSqr <= HIDE_DIS * HIDE_DIS&&isDiscovered==false)
         {
-            state = State.Stop;
+            if (state != State.Grabed)
+            {
+                state = State.Stop;
+            }
             isHide = true;
-            Debug.Log("hide");
         }
+        else
+        {
+            isHide = false;
+        }
+
+        if (isDiscovered) 
+        {
+            hideAgainTimer += Time.deltaTime;
+            if (hideAgainTimer >= HIDE_AGAIN_INTERVAL) 
+            {
+                isDiscovered = false;
+                hideAgainTimer = 0;
+            }
+            state = State.Stop;
+        }
+
         enemyVelocity = Vector3.zero;
         Vector2 serverVec = (serverTrans.position - enemyTrans.position);
         Vector2 severDir = serverVec.normalized;
@@ -138,6 +159,7 @@ public class SpyEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWea
         }
         else if (state == State.Stop)
         {
+            enemyVelocity = Vector3.zero;
             if (cursorDisSqr > HIDE_DIS * HIDE_DIS)
             {
                 isHide = false;
@@ -221,6 +243,46 @@ public class SpyEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWea
 
         }
 
+
+        int num = 1;
+        if (enemyTrans.position.x >= serverTrans.position.x)
+        {
+            num = -1;
+        }
+        else
+        {
+            num = 1;
+        }
+        enemyTrans.localScale = new Vector3(num * Mathf.Abs(enemyTrans.localScale.x), enemyTrans.localScale.y, enemyTrans.localScale.z);
+        if (isHide)
+        {
+            animator.SetInteger("stateNum",1);
+        }
+        else 
+        {
+            if (isDiscovered)
+            {
+                animator.SetInteger("stateNum", 2);
+            }
+            else 
+            {
+                animator.SetInteger("stateNum",0);
+            }
+
+            if (state == State.Attack)
+            {
+                animator.SetInteger("animNum",1);
+            }
+            else if (state == State.Death)
+            {
+                animator.SetInteger("animNum",2);
+            }
+            else 
+            {
+                animator.SetInteger("animNum",0);
+            }
+        }
+
         rb.velocity = enemyVelocity;
     }
 
@@ -229,7 +291,6 @@ public class SpyEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWea
         if (isHide)
         {
             damage *= 0;
-            Debug.Log(this.name + ":" + "hide");
         }
         DamageDisplay(enemyTrans.position + new Vector3(0, 0.5f, 0), damage);
         hp -= damage;
@@ -249,6 +310,10 @@ public class SpyEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWea
 
     public void AddWeakDamage(float damage)
     {
+        if (isHide)
+        {
+            damage *= 0;
+        }
         DamageDisplay(enemyTrans.position + new Vector3(0, 0.5f, 0), damage * 2);
         hp -= damage * 2;
         Debug.Log(this.name + ": 弱点 :" + damage * 2);

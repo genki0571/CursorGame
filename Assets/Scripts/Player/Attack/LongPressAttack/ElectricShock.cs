@@ -115,6 +115,7 @@ public class ElectricShock : MonoBehaviour
         attackTimer = 0;
         shockNum = 0;
         renderer.enabled = false;
+        trans.position = new Vector3(0,-30,0);
     }
 
     public void Initialize(GameObject target)

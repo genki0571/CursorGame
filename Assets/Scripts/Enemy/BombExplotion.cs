@@ -7,22 +7,34 @@ public class BombExplotion : MonoBehaviour
     PlayerState playerState => PlayerState.instance;
     Transform playerTrans;
     Transform explotionTrans;
+    SpriteRenderer renderer;
 
-    const float RADIUS_S = 2;
-    const float RADIUS_M = 3;
-    const float RADIUS_L = 4;
+    float radiusS = 2;
+    float radiusM = 3;
+    float radiusL = 4;
 
-    const float INTERVAL_S = 3;
-    const float INTERVAL_M = 2;
-    const float INTERVAL_L = 1;
+    float intervalS = 3;
+    float intervalM = 2;
+    float intervalL = 1;
 
     public bool isSleep;
+
+    int explotionCnt = 0;
+    const int MAX_CNT = 6;
+    float resetTimer = 0;
+    const float RESET_INTERVAL = 0.5f;
+
+    RangeCheck rangeCheck;
+    List<GameObject> withinEnemys;
 
     // Start is called before the first frame update
     void Start()
     {
         playerTrans = playerState.transform;
         explotionTrans = this.transform;
+        renderer = GetComponent<SpriteRenderer>();
+        rangeCheck = GetComponent<RangeCheck>();
+        withinEnemys = rangeCheck.withinDamegableObjects;
 
         Reset();
     }
@@ -30,35 +42,72 @@ public class BombExplotion : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (!isSleep) 
+        {
+            if (explotionCnt++ == MAX_CNT)
+            {
+                Explotion();
+            }
+
+            resetTimer += Time.deltaTime;
+            if (resetTimer >= RESET_INTERVAL)
+            {
+                Reset();
+            }
+        }
     }
 
     private void Reset()
     {
+        renderer.enabled = false;
         isSleep = true;
     }
 
-    public void Initialize()
+    public void Initialize(Vector3 pos,float radius, float interval)
     {
+        explotionTrans.position = pos;
+
+        radiusS = radius * 1;
+        radiusM = radius * 2;
+        radiusL = radius * 3;
+        intervalS = interval / 1;
+        intervalM = interval / 2;
+        intervalL = interval / 3;
+
+        renderer.enabled = true;
+        explotionTrans.localScale = new Vector3(radiusL * 2,radiusL * 2,radiusL * 2);
+
         isSleep = false;
-        Explotion();
+        resetTimer = 0;
+        explotionCnt = 0;
     }
 
     private void Explotion() 
     {
         float sqrDistance = (playerTrans.position - explotionTrans.position).sqrMagnitude;
-        if (sqrDistance <= RADIUS_S * RADIUS_S)
+        if (sqrDistance <= radiusS * radiusS)
         {
-            playerState.GetStan(INTERVAL_S);
+            playerState.AddDamage(1);
+            playerState.GetStan(intervalS);
         }
-        else if (sqrDistance <= RADIUS_M * RADIUS_M)
+        else if (sqrDistance <= radiusM * radiusM)
         {
-            playerState.GetStan(INTERVAL_M);
+            playerState.AddDamage(1);
+            playerState.GetStan(intervalM);
         }
-        else if (sqrDistance <= RADIUS_L * RADIUS_L)
+        else if (sqrDistance <= radiusL * radiusL)
         {
-            playerState.GetStan(INTERVAL_L);
+            playerState.AddDamage(1);
+            playerState.GetStan(intervalL);
         }
-        Reset();
+
+        for (int i = 0; i < withinEnemys.Count; i++)
+        {
+            IDamagable damagable = withinEnemys[i].GetComponent<IDamagable>();
+            if (damagable != null)
+            {
+                damagable.AddDamage(50);
+            }
+        }
     }
 }

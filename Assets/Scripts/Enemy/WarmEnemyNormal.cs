@@ -5,12 +5,6 @@ using UnityEngine.UI;
 
 public class WarmEnemyNormal : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveWeakPoint
 {
-    PCFieldController pcFieldController => PCFieldController.instance;
-    Server server;
-    Transform serverTrans;
-
-    Transform enemyTrans;
-    Rigidbody2D rb;
 
     [SerializeField] GameObject[] child;
     [System.NonSerialized] public EnemyBase[] childEnemyBases;
@@ -26,11 +20,6 @@ public class WarmEnemyNormal : EnemyBase, IDamagable, ISelectable, IGrabbable, I
     Vector3[] WarmPointVec;
 
     const float ENEMY_SPEED = 4;
-
-    const float ATTACK_RANGE_RADIUS = 2;
-    const float ATTACK_INTERVAL = 0.5f;
-    float attackTimer = 0;
-
     const float WEEK_POINT_RADIUS = 0.5f;
     const float WEEK_POINT_POS_MAX_X = 0.5f;
     const float WEEK_POINT_POS_MAX_Y = 0.5f;
@@ -51,10 +40,13 @@ public class WarmEnemyNormal : EnemyBase, IDamagable, ISelectable, IGrabbable, I
     float fireDamageTimer = 0;
     float elementTimer = 0;
 
+    [SerializeField] bool isSecond;
+
     // Start is called before the first frame update
     void Start()
     {
         hp = maxHp;
+
         renderer = GetComponent<SpriteRenderer>();
 
         Image[] images = GetComponentsInChildren<Image>();
@@ -67,14 +59,19 @@ public class WarmEnemyNormal : EnemyBase, IDamagable, ISelectable, IGrabbable, I
             }
         }
 
-        childEnemyBases = new EnemyBase[child.Length];
-
-        WarmPointVec = new Vector3[child.Length];
-
         server = pcFieldController.server;
         serverTrans = server.transform;
         enemyTrans = this.GetComponent<Transform>();
         rb = GetComponent<Rigidbody2D>();
+        if (!isSecond)
+        {
+            Reset();
+        }
+
+        childEnemyBases = new EnemyBase[child.Length];
+
+        WarmPointVec = new Vector3[child.Length];
+
 
         diffWeekPointVec = new Vector3(Random.Range(-WEEK_POINT_POS_MAX_X, WEEK_POINT_POS_MAX_X),
             Random.Range(-WEEK_POINT_POS_MAX_Y, WEEK_POINT_POS_MAX_Y), 0);
@@ -134,11 +131,8 @@ public class WarmEnemyNormal : EnemyBase, IDamagable, ISelectable, IGrabbable, I
         }
         else if (state == State.Stop)
         {
-            Debug.Log("child0" + childEnemyBases[0].state);
-            Debug.Log("child1" + childEnemyBases[1].state);
             if (childEnemyBases[0].state == EnemyBase.State.Sleep && childEnemyBases[1].state == EnemyBase.State.Sleep)
             {
-                Debug.Log("small_death");
                 Reset();
             }
         }
@@ -237,6 +231,29 @@ public class WarmEnemyNormal : EnemyBase, IDamagable, ISelectable, IGrabbable, I
 
         }
 
+        animator.SetBool("IChild", false);
+        int num = 1;
+        if (enemyTrans.position.x >= serverTrans.position.x)
+        {
+            num = -1;
+        }
+        else
+        {
+            num = 1;
+        }
+        enemyTrans.localScale = new Vector3(num * Mathf.Abs(enemyTrans.localScale.x), enemyTrans.localScale.y, enemyTrans.localScale.z);
+        if (state == State.Death)
+        {
+            animator.SetInteger("animNum", 2);
+        }
+        else if (state == State.Attack)
+        {
+            animator.SetInteger("animNum", 1);
+        }
+        else
+        {
+            animator.SetInteger("animNum", 0);
+        }
         rb.velocity = enemyVelocity;
     }
 

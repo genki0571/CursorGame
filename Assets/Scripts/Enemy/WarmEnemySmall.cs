@@ -51,11 +51,35 @@ public class WarmEnemySmall : EnemyBase, IDamagable, ISelectable, IGrabbable, IH
     }
 
     // Update is called once per frame
-    public override void Update()
+    void Update()
     {
-        base.Update();
+        UpdateAction();
 
         CheckElement();
+
+        animator.SetBool("IChild",true);
+        int num = 1;
+        if (enemyTrans.position.x >= serverTrans.position.x)
+        {
+            num = -1;
+        }
+        else
+        {
+            num = 1;
+        }
+        enemyTrans.localScale = new Vector3(num * Mathf.Abs(enemyTrans.localScale.x), enemyTrans.localScale.y, enemyTrans.localScale.z);
+        if (state == State.Death)
+        {
+            animator.SetInteger("animNum",2);
+        }
+        else if(state == State.Attack)
+        {
+            animator.SetInteger("animNum", 1);
+        }
+        else
+        {
+            animator.SetInteger("animNum", 0);
+        }
 
         rb.velocity = enemyVelocity;
     }

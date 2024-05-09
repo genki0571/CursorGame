@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class DoubleClickAttack : MonoBehaviour,ILeftAttacker
 {
-    const float CLICK_DAMAGE_SINGLE = 10;
-    const float CLICK_DAMAGE_DOUBLE = 30;
+    const float CLICK_DAMAGE_SINGLE = 20;
+    const float CLICK_DAMAGE_DOUBLE = 50;
 
     int clickCnt = 0;
     bool isWaitClick;

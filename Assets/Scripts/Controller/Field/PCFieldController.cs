@@ -25,9 +25,14 @@ public class PCFieldController : MonoBehaviour
     [SerializeField] public GameObject fireArea;
     [SerializeField] public GameObject explotion;
 
+    //PoolObj
     [SerializeField] public GameObject selectTargetPool;
     [SerializeField] public GameObject targetPool;
     [SerializeField] public GameObject enemyAttackPool;
+    [SerializeField] public GameObject treasureFilePool;
+    //PoolObj : EnemyAttack
+    [SerializeField] public GameObject bombExplotionPool;
+
 
     //Pool
     public List<FallText> fallTexts = new List<FallText>();
@@ -42,15 +47,19 @@ public class PCFieldController : MonoBehaviour
     public List<Transform> selectTargets;
     public List<EnemyAttack> enemyAttacks = new List<EnemyAttack>();
 
+    public List<TreasureFile> treasureFiles = new List<TreasureFile>();
+
+    public List<BombExplotion> bombExplotions = new List<BombExplotion>();
+
     [SerializeField] Camera camera;
     Vector3 cameraLeftUpperPos;
     Vector3 fileLeftUpperPos;
     const float FILE_HEIGHT = 1;
     const float FILE_WIDTH = 1.5f;
 
-    GameObject[,] putObjs = new GameObject[12, 7];
-    Vector3[,] putPos = new Vector3[12,7]; 
-    bool[,] isPut = new bool[12,7];
+    GameObject[,] putObjs = new GameObject[12,9];
+    Vector3[,] putPos = new Vector3[12,9]; 
+    bool[,] isPut = new bool[12,9];
 
     public float volumeNum;
     public PowerMode powerMode;
@@ -178,6 +187,20 @@ public class PCFieldController : MonoBehaviour
         for (int i = 0; i < attacks.Length; i++)
         {
             enemyAttacks.Add(attacks[i]);
+        }
+
+        //TreasureFile
+        TreasureFile[] files = treasureFilePool.GetComponentsInChildren<TreasureFile>();
+        for (int i = 0; i < files.Length; i++)
+        {
+            treasureFiles.Add(files[i]);
+        }
+
+        //BombExplotion
+        BombExplotion[] explotions = bombExplotionPool.GetComponentsInChildren<BombExplotion>() ;
+        for (int i = 0; i < explotions.Length; i++)
+        {
+            bombExplotions.Add(explotions[i]);
         }
 
         cameraLeftUpperPos = camera.ScreenToWorldPoint(new Vector2(0, Screen.height));

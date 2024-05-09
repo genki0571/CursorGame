@@ -36,13 +36,16 @@ public class FireRangeAttack : MonoBehaviour,IHoldAttacker
         
     }
 
-    public void Attack(GameObject selectEnemy,Range range)
+    public void Attack(List<GameObject> selectEnemies,Range range)
     {
-        IDamagable damagable = selectEnemy.GetComponent<IDamagable>();
-        if (damagable != null)
+        for (int i = 0; i < selectEnemies.Count; i++)
         {
-            damagable.AddDamage(FIRE_DAMAGE);
-            damagable.AddElement(GetElementKind(range), holdDisplay.transform.position);
+            IDamagable damagable = selectEnemies[i].GetComponent<IDamagable>();
+            if (damagable != null)
+            {
+                damagable.AddDamage(FIRE_DAMAGE);
+                damagable.AddElement(GetElementKind(range), holdDisplay.transform.position);
+            }
         }
 
         for (int i = 0; i < fireAreas.Count; i++)

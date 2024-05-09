@@ -31,7 +31,7 @@ public class PlayerState : MonoBehaviour
     bool damaged = false;
 
     public List<Virus> playerViruses = new List<Virus>();
-    SpriteRenderer renderer;
+    [SerializeField] SpriteRenderer renderer;
 
     public bool isStan;
     private float stanTimer = 0;
@@ -44,6 +44,11 @@ public class PlayerState : MonoBehaviour
     Server server => Server.instance;
     PlayerMovement playerMovement => PlayerMovement.instance;
 
+
+    //EXP
+    int expNum = 0;
+    List<Transform> expTransforms = new List<Transform>();
+
     void Awake()
     {
         instance = this;
@@ -53,7 +58,7 @@ public class PlayerState : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        renderer = transform.GetChild(0).GetComponent<SpriteRenderer>();
+
     }
 
     // Update is called once per frame
@@ -212,4 +217,5 @@ public class PlayerState : MonoBehaviour
             playerMovement.speed = playerMovement.cursorNormalSpeed / 30;
         }
     }
+
 }

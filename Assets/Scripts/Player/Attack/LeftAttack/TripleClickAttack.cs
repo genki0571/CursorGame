@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class TripleClickAttack : MonoBehaviour,ILeftAttacker
 {
-    const float CLICK_DAMAGE_SINGLE = 10;
-    const float CLICK_DAMAGE_DOUBLE = 30;
-    const float CLICK_DAMAGE_TRIPLE = 40;
+    const float clickDamagaSingle = 10;
+    const float clickDamageDouble = 30;
+    const float clickDamageTriple = 60;
 
     int clickCnt = 0;
     bool isWaitClick;
@@ -17,6 +17,9 @@ public class TripleClickAttack : MonoBehaviour,ILeftAttacker
     PCFieldController pcFieldController => PCFieldController.instance;
     List<WeekPoint> weekPoints;
     const float SHOW_POINT_INTERVAL = 0.2f;
+
+    EffectController effectController => EffectController.instance;
+
 
     // Start is called before the first frame update
     void Start()
@@ -33,6 +36,7 @@ public class TripleClickAttack : MonoBehaviour,ILeftAttacker
             if (clickTimer >= CLICK_INTERVAL)
             {
                 isWaitClick = false;
+                clickCnt = 0;
             }
         }
         else
@@ -43,53 +47,100 @@ public class TripleClickAttack : MonoBehaviour,ILeftAttacker
 
     public void Attack(Transform cursorTrans, Transform hitEnemy)
     {
-        if (hitEnemy)
+        if (clickCnt == 2) //連三回目の攻撃
         {
-            float damage = 0;
-            if (clickCnt == 0)
+            if (hitEnemy)
             {
-                damage = CLICK_DAMAGE_SINGLE;
-                clickCnt = 1;
-            }
-            else if (clickCnt == 1)
-            {
-                damage = CLICK_DAMAGE_DOUBLE;
-                clickCnt = 2;
-            }
-            else if (clickCnt == 2)
-            {
-                damage = CLICK_DAMAGE_TRIPLE;
-                clickCnt = 0;
-            }
+                float damage = clickDamageTriple;
 
-            bool damaged = false;
+                bool damaged = false;
 
-            IHaveWeakPoint haveWeakPoint = hitEnemy.GetComponent<IHaveWeakPoint>();
-            if (haveWeakPoint != null)
-            {
-                if (haveWeakPoint.IsAttackWeekPoint(this.transform.position))
+                IHaveWeakPoint haveWeakPoint = hitEnemy.GetComponent<IHaveWeakPoint>();
+                if (haveWeakPoint != null)
                 {
-                    haveWeakPoint.AddWeakDamage(damage);
-                    damaged = true;
+                    if (haveWeakPoint.IsAttackWeekPoint(this.transform.position))
+                    {
+                        haveWeakPoint.AddWeakDamage(damage);
+                        damaged = true;
+                        effectController.PlayEffect(effectController.clickCriticalEffects, cursorTrans.position);
+                    }
+
+                    for (int i = 0; i < weekPoints.Count; i++)
+                    {
+                        if (weekPoints[i].isSleep)
+                        {
+                            weekPoints[i].ShowPoint(haveWeakPoint, SHOW_POINT_INTERVAL);
+                        }
+                    }
                 }
 
-                for (int i = 0; i < weekPoints.Count; i++)
+                if (!damaged)
                 {
-                    if (weekPoints[i].isSleep)
+                    IDamagable damageTarget = hitEnemy.GetComponent<IDamagable>();
+                    if (damageTarget != null)
                     {
-                        weekPoints[i].ShowPoint(haveWeakPoint, SHOW_POINT_INTERVAL);
+                        damageTarget.AddDamage(damage);
+
+                        effectController.PlayEffect(effectController.clickEffects, cursorTrans.position);
                     }
                 }
             }
 
-            if (!damaged)
+            clickCnt = 0;
+            isWaitClick = false;
+        }
+        else
+        {
+            if (hitEnemy)
             {
-                IDamagable damageTarget = hitEnemy.GetComponent<IDamagable>();
-                if (damageTarget != null)
+                float damage = 0;
+                if (clickCnt == 0)
                 {
-                    damageTarget.AddDamage(damage);
+                    damage = clickDamagaSingle;
+                    clickCnt = 1;
+                }
+                else if (clickCnt == 1)
+                {
+                    damage = clickDamageDouble;
+                    clickCnt = 2;
+                }
+
+                bool damaged = false;
+
+                IHaveWeakPoint haveWeakPoint = hitEnemy.GetComponent<IHaveWeakPoint>();
+                if (haveWeakPoint != null)
+                {
+                    if (haveWeakPoint.IsAttackWeekPoint(this.transform.position))
+                    {
+                        haveWeakPoint.AddWeakDamage(damage);
+                        damaged = true;
+                        effectController.PlayEffect(effectController.clickCriticalEffects, cursorTrans.position);
+                    }
+
+                    for (int i = 0; i < weekPoints.Count; i++)
+                    {
+                        if (weekPoints[i].isSleep)
+                        {
+                            weekPoints[i].ShowPoint(haveWeakPoint, SHOW_POINT_INTERVAL);
+                        }
+                    }
+                }
+
+                if (!damaged)
+                {
+                    IDamagable damageTarget = hitEnemy.GetComponent<IDamagable>();
+                    if (damageTarget != null)
+                    {
+                        damageTarget.AddDamage(damage);
+
+                        effectController.PlayEffect(effectController.clickEffects,cursorTrans.position);
+                    }
                 }
             }
+
         }
+
+
+        isWaitClick = true;
     }
 }

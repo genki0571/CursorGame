@@ -133,11 +133,11 @@ public class PlayerSkill : MonoBehaviour
             case LeftSkill.Hammer:
                 if (leftLevel == 2)
                 {
-                    var leftAttacker = gameObject.AddComponent<HammerFirstAttack>();
+                    var leftAttacker = gameObject.AddComponent<HammerAttack>();
                 }
                 else if (leftLevel == 3)
                 {
-                    var leftAttacker = gameObject.AddComponent<HammerFirstAttack>();
+                    var leftAttacker = gameObject.AddComponent<HammerAttack>();
                 }
                 else
                 {

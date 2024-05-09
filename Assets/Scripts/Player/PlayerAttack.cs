@@ -61,10 +61,8 @@ public class PlayerAttack : MonoBehaviour
 
     bool isRange;
 
-    bool isGrabbing;
-    IGrabbable grabbable;
-    int grabCnt = 0;
-    const int GRAB_FRAME_INTERVAL = 15;
+    public bool isGrabbing;
+    public IGrabbable grabbable;
 
     bool beforeHold;
     public Vector2 holdStartPos;
@@ -91,6 +89,7 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] GameObject commandMenu;
 
     [System.NonSerialized]public bool isGrabSlider;
+
 
     private void Awake()
     {
@@ -127,16 +126,15 @@ public class PlayerAttack : MonoBehaviour
             isLeftClick = temp;
         }
 
-
         cursorPos = cursorTrans.position;
 
         if (!playerState.isDead) 
         {
-            Ray2D ray = new Ray2D(transform.position, transform.forward);
+            Ray2D ray = new Ray2D(transform.position, -Vector3.forward);
             RaycastHit2D hit = new RaycastHit2D();
             if (isRightClick || isLeftClick || isHold || beforeHold)
             {
-                int layerMask = ~(1 << LayerMask.NameToLayer("RangeCheck"));
+                int layerMask = ~(1 << LayerMask.NameToLayer("RangeCheck") << LayerMask.NameToLayer("Player") << LayerMask.NameToLayer("Effect"));
                 hit = Physics2D.Raycast(ray.origin, ray.direction, 1f, layerMask);
             }
             IButton button = null;
@@ -276,7 +274,6 @@ public class PlayerAttack : MonoBehaviour
             if (isHoldStart)
             {
                 holdStartPos = cursorTrans.position;
-                grabCnt = 0;
             }
 
             if (isHold)
@@ -288,11 +285,7 @@ public class PlayerAttack : MonoBehaviour
                         grabbable = hit.transform.GetComponent<IGrabbable>();
                         if (grabbable != null)
                         {
-                            grabCnt += 1;
-                            if (grabCnt >= GRAB_FRAME_INTERVAL)
-                            {
-                                isGrabbing = true;
-                            }
+                            isGrabbing = true;
                         }
                         else
                         {
@@ -386,10 +379,8 @@ public class PlayerAttack : MonoBehaviour
                         }
                         else
                         {
-                            for (int i = 0; i < withinRangeEnemies.Count; i++)
-                            {
-                                holdAttacker.Attack(withinRangeEnemies[i], range);
-                            }
+
+                            holdAttacker.Attack(withinRangeEnemies, range);
                         }
                     }
 
@@ -461,7 +452,7 @@ public class PlayerAttack : MonoBehaviour
             selectingEnemies.Clear();
 
             commandMenu.transform.position = cursorPos;
-            commandMenu.SetActive(true);
+            commandMenu.SetActive(false);
         }
     }
 

@@ -35,12 +35,13 @@ public class TestEnemy : EnemyBase,IDamagable,ISelectable,IGrabbable,IHaveWeakPo
     }
 
     // Update is called once per frame
-    public override void Update()
+    void Update()
     {
-        base.Update();
+        UpdateAction();
 
         CheckElement();
 
+        EnemyAnimation();
         rb.velocity = enemyVelocity;
     }
 

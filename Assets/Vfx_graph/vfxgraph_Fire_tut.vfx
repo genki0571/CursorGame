@@ -19,7 +19,7 @@ MonoBehaviour:
       x: 127
       y: -1782
       width: 978
-      height: 1630
+      height: 1650
     contents:
     - model: {fileID: 8926484042661614555}
       id: 0
@@ -198,7 +198,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
-      m_SerializableObject: 16
+      m_SerializableObject: 8
     min: -Infinity
     max: Infinity
     enumValues: []
@@ -726,7 +726,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614583}
   - {fileID: 8926484042661614585}
   dataType: 0
-  capacity: 1000
+  capacity: 200
   stripCapacity: 16
   particlePerStripCount: 16
   needsComputeBounds: 0
@@ -2561,7 +2561,7 @@ MonoBehaviour:
   m_Parent: {fileID: 114350483966674976}
   m_Children: []
   m_UIPosition: {x: 0, y: 0}
-  m_UICollapsed: 1
+  m_UICollapsed: 0
   m_UISuperCollapsed: 0
   m_InputSlots: []
   m_OutputSlots:
@@ -2587,7 +2587,7 @@ MonoBehaviour:
     linkedSlots:
     - outputSlot: {fileID: 8926484042661614664}
       inputSlot: {fileID: 8926484042661614557}
-    position: {x: 418, y: -1611}
+    position: {x: 414, y: -1611}
     expandedSlots: []
     expanded: 0
   - m_Id: 1
@@ -2622,7 +2622,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
-      m_SerializableObject: 16
+      m_SerializableObject: 8
     m_Space: 2147483647
   m_Property:
     name: o
@@ -4894,7 +4894,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614688}
   - {fileID: 8926484042661614722}
   dataType: 0
-  capacity: 1000
+  capacity: 150
   stripCapacity: 16
   particlePerStripCount: 16
   needsComputeBounds: 0
@@ -6842,7 +6842,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614812}
   - {fileID: 8926484042661614846}
   dataType: 0
-  capacity: 1000
+  capacity: 400
   stripCapacity: 16
   particlePerStripCount: 16
   needsComputeBounds: 0

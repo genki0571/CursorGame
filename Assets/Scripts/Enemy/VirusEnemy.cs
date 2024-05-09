@@ -40,9 +40,9 @@ public class VirusEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveW
     }
 
     // Update is called once per frame
-    public override void Update()
+    void Update()
     {
-        base.Update();
+        UpdateAction();
 
         CheckElement();
 
@@ -55,7 +55,8 @@ public class VirusEnemy : EnemyBase, IDamagable, ISelectable, IGrabbable, IHaveW
                 attackCursorTimer = 0;
             }
         }
-        
+
+        EnemyAnimation();
 
         rb.velocity = enemyVelocity;
     }

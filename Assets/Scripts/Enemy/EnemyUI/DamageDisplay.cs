@@ -16,7 +16,7 @@ public class DamageDisplay : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        text = GetComponentInChildren<Text>();
+        text = GetComponent<Text>();
         displayTrans = GetComponent<RectTransform>();
         Reset();
     }
