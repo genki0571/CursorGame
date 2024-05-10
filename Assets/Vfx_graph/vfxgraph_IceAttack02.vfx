@@ -24,37 +24,16 @@ MonoBehaviour:
     - model: {fileID: 8926484042661614555}
       id: 0
       isStickyNote: 0
-    - model: {fileID: 8926484042661614600}
-      id: 0
-      isStickyNote: 0
     - model: {fileID: 8926484042661614583}
       id: 0
       isStickyNote: 0
     - model: {fileID: 8926484042661614558}
       id: 0
       isStickyNote: 0
-    - model: {fileID: 8926484042661614609}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614580}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614622}
-      id: 0
-      isStickyNote: 0
     - model: {fileID: 8926484042661614619}
       id: 0
       isStickyNote: 0
     - model: {fileID: 8926484042661614585}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614627}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614637}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614593}
       id: 0
       isStickyNote: 0
     - model: {fileID: 8926484042661614633}
@@ -3682,7 +3661,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEngine.Mesh, UnityEngine.CoreModule, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"obj":{"fileID":1874024192930127066,"guid":"fbf104c63da6f3e4aaf6951743c438e2","type":3}}'
+      m_SerializableObject: '{"obj":{"fileID":1874024192930127066,"guid":"c4c180746f75ef24783bf1e31fa24f5a","type":3}}'
     m_Space: 2147483647
   m_Property:
     name: mesh
@@ -3780,7 +3759,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"x":0.0,"y":0.0,"z":-1.0}'
+      m_SerializableObject: '{"x":0.0,"y":-2.0,"z":0.0}'
     m_Space: 2147483647
   m_Property:
     name: Pivot
@@ -3916,7 +3895,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"x":-70.0,"y":20.0,"z":0.0}'
+      m_SerializableObject: '{"x":0.0,"y":20.0,"z":0.0}'
     m_Space: 2147483647
   m_Property:
     name: A
@@ -4052,7 +4031,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"x":-90.0,"y":-20.0,"z":0.0}'
+      m_SerializableObject: '{"x":20.0,"y":-20.0,"z":0.0}'
     m_Space: 2147483647
   m_Property:
     name: B
@@ -5993,7 +5972,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEngine.AnimationCurve, UnityEngine.CoreModule, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"frames":[{"time":0.0,"value":1.0,"inTangent":0.0,"outTangent":0.0,"tangentMode":0,"leftTangentMode":1,"rightTangentMode":1,"broken":false},{"time":1.0,"value":1.0,"inTangent":0.0,"outTangent":0.0,"tangentMode":0,"leftTangentMode":1,"rightTangentMode":1,"broken":false}],"preWrapMode":8,"postWrapMode":8,"version":1}'
+      m_SerializableObject: '{"frames":[{"time":0.0,"value":0.0,"inTangent":7.125606536865234,"outTangent":7.125606536865234,"tangentMode":0,"leftTangentMode":1,"rightTangentMode":1,"broken":false},{"time":0.150631844997406,"value":1.073343276977539,"inTangent":0.15794922411441804,"outTangent":0.15794922411441804,"tangentMode":0,"leftTangentMode":0,"rightTangentMode":0,"broken":false},{"time":0.26633691787719729,"value":0.9923076629638672,"inTangent":0.0,"outTangent":0.0,"tangentMode":0,"leftTangentMode":0,"rightTangentMode":0,"broken":false},{"time":0.6448818445205689,"value":0.994873046875,"inTangent":0.0,"outTangent":0.0,"tangentMode":0,"leftTangentMode":0,"rightTangentMode":0,"broken":false},{"time":1.0,"value":0.0,"inTangent":-2.8015267848968508,"outTangent":-2.8015267848968508,"tangentMode":0,"leftTangentMode":1,"rightTangentMode":1,"broken":false}],"preWrapMode":8,"postWrapMode":8,"version":1}'
     m_Space: 2147483647
   m_Property:
     name: Scale_y
@@ -6027,7 +6006,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEngine.AnimationCurve, UnityEngine.CoreModule, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"frames":[{"time":0.0,"value":0.0,"inTangent":7.125606536865234,"outTangent":7.125606536865234,"tangentMode":0,"leftTangentMode":1,"rightTangentMode":1,"broken":false},{"time":0.150631844997406,"value":1.073343276977539,"inTangent":0.15794922411441804,"outTangent":0.15794922411441804,"tangentMode":0,"leftTangentMode":0,"rightTangentMode":0,"broken":false},{"time":0.26633691787719729,"value":0.9923076629638672,"inTangent":0.0,"outTangent":0.0,"tangentMode":0,"leftTangentMode":0,"rightTangentMode":0,"broken":false},{"time":0.6448818445205689,"value":0.994873046875,"inTangent":0.0,"outTangent":0.0,"tangentMode":0,"leftTangentMode":0,"rightTangentMode":0,"broken":false},{"time":1.0,"value":0.0,"inTangent":-2.8015267848968508,"outTangent":-2.8015267848968508,"tangentMode":0,"leftTangentMode":1,"rightTangentMode":1,"broken":false}],"preWrapMode":8,"postWrapMode":8,"version":1}'
+      m_SerializableObject: '{"frames":[{"time":0.0,"value":1.0,"inTangent":0.0,"outTangent":0.0,"tangentMode":0,"leftTangentMode":1,"rightTangentMode":1,"broken":false},{"time":1.0,"value":1.0,"inTangent":0.0,"outTangent":0.0,"tangentMode":0,"leftTangentMode":1,"rightTangentMode":1,"broken":false}],"preWrapMode":8,"postWrapMode":8,"version":1}'
     m_Space: 2147483647
   m_Property:
     name: Scale_z
@@ -7162,7 +7141,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"x":-90.0,"y":360.0,"z":0.0}'
+      m_SerializableObject: '{"x":0.0,"y":360.0,"z":0.0}'
     m_Space: 2147483647
   m_Property:
     name: A
@@ -7298,7 +7277,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"x":-90.0,"y":-360.0,"z":0.0}'
+      m_SerializableObject: '{"x":0.0,"y":-360.0,"z":0.0}'
     m_Space: 2147483647
   m_Property:
     name: B
@@ -8217,7 +8196,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEngine.Mesh, UnityEngine.CoreModule, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"obj":{"fileID":-5790312207356387143,"guid":"cdc75715e2e4da348915dcb6a308c1ca","type":3}}'
+      m_SerializableObject: '{"obj":{"fileID":-5790312207356387143,"guid":"2940823e4137eb7478f9643c9a3d55c1","type":3}}'
     m_Space: 2147483647
   m_Property:
     name: mesh
