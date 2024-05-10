@@ -19,6 +19,8 @@ public class QuestBoard : MonoBehaviour
     public void SetQuestData(QuestData data)
     {
         questData = data;
+        questTitileText.text = data.questTitle;
+        questOverviewText.text = data.questOverview;
     }
 
     public QuestData GetQuestData()

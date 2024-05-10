@@ -33,9 +33,9 @@ public class DrugAndDrop : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (LobbyManager.IsOpenwindow == false)//ウィンドウが開いていないなら
+        if (AppWindowManager.IsOpenwindow == false)//ウィンドウが開いていないなら
         {
-            if (Input.GetMouseButtonDown(0))
+            if (playerInput.IsHoldStart())
             {
                 crickPosition = lobbyDivision.CursorPartitioning(transform.position);
                 crickedItemType = lobbyManager.GetItemType(crickPosition);
@@ -44,7 +44,7 @@ public class DrugAndDrop : MonoBehaviour
                 ClearCursorIcon(crickedItemType);
 
             }
-            if (Input.GetMouseButtonUp(0))
+            if (playerInput.IsHoldEnd())
             {
                 releasePosition = lobbyDivision.CursorPartitioning(transform.position);
                 releasedItemType = lobbyManager.GetItemType(releasePosition);

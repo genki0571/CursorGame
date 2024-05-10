@@ -5,30 +5,24 @@ using UnityEngine;
 public class SelectQuest : MonoBehaviour
 {
     GameObject clickedGameObject;//クリックされたゲームオブジェクトを代入する変数
-
+    [SerializeField] QuestManager questManager;
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
         {
-            Select();
-            Ray ray = Camera.main.ScreenPointToRay(this.transform.position);
-            RaycastHit2D hit2d = Physics2D.Raycast((Vector2)ray.origin, (Vector2)ray.direction);
+            RaycastHit2D hit2d = Physics2D.Raycast(transform.position, Vector3.forward);
             if (hit2d)
             {
                 clickedGameObject = hit2d.transform.gameObject;
-                Debug.Log(clickedGameObject.name);//ゲームオブジェクトの名前を出力
-                Debug.Log(clickedGameObject.tag);//ゲームオブジェクトの名前を出力
+                if (clickedGameObject.CompareTag("UpButton"))
+                {
+                    questManager.ClickUpButton();
+                }
+                else if (clickedGameObject.CompareTag("DownButton"))
+                {
+                    questManager.ClickDownButton();
+                }
             }
-            else
-            {
-                Debug.Log("当たったと思った？気のせいだよwwww");
-            }
-
         }
-    }
-
-    public void Select()
-    {
-        Debug.Log("ボタン押せた!");
     }
 }

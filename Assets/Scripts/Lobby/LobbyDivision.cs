@@ -17,18 +17,6 @@ public struct LobbyPosition
 //ロビーの高さ:+5 ~ -5 ロビーの横幅: +8.88 ~ -8.88
 public class LobbyDivision : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     /// <summary>
     /// カーソルの場所から対応する区域を判別する.
     /// </summary>

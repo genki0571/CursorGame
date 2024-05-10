@@ -5,9 +5,7 @@ using UnityEngine;
 public class LobbyManager : MonoBehaviour
 {
     private LobbyItemBase[,] lobbyItems = new LobbyItemBase[8,5];
-    private bool isFirstDisplay = true;
-
-    public static bool IsOpenwindow { get; private set; }
+    private static bool isFirstDisplay = true;
 
     private readonly float[] ITEM_DISPLAY_POS_X = { 7.7f, 5.5f, 3.3f, 1.1f, -1.1f, -3.3f, -5.5f, -7.7f };//配列でconstは使えないのでreadonlyで定数を宣言している.
     private readonly float[] ITEM_DISPLAY_POS_Y = { 4, 2, 0, -2, -4 };
@@ -32,17 +30,6 @@ public class LobbyManager : MonoBehaviour
     [Tooltip("アイテム3")]
     [SerializeField] private LobbyItemBase item3;
 
-    [Header("アプリケーションウィンドウ")]
-    [Tooltip("ゴミ箱")]
-    [SerializeField] private GameObject dustbinWindow;
-    [Tooltip("ブラウザ")]
-    [SerializeField] private GameObject browserWindow;
-    [Tooltip("メール")]
-    [SerializeField] private GameObject emailWindow;
-    [Tooltip("設定")]
-    [SerializeField] private GameObject settingWindow;
-
-
     void Start()
     {
         if (isFirstDisplay)
@@ -66,7 +53,6 @@ public class LobbyManager : MonoBehaviour
         }
         RefreshScreenIcons();
     }
-
     public LobbyItemType GetItemType(LobbyPosition pos)
     {
         return lobbyItems[pos.x, pos.y].itemType;
